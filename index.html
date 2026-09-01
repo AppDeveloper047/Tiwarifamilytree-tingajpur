@@ -41,7 +41,8 @@
             overflow-x: auto;
             display: flex;
             justify-content: flex-start; 
-            padding: 20px 50px; 
+            padding: 20px 10px; 
+            min-height: 400px;
         }
 
         /* Male & Default Box Styling */
@@ -100,7 +101,7 @@
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div"></div>
+                    <div id="chart_div" style="margin: auto;"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
                 </div>
             </div>
         </div>
@@ -169,7 +170,10 @@
                  globalData = jsonData;
                  drawChart(jsonData);
              })
-             .catch(error => console.error('Error fetching data:', error));
+             .catch(error => {
+                 console.error('Error fetching data:', error);
+                 document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px; color:red;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
+             });
         }
 
         function formatDate(dateString) {
@@ -234,14 +238,14 @@
                 }
             });
 
-            chart.draw(data, {allowHtml:true});
+            chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
             
             setTimeout(() => {
                 const wrapper = document.getElementById('scrollWrapper');
                 if(wrapper) {
                     wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
                 }
-            }, 400);
+            }, 300);
         }
 
         function showPopup(info) {
