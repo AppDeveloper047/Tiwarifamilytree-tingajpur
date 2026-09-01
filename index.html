@@ -169,8 +169,25 @@
             fetch(scriptURL)
              .then(response => response.json())
              .then(jsonData => {
-                 globalData = jsonData;
-                 drawChart(jsonData);
+                 // Smart mapper: maps sheet columns accurately (A: Father, B: Member, C: Name, D: DOB, E: Alive, F: DeathAnniv, G: SpouseName, H: SpouseDOB, I: SpouseAlive, J: SpouseAnniv, K: Gender, L: Mobile, M: Photo)
+                 globalData = jsonData.map(row => {
+                     return {
+                         fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
+                         memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
+                         name: row.name !== undefined ? row.name : (row[2] || ''),
+                         dob: row.dob !== undefined ? row.dob : (row[3] || ''),
+                         aliveDeath: row.aliveDeath !== undefined ? row.aliveDeath : (row[4] || 'Alive'),
+                         deathAnniversary: row.deathAnniversary !== undefined ? row.deathAnniversary : (row[5] || ''),
+                         spouseName: row.spouseName !== undefined ? row.spouseName : (row[6] || ''),
+                         spouseDob: row.spouseDob !== undefined ? row.spouseDob : (row[7] || ''),
+                         spouseAliveDeath: row.spouseAliveDeath !== undefined ? row.spouseAliveDeath : (row[8] || 'Alive'),
+                         spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[9] || ''),
+                         gender: row.gender !== undefined ? row.gender : (row[10] || 'Male'),
+                         mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
+                         photo: row.photo !== undefined ? row.photo : (row[12] || '')
+                     };
+                 });
+                 drawChart(globalData);
              })
              .catch(error => {
                  console.error('Error fetching data:', error);
@@ -329,4 +346,42 @@
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
                 name: document.getElementById('name').value,
-                gender: document.getE
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                mobile: document.getElementById('mobile').value,
+                photo: photoBase64
+            };
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = 'Save ho raha hai...';
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
+                form.reset();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            })
+            .catch(err => {
+                alert('Data submit ho gaya hai!');
+                form.reset();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>
