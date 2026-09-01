@@ -20,8 +20,9 @@
 
         .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
+        .hint-text { display: block; font-size: 12px; color: #666; margin-top: 4px; font-style: italic; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; transition: 0.3s; }
         input:focus, select:focus { border-color: #2a5298; outline: none; box-shadow: 0 0 8px rgba(42,82,152,0.2); }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(17,153,142,0.3); }
@@ -91,7 +92,7 @@
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#1e3c72;">Family Tree</h2>
+                <h2 style="margin:0; color:#1e3c72;">परिवार का स्वर्णिम इतिहास</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
             <p style="color: #666; font-size: 13px;">Kisi bhi member ke 3D gradient box par click karke uski photo aur details dekhein:</p>
@@ -109,27 +110,95 @@
         <div class="form-card">
             <h2>Naye Member ki Entry Karein</h2>
             <form id="entryForm">
-                <div class="form-group"><label>Father I'd:</label><input type="text" id="fatherId" placeholder="Jaise: Root01"></div>
-                <div class="form-group"><label>Member I'd:*</label><input type="text" id="memberId" placeholder="Jaise: PATH11" required></div>
-                <div class="form-group"><label>Name:*</label><input type="text" id="name" placeholder="Member ka naam" required></div>
-                <div class="form-group"><label>Gender:</label>
+                
+                <div class="form-group">
+                    <label>Father I'd:</label>
+                    <input type="text" id="fatherId" placeholder="Jaise: Root01">
+                    <span class="hint-text">यहाँ अपने पिताजी की I'd दर्ज करें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Member I'd:*</label>
+                    <input type="text" id="memberId" placeholder="Jaise: PATH11" required>
+                    <span class="hint-text">यहाँ स्वयं की यूनिक I'd बनाएं।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Name:*</label>
+                    <input type="text" id="name" placeholder="Member ka naam" required>
+                    <span class="hint-text">यहाँ सदस्य का पूरा नाम लिखें।</span>
+                </div>
+                
+                <div class="form-group">
+                    <label>Child Level:</label>
+                    <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
+                    <span class="hint-text">नंबर बताएं कि यह संतान अपने माता-पिता की कौन से नंबर की संतान है।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender:</label>
                     <select id="gender">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
                     </select>
+                    <span class="hint-text">यहाँ सदस्य का लिंग चुनें।</span>
                 </div>
-                <div class="form-group"><label>D.O.B:</label><input type="date" id="dob"></div>
-                <div class="form-group"><label>Alive / Death:</label><select id="aliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
-                <div class="form-group"><label>Death Anniversary:</label><input type="date" id="deathAnniversary"></div>
+
+                <div class="form-group">
+                    <label>D.O.B:</label>
+                    <input type="date" id="dob">
+                    <span class="hint-text">जन्म दिनांक चुनें (अगर ज्ञात हो)।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Alive / Death:</label>
+                    <select id="aliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
+                    <span class="hint-text">जीवित हैं या स्वर्गवास हो गया, वह चुनें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Death Anniversary:</label>
+                    <input type="date" id="deathAnniversary">
+                    <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
+                </div>
                 
-                <div class="form-group"><label>Spouse Name:</label><input type="text" id="spouseName" placeholder="Pati/Patni ka naam"></div>
-                <div class="form-group"><label>Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
-                <div class="form-group"><label>Spouse Alive / Death:</label><select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
-                <div class="form-group"><label>Spouse Death Anniversary:</label><input type="date" id="spouseDeathAnniv"></div>
+                <div class="form-group">
+                    <label>Spouse Name:</label>
+                    <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
+                    <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Spouse D.O.B:</label>
+                    <input type="date" id="spouseDob">
+                    <span class="hint-text">पति या पत्नी की जन्म दिनांक चुनें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Spouse Alive / Death:</label>
+                    <select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
+                    <span class="hint-text">पति/पत्नी की वर्तमान स्थिति चुनें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Spouse Death Anniversary:</label>
+                    <input type="date" id="spouseDeathAnniv">
+                    <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
+                </div>
                 
-                <div class="form-group"><label>Mobile Number:</label><input type="tel" id="mobile" placeholder="Mobile Number dalein"></div>
-                <div class="form-group"><label>Member Photo (Camera / Gallery):</label><input type="file" id="photoFile" accept="image/*"></div>
+                <div class="form-group">
+                    <label>Mobile Number:</label>
+                    <input type="tel" id="mobile" placeholder="Mobile Number dalein">
+                    <span class="hint-text">संपर्क के लिए मोबाइल नंबर दर्ज करें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Member Photo (Camera / Gallery):</label>
+                    <input type="file" id="photoFile" accept="image/*">
+                    <span class="hint-text">सदस्य की साफ़ फोटो चुनें।</span>
+                </div>
+
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
             </form>
 
@@ -169,8 +238,7 @@
             fetch(scriptURL)
              .then(response => response.json())
              .then(jsonData => {
-                 // Smart mapper: maps sheet columns accurately (A: Father, B: Member, C: Name, D: DOB, E: Alive, F: DeathAnniv, G: SpouseName, H: SpouseDOB, I: SpouseAlive, J: SpouseAnniv, K: Gender, L: Mobile, M: Photo)
-                 globalData = jsonData.map(row => {
+                 globalData = jsonData.map((row, index) => {
                      return {
                          fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
                          memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
@@ -184,7 +252,8 @@
                          spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[9] || ''),
                          gender: row.gender !== undefined ? row.gender : (row[10] || 'Male'),
                          mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
-                         photo: row.photo !== undefined ? row.photo : (row[12] || '')
+                         photo: row.photo !== undefined ? row.photo : (row[12] || ''),
+                         childOrder: row.childOrder !== undefined ? row.childOrder : (row[13] || '')
                      };
                  });
                  drawChart(globalData);
@@ -221,6 +290,7 @@
                 var fatherId = row.fatherId ? row.fatherId.toString().trim() : '';
                 var name = row.name ? row.name.toString().trim() : 'Unknown';
                 var gender = row.gender ? row.gender.toString().trim() : 'Male';
+                var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
                 
                 var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
@@ -230,9 +300,12 @@
                 if(memberId) {
                     var nodeClass = (gender.toLowerCase() === 'female') ? 'google-visualization-orgchart-node female-node' : 'google-visualization-orgchart-node';
 
+                    var badgeHTML = orderNum ? `<span style="background:rgba(0,0,0,0.3); padding:1px 7px; border-radius:10px; font-size:10px; color:#ffeaa7; font-weight:bold; margin-bottom:3px; display:inline-block;">No. ${orderNum}</span><br>` : '';
+
                     var shortView = '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; padding: 6px; text-align:center;">' +
                                     '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
-                                    '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">' + name + '</b><br><span style="font-size:10px; color:#ffeaa7; font-weight:bold;">ID: ' + memberId + '</span></div>';
+                                    badgeHTML +
+                                    '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">' + name + '</b><br><span style="font-size:10px; color:#e0f7fa; font-weight:bold;">ID: ' + memberId + '</span></div>';
                  
                     rows.push([{v: memberId, f: shortView}, fatherId, name]);
                 }
@@ -281,6 +354,7 @@
             let spouseDobFormatted = formatDate(info.spouseDob);
             let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
             let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
+            let orderText = info.childOrder ? `${info.childOrder}` : '-';
 
             let spouseSection = '';
             if (info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
@@ -298,6 +372,7 @@
                     <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
                 </div>
                 <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${info.name || 'N/A'}</h3>
+                <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
                 <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
@@ -346,6 +421,7 @@
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
                 name: document.getElementById('name').value,
+                childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
