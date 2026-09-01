@@ -45,7 +45,6 @@
             min-height: 400px;
         }
 
-        /* Male & Default Box Styling */
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
             background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%) !important; 
@@ -63,7 +62,6 @@
             border-color: #fff !important;
         }
 
-        /* Female Light Pink Box Styling */
         .female-node {
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%) !important;
             box-shadow: 0 8px 20px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
@@ -78,7 +76,7 @@
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 10% auto; padding: 30px; border-radius: 15px; width: 340px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
+        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
         .close-btn:hover { color: #ff416c; }
     </style>
@@ -124,8 +122,12 @@
                 <div class="form-group"><label>D.O.B:</label><input type="date" id="dob"></div>
                 <div class="form-group"><label>Alive / Death:</label><select id="aliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
                 <div class="form-group"><label>Death Anniversary:</label><input type="date" id="deathAnniversary"></div>
+                
                 <div class="form-group"><label>Spouse Name:</label><input type="text" id="spouseName" placeholder="Pati/Patni ka naam"></div>
                 <div class="form-group"><label>Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
+                <div class="form-group"><label>Spouse Alive / Death:</label><select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
+                <div class="form-group"><label>Spouse Death Anniversary:</label><input type="date" id="spouseDeathAnniv"></div>
+                
                 <div class="form-group"><label>Mobile Number:</label><input type="tel" id="mobile" placeholder="Mobile Number dalein"></div>
                 <div class="form-group"><label>Member Photo (Camera / Gallery):</label><input type="file" id="photoFile" accept="image/*"></div>
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
@@ -260,6 +262,19 @@
             let dobFormatted = formatDate(info.dob);
             let deathAnnivFormatted = formatDate(info.deathAnniversary);
             let spouseDobFormatted = formatDate(info.spouseDob);
+            let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
+            let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
+
+            let spouseSection = '';
+            if (info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
+                spouseSection = `
+                    <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
+                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
+                `;
+            }
 
             content.innerHTML = `
                 <div style="text-align:center; margin-bottom:12px;">
@@ -271,10 +286,9 @@
                 <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
                 <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
-                ${info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
+                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
+                ${spouseSection}
                 <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
-                <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName || '-'}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
             `;
             modal.style.display = "block";
@@ -315,42 +329,4 @@
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
                 name: document.getElementById('name').value,
-                gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
-                aliveDeath: document.getElementById('aliveDeath').value,
-                deathAnniversary: document.getElementById('deathAnniversary').value,
-                spouseName: document.getElementById('spouseName').value,
-                spouseDob: document.getElementById('spouseDob').value,
-                spouseAliveDeath: 'Alive',
-                spouseDeathAnniv: '',
-                mobile: document.getElementById('mobile').value,
-                photo: photoBase64
-            };
-
-            const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Save ho raha hai...';
-            submitBtn.disabled = true;
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
-                form.reset();
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
-            })
-            .catch(err => {
-                alert('Data submit ho gaya hai!');
-                form.reset();
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
-            });
-        }
-    </script>
-</body>
-</html>
+                gender: document.getE
