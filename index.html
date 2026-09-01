@@ -163,28 +163,41 @@
                     <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
                 </div>
                 
+                <!-- Marital Status Field -->
                 <div class="form-group">
-                    <label>Spouse Name:</label>
-                    <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
-                    <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
+                    <label>Marital Status:*</label>
+                    <select id="maritalStatus" onchange="toggleSpouseFields()">
+                        <option value="Married">Married</option>
+                        <option value="Unmarried">Unmarried</option>
+                    </select>
+                    <span class="hint-text">चुनें कि सदस्य विवाहित हैं या अविवाहित।</span>
                 </div>
 
-                <div class="form-group">
-                    <label>Spouse D.O.B:</label>
-                    <input type="date" id="spouseDob">
-                    <span class="hint-text">पति या पत्नी की जन्म दिनांक चुनें।</span>
-                </div>
+                <!-- Spouse Details Container (Hidden if Unmarried) -->
+                <div id="spouseFieldsContainer">
+                    <div class="form-group">
+                        <label>Spouse Name:</label>
+                        <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
+                        <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
+                    </div>
 
-                <div class="form-group">
-                    <label>Spouse Alive / Death:</label>
-                    <select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
-                    <span class="hint-text">पति/पत्नी की वर्तमान स्थिति चुनें।</span>
-                </div>
+                    <div class="form-group">
+                        <label>Spouse D.O.B:</label>
+                        <input type="date" id="spouseDob">
+                        <span class="hint-text">पति या पत्नी की जन्म दिनांक चुनें।</span>
+                    </div>
 
-                <div class="form-group">
-                    <label>Spouse Death Anniversary:</label>
-                    <input type="date" id="spouseDeathAnniv">
-                    <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
+                    <div class="form-group">
+                        <label>Spouse Alive / Death:</label>
+                        <select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
+                        <span class="hint-text">पति/पत्नी की वर्तमान स्थिति चुनें।</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Spouse Death Anniversary:</label>
+                        <input type="date" id="spouseDeathAnniv">
+                        <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -220,6 +233,20 @@
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec';
         let globalData = [];
 
+        function toggleSpouseFields() {
+            var status = document.getElementById('maritalStatus').value;
+            var container = document.getElementById('spouseFieldsContainer');
+            if (status === 'Unmarried') {
+                container.style.display = 'none';
+                // Clear spouse values when unmarried
+                document.getElementById('spouseName').value = '';
+                document.getElementById('spouseDob').value = '';
+                document.getElementById('spouseDeathAnniv').value = '';
+            } else {
+                container.style.display = 'block';
+            }
+        }
+
         function openTab(event, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -252,8 +279,8 @@
                          spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[9] || ''),
                          gender: row.gender !== undefined ? row.gender : (row[10] || 'Male'),
                          mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
-                         photo: row.photo !== undefined ? row.photo : (row[13] || ''),
-                         childOrder: row.childOrder !== undefined ? row.childOrder : (row[12] || '')
+                         childOrder: row.childOrder !== undefined ? row.childOrder : (row[12] || ''),
+                         photo: row.photo !== undefined ? row.photo : (row[13] || '')
                      };
                  });
                  drawChart(globalData);
@@ -446,6 +473,7 @@
             .then(result => {
                 alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
                 form.reset();
+                toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
@@ -453,6 +481,7 @@
             .catch(err => {
                 alert('Data submit ho gaya hai!');
                 form.reset();
+                toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
