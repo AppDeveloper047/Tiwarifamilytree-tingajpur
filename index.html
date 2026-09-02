@@ -365,7 +365,6 @@
                 }
             }, 300);
         }
-
         function showPopup(info) {
             var modal = document.getElementById('detailsModal');
             var content = document.getElementById('modalContent');
@@ -381,9 +380,10 @@
             let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
             let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
             let orderText = info.childOrder ? `${info.childOrder}` : '-';
+            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-'; // Marital Status यहाँ फेच किया गया है
 
             let spouseSection = '';
-            if (info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
+            if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
                 spouseSection = `
                     <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
                     <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
@@ -402,6 +402,7 @@
                 <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p> <!-- यह लाइन पॉपअप में Marital Status दिखाएगी -->
                 <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
                 ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
