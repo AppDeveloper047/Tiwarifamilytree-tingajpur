@@ -40,17 +40,15 @@
         .chart-scroll-wrapper {
             width: 100%;
             overflow: auto;
-            display: flex; 
-            justify-content: flex-start; 
-            padding: 30px 20px; 
+            display: flex;
+            justify-content: center; 
+            padding: 20px 10px; 
             min-height: 500px;
         }
 
         #chart_div {
-            transform: scale(0.70);
             transform-origin: top center;
             transition: transform 0.3s ease;
-            margin: auto;
         }
 
         #chart_div table {
@@ -112,7 +110,7 @@
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
+                    <div id="chart_div" style="margin: auto;"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
                 </div>
             </div>
         </div>
@@ -369,18 +367,18 @@
 
             chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
         
-            // चार्ट रेंडर होने के बाद ज़ूम और सही स्क्रॉल पोजीशन सेट करना
             setTimeout(() => {
-                let chartDiv = document.getElementById('chart_div');
-                if(chartDiv) {
-                    chartDiv.style.transform = 'scale(0.70)';
-                    chartDiv.style.transformOrigin = 'top center';
-                }
                 const wrapper = document.getElementById('scrollWrapper');
+                const chartDiv = document.getElementById('chart_div');
+                
+                if(chartDiv) {
+                    chartDiv.style.transform = 'scale(0.65)'; 
+                }
+                
                 if(wrapper) {
                     wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
                 }
-            }, 500);
+            }, 300);
         }
 
         function showPopup(info) {
@@ -465,7 +463,7 @@
             const formData = {
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
-                name: document.getElementById('name').value,
+                name: document.getElementById('name',).value,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
