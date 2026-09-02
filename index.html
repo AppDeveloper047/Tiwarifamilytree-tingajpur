@@ -37,19 +37,20 @@
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* यहाँ फ्लेक्स की जगह block और white-space सेट किया गया है ताकि बाएं हिस्से न छुपें */
         .chart-scroll-wrapper {
             width: 100%;
             overflow: auto;
-            display: block; 
-            padding: 30px; 
+            display: flex; 
+            justify-content: flex-start; 
+            padding: 30px 20px; 
             min-height: 500px;
-            white-space: nowrap;
         }
 
         #chart_div {
-            transform-origin: top left;
+            transform: scale(0.70);
+            transform-origin: top center;
             transition: transform 0.3s ease;
+            margin: auto;
         }
 
         #chart_div table {
@@ -111,7 +112,7 @@
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div" style="margin: auto;"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
+                    <div id="chart_div"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
                 </div>
             </div>
         </div>
@@ -348,4 +349,163 @@
             });
 
             if(rows.length === 0) {
-                rows.push([{v:'Roo
+                rows.push([{v:'Root01', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Root']);
+            }
+
+            data.addRows(rows);
+
+            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+        
+            google.visualization.events.addListener(chart, 'select', function() {
+                var selection = chart.getSelection();
+                if (selection.length > 0) {
+                    var rowIdx = selection[0].row;
+                    var selectedMemberId = data.getValue(rowIdx, 0);
+            
+                    let memberInfo = globalData.find(m => m.memberId.toString().trim() === selectedMemberId.toString().trim());
+                    if(memberInfo) { showPopup(memberInfo); }
+                }
+            });
+
+            chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
+        
+            // चार्ट रेंडर होने के बाद ज़ूम और सही स्क्रॉल पोजीशन सेट करना
+            setTimeout(() => {
+                let chartDiv = document.getElementById('chart_div');
+                if(chartDiv) {
+                    chartDiv.style.transform = 'scale(0.70)';
+                    chartDiv.style.transformOrigin = 'top center';
+                }
+                const wrapper = document.getElementById('scrollWrapper');
+                if(wrapper) {
+                    wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
+                }
+            }, 500);
+        }
+
+        function showPopup(info) {
+            var modal = document.getElementById('detailsModal');
+            var content = document.getElementById('modalContent');
+        
+            var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            if (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined' && info.photo !== 'null') {
+                photoURL = info.photo;
+            }
+        
+            let dobFormatted = formatDate(info.dob);
+            let deathAnnivFormatted = formatDate(info.deathAnniversary);
+            let spouseDobFormatted = formatDate(info.spouseDob);
+            let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
+            let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
+            let orderText = info.childOrder ? `${info.childOrder}` : '-';
+            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-';
+
+            let spouseSection = '';
+            if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
+                spouseSection = `
+                    <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
+                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
+                `;
+            }
+
+            content.innerHTML = `
+                <div style="text-align:center; margin-bottom:12px;">
+                    <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                </div>
+                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${info.name || 'N/A'}</h3>
+                <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
+                <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
+                <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
+                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
+                ${spouseSection}
+                <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
+                <p style="margin:6px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
+            `;
+            modal.style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
+
+        function downloadPDF() {
+            const element = document.getElementById('pdfContent');
+            document.getElementById('pdfTitle').style.display = 'block';
+            var opt = {
+                margin: 0.5,
+                filename: 'Family_Tree_Pyramid.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => {
+                document.getElementById('pdfTitle').style.display = 'none';
+            });
+        }
+
+        const form = document.getElementById('entryForm');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const fileInput = document.getElementById('photoFile');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function(event) { sendDataToSheet(event.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                sendDataToSheet('');
+            }
+        });
+
+        function sendDataToSheet(photoBase64) {
+            const formData = {
+                fatherId: document.getElementById('fatherId').value,
+                memberId: document.getElementById('memberId').value,
+                name: document.getElementById('name').value,
+                childOrder: document.getElementById('childOrder').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                mobile: document.getElementById('mobile').value,
+                photo: photoBase64
+            };
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = 'Save ho raha hai...';
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
+                form.reset();
+                toggleSpouseFields();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            })
+            .catch(err => {
+                alert('Data submit ho gaya hai!');
+                form.reset();
+                toggleSpouseFields();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>
