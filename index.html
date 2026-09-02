@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,11 +40,17 @@
 
         .chart-scroll-wrapper {
             width: 100%;
-            overflow-x: auto;
+            overflow: auto;
             display: flex;
-            justify-content: flex-start; 
+            justify-content: center; 
             padding: 20px 10px; 
-            min-height: 400px;
+            min-height: 500px;
+        }
+
+        #chart_div table {
+            margin: auto;
+            border-collapse: separate !important;
+            transform-origin: top center;
         }
 
         .google-visualization-orgchart-node { 
@@ -362,6 +369,10 @@
                 if(wrapper) {
                     wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
                 }
+                let chartTable = document.querySelector('#chart_div table');
+                if(chartTable) {
+                    chartTable.style.transform = 'scale(0.80)'; // पूरा ट्री एक साथ फिट दिखने के लिए ज़ूम-आउट स्केल
+                }
             }, 300);
         }
 
@@ -491,3 +502,5 @@
     </script>
 </body>
 </html>
+
+```
