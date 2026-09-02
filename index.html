@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,10 +46,15 @@
             min-height: 500px;
         }
 
+        /* यहाँ हमने ज़ूम-आउट फिक्स के लिए ट्रांसफॉर्म और ऑरिजिन को मजबूत किया है */
+        #chart_div {
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+
         #chart_div table {
             margin: auto;
             border-collapse: separate !important;
-            transform-origin: top center;
         }
 
         .google-visualization-orgchart-node { 
@@ -364,14 +368,18 @@
 
             chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
         
+            // यहाँ चार्ट लोड होने के बाद ज़ूम आउट स्केल सीधे अप्लाई किया गया है
             setTimeout(() => {
                 const wrapper = document.getElementById('scrollWrapper');
+                const chartDiv = document.getElementById('chart_div');
+                
+                if(chartDiv) {
+                    // आप चाहें तो 0.65 को और छोटा (जैसे 0.55) या बड़ा (जैसे 0.75) कर सकते हैं
+                    chartDiv.style.transform = 'scale(0.65)'; 
+                }
+                
                 if(wrapper) {
                     wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
-                }
-                let chartTable = document.querySelector('#chart_div table');
-                if(chartTable) {
-                    chartTable.style.transform = 'scale(0.80)'; // पूरा ट्री एक साथ फिट दिखने के लिए ज़ूम-आउट स्केल
                 }
             }, 300);
         }
@@ -458,7 +466,7 @@
             const formData = {
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
-                name: document.getElementById('name').value,
+                name: document.getElementById('name',).value,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
@@ -502,5 +510,3 @@
     </script>
 </body>
 </html>
-
-```
