@@ -110,7 +110,7 @@
         <div class="form-card">
             <h2>Naye Member ki Entry Karein</h2>
             <form id="entryForm">
-             
+            
                 <div class="form-group">
                     <label>Father I'd:</label>
                     <input type="text" id="fatherId" placeholder="Jaise: Root01">
@@ -128,7 +128,7 @@
                     <input type="text" id="name" placeholder="Member ka naam" required>
                     <span class="hint-text">यहाँ सदस्य का पूरा नाम लिखें।</span>
                 </div>
-             
+            
                 <div class="form-group">
                     <label>Child Level:</label>
                     <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
@@ -162,8 +162,7 @@
                     <input type="date" id="deathAnniversary">
                     <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
                 </div>
-             
-                <!-- Marital Status Field -->
+            
                 <div class="form-group">
                     <label>Marital Status:*</label>
                     <select id="maritalStatus" onchange="toggleSpouseFields()">
@@ -173,7 +172,6 @@
                     <span class="hint-text">चुनें कि सदस्य विवाहित हैं या अविवाहित।</span>
                 </div>
 
-                <!-- Spouse Details Container (Hidden if Unmarried) -->
                 <div id="spouseFieldsContainer">
                     <div class="form-group">
                         <label>Spouse Name:</label>
@@ -199,7 +197,7 @@
                         <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
                     </div>
                 </div>
-             
+            
                 <div class="form-group">
                     <label>Mobile Number:</label>
                     <input type="tel" id="mobile" placeholder="Mobile Number dalein">
@@ -264,25 +262,26 @@
             fetch(scriptURL)
             .then(response => response.json())
             .then(jsonData => {
-                 globalData = jsonData.map((row, index) => {
-                     return {
-                         fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
-                         memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
-                         name: row.name !== undefined ? row.name : (row[2] || ''),
-                         dob: row.dob !== undefined ? row.dob : (row[3] || ''),
-                         aliveDeath: row.aliveDeath !== undefined ? row.aliveDeath : (row[4] || 'Alive'),
-                         deathAnniversary: row.deathAnniversary !== undefined ? row.deathAnniversary : (row[5] || ''),
-                         spouseName: row.spouseName !== undefined ? row.spouseName : (row[6] || ''),
-                         spouseDob: row.spouseDob !== undefined ? row.spouseDob : (row[7] || ''),
-                         spouseAliveDeath: row.spouseAliveDeath !== undefined ? row.spouseAliveDeath : (row[8] || 'Alive'),
-                         spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[9] || ''),
-                         gender: row.gender !== undefined ? row.gender : (row[10] || 'Male'),
-                         mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
-                         childOrder: row.childOrder !== undefined ? row.childOrder : (row[12] || ''),
-                         photo: row.photo !== undefined ? row.photo : (row[13] || '')
-                     };
-                 });
-                 drawChart(globalData);
+                globalData = jsonData.map((row) => {
+                    return {
+                        fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
+                        memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
+                        name: row.name !== undefined ? row.name : (row[2] || ''),
+                        dob: row.dob !== undefined ? row.dob : (row[3] || ''),
+                        aliveDeath: row.aliveDeath !== undefined ? row.aliveDeath : (row[4] || 'Alive'),
+                        deathAnniversary: row.deathAnniversary !== undefined ? row.deathAnniversary : (row[5] || ''),
+                        maritalStatus: row.maritalStatus !== undefined ? row.maritalStatus : (row[6] || 'Married'),
+                        spouseName: row.spouseName !== undefined ? row.spouseName : (row[7] || ''),
+                        spouseDob: row.spouseDob !== undefined ? row.spouseDob : (row[8] || ''),
+                        spouseAliveDeath: row.spouseAliveDeath !== undefined ? row.spouseAliveDeath : (row[9] || 'Alive'),
+                        spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[10] || ''),
+                        gender: row.gender !== undefined ? row.gender : (row[11] || 'Male'),
+                        mobile: row.mobile !== undefined ? row.mobile : (row[12] || ''),
+                        childOrder: row.childOrder !== undefined ? row.childOrder : (row[13] || ''),
+                        photo: row.photo !== undefined ? row.photo : (row[14] || '')
+                    };
+                });
+                drawChart(globalData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -317,7 +316,7 @@
                 var name = row.name ? row.name.toString().trim() : 'Unknown';
                 var gender = row.gender ? row.gender.toString().trim() : 'Male';
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
-             
+            
                 var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                 if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
                     photoURL = row.photo;
@@ -332,7 +331,7 @@
                                     '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
                                     badgeHTML +
                                     '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">' + name + '</b><br><span style="font-size:10px; color:#e0f7fa; font-weight:bold;">ID: ' + memberId + '</span></div>';
-             
+            
                     rows.push([{v: memberId, f: shortView}, fatherId, name]);
                 }
             });
@@ -344,20 +343,20 @@
             data.addRows(rows);
 
             var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-         
+        
             google.visualization.events.addListener(chart, 'select', function() {
                 var selection = chart.getSelection();
                 if (selection.length > 0) {
                     var rowIdx = selection[0].row;
                     var selectedMemberId = data.getValue(rowIdx, 0);
-             
+            
                     let memberInfo = globalData.find(m => m.memberId.toString().trim() === selectedMemberId.toString().trim());
                     if(memberInfo) { showPopup(memberInfo); }
                 }
             });
 
             chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
-         
+        
             setTimeout(() => {
                 const wrapper = document.getElementById('scrollWrapper');
                 if(wrapper) {
@@ -365,22 +364,23 @@
                 }
             }, 300);
         }
+
         function showPopup(info) {
             var modal = document.getElementById('detailsModal');
             var content = document.getElementById('modalContent');
-         
+        
             var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
             if (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined' && info.photo !== 'null') {
                 photoURL = info.photo;
             }
-         
+        
             let dobFormatted = formatDate(info.dob);
             let deathAnnivFormatted = formatDate(info.deathAnniversary);
             let spouseDobFormatted = formatDate(info.spouseDob);
             let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
             let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
             let orderText = info.childOrder ? `${info.childOrder}` : '-';
-            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-'; // Marital Status यहाँ फेच किया गया है
+            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-';
 
             let spouseSection = '';
             if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
@@ -402,7 +402,7 @@
                 <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p> <!-- यह लाइन पॉपअप में Marital Status दिखाएगी -->
+                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
                 <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
                 ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
