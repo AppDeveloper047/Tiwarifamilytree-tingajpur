@@ -1,103 +1,3 @@
-function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.tryLock(10000);
-  
-  try {
-    var doc = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = doc.getSheetByName(sheetName);
-    
-    var data = JSON.parse(e.postData.contents);
-    var memberId = data.memberId ? data.memberId.toString().trim() : "";
-    
-    if (!memberId) {
-      return ContentService.createTextOutput(JSON.stringify({"result": "error", "message": "Member ID missing"})).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    var rows = sheet.getDataRange().getValues();
-    var rowIndex = -1;
-    
-    // चेक करें कि क्या यह Member ID पहले से मौजूद है (Update के लिए)
-    for (var i = 1; i < rows.length; i++) {
-      if (rows[i][1] && rows[i][1].toString().trim() === memberId) {
-        rowIndex = i + 1; // Sheet row index
-        break;
-      }
-    }
-    
-    // अगर नई फोटो नहीं आई है, तो पुरानी फोटो सुरक्षित रखें
-    var photoToSave = data.photo;
-    if ((!photoToSave || photoToSave === "") && rowIndex !== -1) {
-      photoToSave = rows[rowIndex - 1][14]; // कॉलम O (Index 14) पुरानी फोटो है
-    }
-
-    if (rowIndex !== -1) {
-      // डेटा अपडेट करें (Update Row)
-      sheet.getRange(rowIndex, 1).setValue(data.fatherId);
-      sheet.getRange(rowIndex, 3).setValue(data.name);
-      sheet.getRange(rowIndex, 4).setValue(data.dob);
-      sheet.getRange(rowIndex, 5).setValue(data.aliveDeath);
-      sheet.getRange(rowIndex, 6).setValue(data.deathAnniversary);
-      sheet.getRange(rowIndex, 7).setValue(data.maritalStatus);
-      sheet.getRange(rowIndex, 8).setValue(data.spouseName);
-      sheet.getRange(rowIndex, 9).setValue(data.spouseDob);
-      sheet.getRange(rowIndex, 10).setValue(data.spouseAliveDeath);
-      sheet.getRange(rowIndex, 11).setValue(data.spouseDeathAnniv);
-      sheet.getRange(rowIndex, 12).setValue(data.gender);
-      sheet.getRange(rowIndex, 13).setValue(data.mobile);
-      sheet.getRange(rowIndex, 14).setValue(data.childOrder);
-      sheet.getRange(rowIndex, 15).setValue(photoToSave);
-      
-      return ContentService.createTextOutput(JSON.stringify({"result": "success", "action": "updated"})).setMimeType(ContentService.MimeType.JSON);
-    } else {
-      // नई Row जोड़ें (Append Row)
-      sheet.appendRow([
-        data.fatherId, data.memberId, data.name, data.dob, data.aliveDeath,
-        data.deathAnniversary, data.maritalStatus, data.spouseName, data.spouseDob,
-        data.spouseAliveDeath, data.spouseDeathAnniv, data.gender, data.mobile,
-        data.childOrder, photoToSave
-      ]);
-      
-      return ContentService.createTextOutput(JSON.stringify({"result": "success", "action": "inserted"})).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({"result": "error", "error": err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  } finally {
-    lock.releaseLock();
-  }
-}
-
-function doGet(e) {
-  var doc = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = doc.getSheetByName(sheetName);
-  var rows = sheet.getDataRange().getValues();
-  var jsonData = [];
-  
-  for (var i = 1; i < rows.length; i++) {
-    jsonData.push({
-      fatherId: rows[i][0],
-      memberId: rows[i][1],
-      name: rows[i][2],
-      dob: rows[i][3],
-      aliveDeath: rows[i][4],
-      deathAnniversary: rows[i][5],
-      maritalStatus: rows[i][6],
-      spouseName: rows[i][7],
-      spouseDob: rows[i][8],
-      spouseAliveDeath: rows[i][9],
-      spouseDeathAnniv: rows[i][10],
-      gender: rows[i][11],
-      mobile: rows[i][12],
-      childOrder: rows[i][13],
-      photo: rows[i][14]
-    });
-  }
-  return ContentService.createTextOutput(JSON.stringify(jsonData)).setMimeType(ContentService.MimeType.JSON);
-}
-
-2. GitHub (HTML / index.html) कोड
-इसे अपनी GitHub रिपॉजिटरी की index.html फाइल में पूरा कॉपी और पेस्ट कर दें।
-(ध्यान रखें: नीचे const scriptURL के अंदर अपनी सही Google Apps Script की वेब लिंक जरूर डालें।)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,7 +11,7 @@ function doGet(e) {
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
         
         .navbar { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 15px; color: white; transition: 0.3s; font-weight: bold; letter-spacing: 0.5px; }
+        .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; letter-spacing: 0.5px; }
         .navbar button:hover { background-color: rgba(255,255,255,0.1); }
         .navbar button.active { background-color: #ff9800; color: white; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
@@ -128,14 +28,32 @@ function doGet(e) {
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(17,153,142,0.3); }
         .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
+        .contact-note { background: #fff3cd; border-left: 5px solid #ff9800; padding: 15px; border-radius: 8px; margin-top: 25px; font-size: 14px; color: #856404; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+        .contact-note a { color: #d35400; font-weight: bold; text-decoration: none; }
+        .contact-note a:hover { text-decoration: underline; }
+
         .tree-container { background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
-        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px; min-height: 500px; }
-        #chart_div { display: inline-block; min-width: 100%; }
-        #chart_div table { margin: 0 auto; border-collapse: separate !important; }
+        .chart-scroll-wrapper {
+            width: 100%;
+            overflow: auto;
+            display: block; 
+            padding: 20px; 
+            min-height: 500px;
+        }
+
+        #chart_div {
+            display: inline-block;
+            min-width: 100%;
+        }
+
+        #chart_div table {
+            margin: 0 auto;
+            border-collapse: separate !important;
+        }
 
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
@@ -158,7 +76,9 @@ function doGet(e) {
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%) !important;
             box-shadow: 0 8px 20px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
         }
-        .female-node:hover { background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important; }
+        .female-node:hover {
+            background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important;
+        }
         
         .google-visualization-orgchart-lineleft, .google-visualization-orgchart-lineright, .google-visualization-orgchart-linebottom {
             border-color: #4e54c8 !important;
@@ -166,7 +86,7 @@ function doGet(e) {
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 4% auto; padding: 25px; border-radius: 15px; width: 380px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #11998e; }
+        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
         .close-btn:hover { color: #ff416c; }
     </style>
@@ -178,14 +98,13 @@ function doGet(e) {
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
-    <!-- फैमिली ट्री पेज -->
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;">परिवार का स्वर्णिम इतिहास</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
-            <p style="color: #666; font-size: 13px;">किसी भी सदस्य के बॉक्स पर क्लिक करके उसका विवरण देखें और फोटो एडिट करें:</p>
+            <p style="color: #666; font-size: 13px;">Kisi bhi member ke 3D gradient box par click karke uski photo aur details dekhein:</p>
             
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
@@ -196,34 +115,120 @@ function doGet(e) {
         </div>
     </div>
 
-    <!-- नई एंट्री पेज -->
     <div id="entryPage" class="tab-content">
         <div class="form-card">
-            <h2>Naye Member ki Entry Karein</h2>
+            <h2>Naye Member की Entry Karein</h2>
             <form id="entryForm">
-                <div class="form-group"><label>Father I'd:</label><input type="text" id="fatherId" placeholder="Jaise: Root01"></div>
-                <div class="form-group"><label>Member I'd:*</label><input type="text" id="memberId" placeholder="Jaise: PATH11" required></div>
-                <div class="form-group"><label>Name:*</label><input type="text" id="name" placeholder="Member ka naam" required></div>
-                <div class="form-group"><label>Child Level:</label><input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1"></div>
-                <div class="form-group"><label>Gender:</label><select id="gender"><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option></select></div>
-                <div class="form-group"><label>D.O.B:</label><input type="date" id="dob"></div>
-                <div class="form-group"><label>Alive / Death:</label><select id="aliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
-                <div class="form-group"><label>Death Anniversary:</label><input type="date" id="deathAnniversary"></div>
-                <div class="form-group"><label>Marital Status:*</label><select id="maritalStatus" onchange="toggleSpouseFields('maritalStatus', 'spouseFieldsContainer')"><option value="Married">Married</option><option value="Unmarried">Unmarried</option></select></div>
-                <div id="spouseFieldsContainer">
-                    <div class="form-group"><label>Spouse Name:</label><input type="text" id="spouseName" placeholder="Pati/Patni ka naam"></div>
-                    <div class="form-group"><label>Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
-                    <div class="form-group"><label>Spouse Alive / Death:</label><select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select></div>
-                    <div class="form-group"><label>Spouse Death Anniversary:</label><input type="date" id="spouseDeathAnniv"></div>
+            
+                <div class="form-group">
+                    <label>Father I'd:</label>
+                    <input type="text" id="fatherId" placeholder="Jaise: Root01">
+                    <span class="hint-text">यहाँ अपने पिताजी की I'd दर्ज करें।</span>
                 </div>
-                <div class="form-group"><label>Mobile Number:</label><input type="tel" id="mobile" placeholder="Mobile Number dalein"></div>
-                <div class="form-group"><label>Member Photo (Camera / Gallery):</label><input type="file" id="photoFile" accept="image/*"></div>
+
+                <div class="form-group">
+                    <label>Member I'd:*</label>
+                    <input type="text" id="memberId" placeholder="Jaise: PATH11" required>
+                    <span class="hint-text">यहाँ स्वयं की यूनिक I'd बनाएं।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Name:*</label>
+                    <input type="text" id="name" placeholder="Member ka naam" required>
+                    <span class="hint-text">यहाँ सदस्य का पूरा नाम लिखें।</span>
+                </div>
+            
+                <div class="form-group">
+                    <label>Child Level:</label>
+                    <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
+                    <span class="hint-text">नंबर बताएं कि यह संतान अपने माता-पिता की कौन से नंबर की संतान है।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <select id="gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span class="hint-text">यहाँ सदस्य का लिंग चुनें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>D.O.B:</label>
+                    <input type="date" id="dob">
+                    <span class="hint-text">जन्म दिनांक चुनें (अगर ज्ञात हो)।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Alive / Death:</label>
+                    <select id="aliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
+                    <span class="hint-text">जीवित हैं या स्वर्गवास हो गया, वह चुनें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Death Anniversary:</label>
+                    <input type="date" id="deathAnniversary">
+                    <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
+                </div>
+            
+                <div class="form-group">
+                    <label>Marital Status:*</label>
+                    <select id="maritalStatus" onchange="toggleSpouseFields()">
+                        <option value="Married">Married</option>
+                        <option value="Unmarried">Unmarried</option>
+                    </select>
+                    <span class="hint-text">चुनें कि सदस्य विवाहित हैं या अविवाहित।</span>
+                </div>
+
+                <div id="spouseFieldsContainer">
+                    <div class="form-group">
+                        <label>Spouse Name:</label>
+                        <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
+                        <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Spouse D.O.B:</label>
+                        <input type="date" id="spouseDob">
+                        <span class="hint-text">पति या पत्नी की जन्म दिनांक चुनें।</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Spouse Alive / Death:</label>
+                        <select id="spouseAliveDeath"><option value="Alive">Alive</option><option value="Death">Death</option></select>
+                        <span class="hint-text">पति/पत्नी की वर्तमान स्थिति चुनें।</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Spouse Death Anniversary:</label>
+                        <input type="date" id="spouseDeathAnniv">
+                        <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Mobile Number:</label>
+                    <input type="tel" id="mobile" placeholder="Mobile Number dalein">
+                    <span class="hint-text">संपर्क के लिए मोबाइल नंबर दर्ज करें।</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Member Photo (Camera / Gallery):</label>
+                    <input type="file" id="photoFile" accept="image/*">
+                    <span class="hint-text">सदस्य की साफ़ फोटो चुनें।</span>
+                </div>
+
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
             </form>
+
+            <div class="contact-note">
+                ⚠️ <b>विशेष सूचना:</b> एंट्री किए गए डेटा में किसी भी तरह का बदलाव या सुधार (Correction/Update) करवाने के लिए संपर्क करें - <br>
+                <b>Purushottam Tiwari</b> | 📞 <a href="tel:9752266047">9752266047</a>
+            </div>
         </div>
     </div>
 
-    <!-- सदस्य विवरण और फोटो/डेटा एडिट करने का पॉपअप -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -232,13 +237,20 @@ function doGet(e) {
     </div>
 
     <script>
-        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // यहाँ अपनी सही Apps Script वेब लिंक डालें
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec';
         let globalData = [];
 
-        function toggleSpouseFields(statusId, containerId) {
-            var status = document.getElementById(statusId).value;
-            var container = document.getElementById(containerId);
-            if(container) { container.style.display = (status === 'Unmarried') ? 'none' : 'block'; }
+        function toggleSpouseFields() {
+            var status = document.getElementById('maritalStatus').value;
+            var container = document.getElementById('spouseFieldsContainer');
+            if (status === 'Unmarried') {
+                container.style.display = 'none';
+                document.getElementById('spouseName').value = '';
+                document.getElementById('spouseDob').value = '';
+                document.getElementById('spouseDeathAnniv').value = '';
+            } else {
+                container.style.display = 'block';
+            }
         }
 
         function openTab(event, tabName) {
@@ -261,21 +273,21 @@ function doGet(e) {
             .then(jsonData => {
                 globalData = jsonData.map((row) => {
                     return {
-                        fatherId: row.fatherId || '',
-                        memberId: row.memberId || '',
-                        name: row.name || '',
-                        dob: row.dob ? row.dob.split('T')[0] : '',
-                        aliveDeath: row.aliveDeath || 'Alive',
-                        deathAnniversary: row.deathAnniversary ? row.deathAnniversary.split('T')[0] : '',
-                        maritalStatus: row.maritalStatus || 'Married',
-                        spouseName: row.spouseName || '',
-                        spouseDob: row.spouseDob ? row.spouseDob.split('T')[0] : '',
-                        spouseAliveDeath: row.spouseAliveDeath || 'Alive',
-                        spouseDeathAnniv: row.spouseDeathAnniv ? row.spouseDeathAnniv.split('T')[0] : '',
-                        gender: row.gender || 'Male',
-                        mobile: row.mobile || '',
-                        childOrder: row.childOrder || '',
-                        photo: row.photo || ''
+                        fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
+                        memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
+                        name: row.name !== undefined ? row.name : (row[2] || ''),
+                        dob: row.dob !== undefined ? row.dob : (row[3] || ''),
+                        aliveDeath: row.aliveDeath !== undefined ? row.aliveDeath : (row[4] || 'Alive'),
+                        deathAnniversary: row.deathAnniversary !== undefined ? row.deathAnniversary : (row[5] || ''),
+                        maritalStatus: row.maritalStatus !== undefined ? row.maritalStatus : (row[6] || 'Married'),
+                        spouseName: row.spouseName !== undefined ? row.spouseName : (row[7] || ''),
+                        spouseDob: row.spouseDob !== undefined ? row.spouseDob : (row[8] || ''),
+                        spouseAliveDeath: row.spouseAliveDeath !== undefined ? row.spouseAliveDeath : (row[9] || 'Alive'),
+                        spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[10] || ''),
+                        gender: row.gender !== undefined ? row.gender : (row[11] || 'Male'),
+                        mobile: row.mobile !== undefined ? row.mobile : (row[12] || ''),
+                        childOrder: row.childOrder !== undefined ? row.childOrder : (row[13] || ''),
+                        photo: row.photo !== undefined ? row.photo : (row[14] || '')
                     };
                 });
                 drawChart(globalData);
@@ -284,6 +296,20 @@ function doGet(e) {
                 console.error('Error fetching data:', error);
                 document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px; color:red;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
             });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString || dateString.trim() === '' || dateString === '-') return '-';
+            try {
+                let cleanStr = dateString.toString().split('T')[0];
+                let parts = cleanStr.split('-');
+                if (parts.length === 3) {
+                    return parts[2] + '-' + parts[1] + '-' + parts[0];
+                }
+                return cleanStr;
+            } catch (e) {
+                return dateString;
+            }
         }
 
         function drawChart(rowsData) {
@@ -300,10 +326,14 @@ function doGet(e) {
                 var gender = row.gender ? row.gender.toString().trim() : 'Male';
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
             
-                var photoURL = (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined') ? row.photo : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
+                    photoURL = row.photo;
+                }
 
                 if(memberId) {
                     var nodeClass = (gender.toLowerCase() === 'female') ? 'google-visualization-orgchart-node female-node' : 'google-visualization-orgchart-node';
+
                     var badgeHTML = orderNum ? `<span style="background:rgba(0,0,0,0.3); padding:1px 7px; border-radius:10px; font-size:10px; color:#ffeaa7; font-weight:bold; margin-bottom:3px; display:inline-block;">No. ${orderNum}</span><br>` : '';
 
                     var shortView = '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; padding: 6px; text-align:center;">' +
@@ -320,6 +350,7 @@ function doGet(e) {
             }
 
             data.addRows(rows);
+
             var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
         
             google.visualization.events.addListener(chart, 'select', function() {
@@ -327,6 +358,7 @@ function doGet(e) {
                 if (selection.length > 0) {
                     var rowIdx = selection[0].row;
                     var selectedMemberId = data.getValue(rowIdx, 0);
+            
                     let memberInfo = globalData.find(m => m.memberId.toString().trim() === selectedMemberId.toString().trim());
                     if(memberInfo) { showPopup(memberInfo); }
                 }
@@ -335,139 +367,52 @@ function doGet(e) {
             chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
         }
 
-        // ग्राफ पर टच करने पर खुलने वाला पॉपअप (जिसमें फोटो के पास ही एडिट का विकल्प है)
         function showPopup(info) {
             var modal = document.getElementById('detailsModal');
             var content = document.getElementById('modalContent');
-            var photoURL = (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined') ? info.photo : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
         
+            var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            if (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined' && info.photo !== 'null') {
+                photoURL = info.photo;
+            }
+        
+            let dobFormatted = formatDate(info.dob);
+            let deathAnnivFormatted = formatDate(info.deathAnniversary);
+            let spouseDobFormatted = formatDate(info.spouseDob);
+            let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
+            let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
+            let orderText = info.childOrder ? `${info.childOrder}` : '-';
+            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-';
+
+            let spouseSection = '';
+            if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
+                spouseSection = `
+                    <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
+                    <p style="margin:6px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
+                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
+                `;
+            }
+
             content.innerHTML = `
-                <div style="text-align:center; margin-bottom:15px;">
-                    <div style="position:relative; display:inline-block;">
-                        <img src="${photoURL}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
-                    </div>
-                    <h3 style="margin:8px 0 3px 0; color:#1e3c72;">${info.name || 'N/A'}</h3>
-                    <span style="font-size:12px; background:#e0f7fa; padding:2px 8px; border-radius:5px; color:#00796b; font-weight:bold;">ID: ${info.memberId}</span>
+                <div style="text-align:center; margin-bottom:12px;">
+                    <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
                 </div>
-
-                <div style="text-align:left; font-size:13px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eee; margin-bottom:15px;">
-                    <p style="margin:5px 0;"><b>Mobile:</b> ${info.mobile || 'N/A'}</p>
-                    <p style="margin:5px 0;"><b>DOB:</b> ${info.dob || 'N/A'}</p>
-                    <p style="margin:5px 0;"><b>Status:</b> ${info.aliveDeath || 'Alive'}</p>
-                    <p style="margin:5px 0;"><b>Marital Status:</b> ${info.maritalStatus || 'Married'}</p>
-                </div>
-
-                <button onclick="openEditForm('${info.memberId}')" style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color:#fff; border:none; padding:10px; width:100%; border-radius:8px; cursor:pointer; font-weight:bold; box-shadow:0 3px 10px rgba(242,153,74,0.4);">✏️ Edit Profile & Photo</button>
+                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${info.name || 'N/A'}</h3>
+                <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
+                <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
+                <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
+                <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
+                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
+                ${spouseSection}
+                <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
+                <p style="margin:6px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
             `;
             modal.style.display = "block";
-        }
-
-        // जब यूजर एडिट बटन दबाएगा, तो पॉपअप के अंदर ही फॉर्म आ जाएगा ताकि वह फोटो या डिटेल्स बदल सके
-        function openEditForm(memberId) {
-            let info = globalData.find(m => m.memberId.toString().trim() === memberId.toString().trim());
-            if(!info) return;
-
-            var content = document.getElementById('modalContent');
-            content.innerHTML = `
-                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #ff9800; padding-bottom:8px;">Edit Profile</h3>
-                <form id="inlineEditForm">
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Member I'd (Cannot change):</label>
-                        <input type="text" id="edit_memberId" value="${info.memberId}" readonly style="background:#eee; color:#666;">
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Father I'd:</label>
-                        <input type="text" id="edit_fatherId" value="${info.fatherId}">
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Name:*</label>
-                        <input type="text" id="edit_name" value="${info.name}" required>
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Child Level:</label>
-                        <input type="number" id="edit_childOrder" value="${info.childOrder}" min="1">
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Gender:</label>
-                        <select id="edit_gender">
-                            <option value="Male" ${info.gender=='Male'?'selected':''}>Male</option>
-                            <option value="Female" ${info.gender=='Female'?'selected':''}>Female</option>
-                            <option value="Other" ${info.gender=='Other'?'selected':''}>Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">D.O.B:</label>
-                        <input type="date" id="edit_dob" value="${info.dob}">
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Alive / Death:</label>
-                        <select id="edit_aliveDeath">
-                            <option value="Alive" ${info.aliveDeath=='Alive'?'selected':''}>Alive</option>
-                            <option value="Death" ${info.aliveDeath=='Death'?'selected':''}>Death</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:12px;">
-                        <label style="font-size:12px;">Mobile:</label>
-                        <input type="tel" id="edit_mobile" value="${info.mobile}">
-                    </div>
-                    <div class="form-group" style="text-align:left; margin-bottom:15px;">
-                        <label style="font-size:12px;">New Profile Photo (Optional):</label>
-                        <input type="file" id="edit_photoFile" accept="image/*">
-                        <span class="hint-text">अगर फोटो नहीं बदलनी, तो खाली छोड़ें।</span>
-                    </div>
-                    <button type="button" onclick="submitInlineEdit()" class="submit-btn" id="saveEditBtn">Save Changes</button>
-                </form>
-            `;
-        }
-
-        function submitInlineEdit() {
-            const btn = document.getElementById('saveEditBtn');
-            btn.innerText = 'Saving...';
-            btn.disabled = true;
-
-            const fileInput = document.getElementById('edit_photoFile');
-
-            const sendData = (photoBase64) => {
-                const formData = {
-                    fatherId: document.getElementById('edit_fatherId').value,
-                    memberId: document.getElementById('edit_memberId').value,
-                    name: document.getElementById('edit_name').value,
-                    childOrder: document.getElementById('edit_childOrder').value,
-                    gender: document.getElementById('edit_gender').value,
-                    dob: document.getElementById('edit_dob').value,
-                    aliveDeath: document.getElementById('edit_aliveDeath').value,
-                    deathAnniversary: '',
-                    maritalStatus: 'Married',
-                    spouseName: '',
-                    spouseDob: '',
-                    spouseAliveDeath: 'Alive',
-                    spouseDeathAnniv: '',
-                    mobile: document.getElementById('edit_mobile').value,
-                    photo: photoBase64
-                };
-
-                fetch(scriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify(formData)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    alert('Profile update safal rahi!');
-                    location.reload();
-                })
-                .catch(err => {
-                    alert('Profile update safal rahi!');
-                    location.reload();
-                });
-            };
-
-            if (fileInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function(e) { sendData(e.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                sendData('');
-            }
         }
 
         function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
@@ -475,61 +420,76 @@ function doGet(e) {
         function downloadPDF() {
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
-            var opt = { margin: 0.5, filename: 'Family_Tree.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-            html2pdf().from(element).set(opt).save().then(() => { document.getElementById('pdfTitle').style.display = 'none'; });
+            var opt = {
+                margin: 0.5,
+                filename: 'Family_Tree_Pyramid.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => {
+                document.getElementById('pdfTitle').style.display = 'none';
+            });
         }
 
-        // नई एंट्री फॉर्म सबमिट करने के लिए
-        document.getElementById('entryForm').addEventListener('submit', e => {
+        const form = document.getElementById('entryForm');
+        form.addEventListener('submit', e => {
             e.preventDefault();
-            const submitBtn = document.querySelector('#entryForm .submit-btn');
-            submitBtn.innerText = 'Saving...';
-            submitBtn.disabled = true;
-
             const fileInput = document.getElementById('photoFile');
-            const sendNewData = (photoBase64) => {
-                const formData = {
-                    fatherId: document.getElementById('fatherId').value,
-                    memberId: document.getElementById('memberId').value,
-                    name: document.getElementById('name').value,
-                    childOrder: document.getElementById('childOrder').value,
-                    gender: document.getElementById('gender').value,
-                    dob: document.getElementById('dob').value,
-                    aliveDeath: document.getElementById('aliveDeath').value,
-                    deathAnniversary: document.getElementById('deathAnniversary').value,
-                    maritalStatus: document.getElementById('maritalStatus').value,
-                    spouseName: document.getElementById('spouseName').value,
-                    spouseDob: document.getElementById('spouseDob').value,
-                    spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
-                    spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                    mobile: document.getElementById('mobile').value,
-                    photo: photoBase64
-                };
-
-                fetch(scriptURL, {
-                    method: 'POST',
-                    body: JSON.stringify(formData)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    alert('Nayi entry safaltapoorvak save ho gayi!');
-                    location.reload();
-                })
-                .catch(err => {
-                    alert('Nayi entry safaltapoorvak save ho gayi!');
-                    location.reload();
-                });
-            };
-
             if (fileInput.files.length > 0) {
                 const reader = new FileReader();
-                reader.onload = function(e) { sendNewData(e.target.result); };
+                reader.onload = function(event) { sendDataToSheet(event.target.result); };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
-                sendNewData('');
+                sendDataToSheet('');
             }
         });
+
+        function sendDataToSheet(photoBase64) {
+            const formData = {
+                fatherId: document.getElementById('fatherId').value,
+                memberId: document.getElementById('memberId').value,
+                name: document.getElementById('name').value,
+                childOrder: document.getElementById('childOrder').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                mobile: document.getElementById('mobile').value,
+                photo: photoBase64
+            };
+
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = 'Save ho raha hai...';
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
+                form.reset();
+                toggleSpouseFields();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            })
+            .catch(err => {
+                alert('Data submit ho गया है!');
+                form.reset();
+                toggleSpouseFields();
+                submitBtn.innerText = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
+                setTimeout(() => { location.reload(); }, 1000);
+            });
+        }
     </script>
 </body>
 </html>
-
