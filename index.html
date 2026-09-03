@@ -37,22 +37,22 @@
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
+        /* यहाँ पोजीशन और लोडिंग को फास्ट करने के लिए सुधार किया गया है */
         .chart-scroll-wrapper {
             width: 100%;
             overflow: auto;
-            display: flex;
-            justify-content: center; 
-            padding: 20px 10px; 
+            display: block; 
+            padding: 20px; 
             min-height: 500px;
         }
 
         #chart_div {
-            transform-origin: top center;
-            transition: transform 0.3s ease;
+            display: inline-block;
+            min-width: 100%;
         }
 
         #chart_div table {
-            margin: auto;
+            margin: 0 auto;
             border-collapse: separate !important;
         }
 
@@ -110,7 +110,7 @@
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div" style="margin: auto;"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
+                    <div id="chart_div"><div style="text-align:center; padding:50px; color:#666; font-weight:bold;">Family Tree Load ho raha hai... Kripya prateeksha karein!</div></div>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@
 
     <div id="entryPage" class="tab-content">
         <div class="form-card">
-            <h2>Naye Member ki Entry Karein</h2>
+            <h2>Naye Member की Entry Karein</h2>
             <form id="entryForm">
             
                 <div class="form-group">
@@ -365,20 +365,8 @@
                 }
             });
 
+            // अब चार्ट तुरंत लोड होगा, कोई एक्स्ट्रा डिले नहीं रहेगा
             chart.draw(data, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
-        
-            setTimeout(() => {
-                const wrapper = document.getElementById('scrollWrapper');
-                const chartDiv = document.getElementById('chart_div');
-                
-                if(chartDiv) {
-                    chartDiv.style.transform = 'scale(0.65)'; 
-                }
-                
-                if(wrapper) {
-                    wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
-                }
-            }, 300);
         }
 
         function showPopup(info) {
@@ -463,7 +451,7 @@
             const formData = {
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
-                name: document.getElementById('name',).value,
+                name: document.getElementById('name').value,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
@@ -496,7 +484,7 @@
                 setTimeout(() => { location.reload(); }, 1000);
             })
             .catch(err => {
-                alert('Data submit ho gaya hai!');
+                alert('Data submit ho गया है!');
                 form.reset();
                 toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
