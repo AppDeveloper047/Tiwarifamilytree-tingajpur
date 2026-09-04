@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stunning 3D Gradient Family Tree</title>
+    <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Cropper.js CSS & JS for manual cropping -->
+    <!-- Cropper.js CSS & JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
@@ -85,7 +87,7 @@
 
         /* Cropper Modal Styles */
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .img-container { max-height: 300px; margin-bottom: 15px; }
         .img-container img { max-width: 100%; display: block; }
         .crop-action-btn { background: #2a5298; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
@@ -266,7 +268,7 @@
         let globalData = [];
         let currentEditingMemberId = '';
         let cropper = null;
-        let activeUploadType = ''; // 'entry' ya 'popup'
+        let activeUploadType = ''; 
         let finalProcessedPhoto = '';
 
         function getSafeId(nameStr) {
@@ -274,7 +276,6 @@
             return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
         }
 
-        // फाइल सिलेक्ट होते ही क्रॉप करने के लिए मोडल खोलना
         function handleFileSelect(input, type) {
             activeUploadType = type;
             if (input.files && input.files[0]) {
@@ -287,7 +288,6 @@
                     if (cropper) {
                         cropper.destroy();
                     }
-                    // Square (1:1) आस्पेक्ट रेश्यो ताकि फोटो गोल आइकॉन में एकदम फिट बैठे
                     cropper = new Cropper(imageElement, {
                         aspectRatio: 1,
                         viewMode: 1,
@@ -298,7 +298,6 @@
             }
         }
 
-        // क्रॉप बटन दबाने पर फोटो बेस64 में बदलना
         function getCroppedImage() {
             if (!cropper) return;
             const canvas = cropper.getCroppedCanvas({
@@ -307,12 +306,10 @@
             });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
 
-            // मोडल बंद करें
             document.getElementById('cropperModal').style.display = 'none';
             cropper.destroy();
             cropper = null;
 
-            // अगर यह पॉपअप प्रोफाइल एडिट से आया है तो तुरंत शीट में अपडेट करें
             if (activeUploadType === 'popup') {
                 let member = globalData.find(m => {
                     let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
@@ -563,7 +560,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert("Cropped HD Photo successfully updated and saved to Google Sheet!");
+                alert("Cropped HD Photo successfully updated!");
             })
             .catch(err => {
                 console.log("Sync error", err);
@@ -608,7 +605,7 @@
                 name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob'].value,
+                dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
