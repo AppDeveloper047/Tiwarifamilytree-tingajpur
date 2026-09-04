@@ -250,7 +250,6 @@
             return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
         }
 
-        // फोटो को छोटा और सुरक्षित साइज देने का कंप्रेसर फंक्शन
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -281,7 +280,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // क्वालिटी को 0.7 (70%) पर कंप्रेस करना ताकि साइज छोटा रहे
                     const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                     callback(compressedDataUrl);
                 }
@@ -518,7 +516,6 @@
                     });
                     if (member) {
                         member.photo = compressedBase64;
-                        alert("Photo successfully updated locally & saving to Sheet!");
                         showPopup(member);
                         drawChart(globalData);
                         
@@ -541,10 +538,10 @@
             })
             .then(response => response.json())
             .then(result => {
-                console.log("Photo updated in sheet successfully");
+                alert("Photo successfully updated and saved to Google Sheet!");
             })
             .catch(err => {
-                console.log("Sync initiated");
+                console.log("Sync error", err);
             });
         }
 
@@ -623,7 +620,7 @@
             .catch(err => {
                 alert('Data safaltapoorvak submit ho gaya!');
                 form.reset();
-                toggleSpouseFields();
+                toggleSpouseDivider();
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
