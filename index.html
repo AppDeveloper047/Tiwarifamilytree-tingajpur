@@ -84,7 +84,7 @@
 
 <body>
 
-    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="uploadPopupPhoto(this)">
+    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="compressAndUploadPopupPhoto(this)">
 
     <div class="navbar">
         <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree View</button>
@@ -220,7 +220,7 @@
                 <div class="form-group">
                     <label>Member Photo (कैमरा / गैलरी से फोटो):</label>
                     <input type="file" id="photoFile" accept="image/*">
-                    <span class="hint-text">सदस्य की साफ़ फोटो चुनें।</span>
+                    <span class="hint-text">सदस्य की साफ़ फोटो चुनें (ऑटो-रिसाइज होगी)।</span>
                 </div>
 
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
@@ -245,10 +245,47 @@
         let globalData = [];
         let currentEditingMemberId = '';
 
-        // नाम को सुरक्षित कोडिंग आईडी में बदलने का फंक्शन (ताकि ट्री कभी फेल न हो)
         function getSafeId(nameStr) {
             if (!nameStr) return '';
             return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
+        // फोटो को छोटा और सुरक्षित साइज देने का कंप्रेसर फंक्शन
+        function compressImage(file, callback) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 250;
+                    const MAX_HEIGHT = 250;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // क्वालिटी को 0.7 (70%) पर कंप्रेस करना ताकि साइज छोटा रहे
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    callback(compressedDataUrl);
+                }
+            };
         }
 
         function toggleSpouseFields() {
@@ -323,7 +360,6 @@
             fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya ka naam chunein --</option>';
 
             dataRows.forEach(row => {
-                // प्राथमिकता नाम (name) को दें, अगर नाम न हो तो memberId का इस्तेमाल करें
                 let mName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
                 if (mName) {
                     let option = document.createElement('option');
@@ -362,7 +398,6 @@
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
 
                 if(rawName) {
-                    // तकनीकी रूप से सुरक्षित आईडी बनाना ताकि ब्रैकेट या स्पेस से ट्री टूटे नहीं
                     var safeNodeId = getSafeId(rawName);
                     var safeFatherId = getSafeId(rawFather);
 
@@ -385,7 +420,6 @@
                         badgeHTML +
                         '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + rawName + '</b></div>';
 
-                    // चार्ट में safe ID पास होगी लेकिन पहचान के लिए rawName रहेगा
                     rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
                 }
             });
@@ -403,7 +437,6 @@
                 if (selection.length > 0) {
                     var rowIdx = selection[0].row;
                     var selectedSafeId = data.getValue(rowIdx, 0);
-                    // सुरक्षित आईडी से वापस असली नाम ढूंढकर पॉपअप खोलना
                     let memberInfo = globalData.find(m => {
                         let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
                         return getSafeId(mName) === selectedSafeId;
@@ -476,25 +509,22 @@
             document.getElementById('popupPhotoFile').click();
         }
 
-        function uploadPopupPhoto(input) {
+        function compressAndUploadPopupPhoto(input) {
             if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    let base64Image = e.target.result;
+                compressImage(input.files[0], function(compressedBase64) {
                     let member = globalData.find(m => {
                         let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
                         return mName === currentEditingMemberId;
                     });
                     if (member) {
-                        member.photo = base64Image;
+                        member.photo = compressedBase64;
                         alert("Photo successfully updated locally & saving to Sheet!");
                         showPopup(member);
                         drawChart(globalData);
                         
-                        updatePhotoInSheet(currentEditingMemberId, base64Image);
+                        updatePhotoInSheet(currentEditingMemberId, compressedBase64);
                     }
-                };
-                reader.readAsDataURL(input.files[0]);
+                });
             }
         }
 
@@ -540,13 +570,15 @@
         const form = document.getElementById('entryForm');
         form.addEventListener('submit', e => {
             e.preventDefault();
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = 'Photo Compress aur Save ho raha hai...';
+            submitBtn.disabled = true;
+
             const fileInput = document.getElementById('photoFile');
             if (fileInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    sendDataToSheet(event.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
+                compressImage(fileInput.files[0], function(compressedPhotoBase64) {
+                    sendDataToSheet(compressedPhotoBase64);
+                });
             } else {
                 sendDataToSheet('');
             }
@@ -556,8 +588,8 @@
             let nameVal = document.getElementById('name').value.trim();
 
             const formData = {
-                fatherId: document.getElementById('fatherId').value, // पिता का पूरा नाम
-                memberId: nameVal, // सदस्य का नाम ही उसकी आईडी के रूप में सेव होगा
+                fatherId: document.getElementById('fatherId').value,
+                memberId: nameVal,
                 name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
@@ -574,8 +606,6 @@
             };
 
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Save ho raha hai...';
-            submitBtn.disabled = true;
 
             fetch(scriptURL, {
                 method: 'POST',
@@ -583,7 +613,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert('Naye member ka data safaltapoorvak save ho gaya!');
+                alert('Naye member ka data photo ke sath safaltapoorvak save ho gaya!');
                 form.reset();
                 toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
