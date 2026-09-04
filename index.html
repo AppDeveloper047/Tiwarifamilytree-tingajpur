@@ -84,7 +84,7 @@
 
 <body>
 
-    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="compressAndUploadPopupPhoto(this)">
+    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="readPopupPhotoFile(this)">
 
     <div class="navbar">
         <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree View</button>
@@ -218,9 +218,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Member Photo (कैमरा / गैलरी से फोटो):</label>
+                    <label>Member Photo (कैमरा / गैलरी से HD फोटो):</label>
                     <input type="file" id="photoFile" accept="image/*">
-                    <span class="hint-text">सदस्य की साफ़ फोटो चुनें (ऑटो-रिसाइज होगी)।</span>
+                    <span class="hint-text">सदस्य की ओरिजिनल एचडी फोटो चुनें।</span>
                 </div>
 
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
@@ -250,39 +250,12 @@
             return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
         }
 
-        function compressImage(file, callback) {
+        // बिना किसी कंप्रेशन के डायरेक्ट ओरिजिनल फाइल रीड करने का फंक्शन
+        function readImageFile(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(event) {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 250;
-                    const MAX_HEIGHT = 250;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                    callback(compressedDataUrl);
-                }
+                callback(event.target.result);
             };
         }
 
@@ -507,19 +480,19 @@
             document.getElementById('popupPhotoFile').click();
         }
 
-        function compressAndUploadPopupPhoto(input) {
+        function readPopupPhotoFile(input) {
             if (input.files && input.files[0]) {
-                compressImage(input.files[0], function(compressedBase64) {
+                readImageFile(input.files[0], function(originalBase64) {
                     let member = globalData.find(m => {
                         let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
                         return mName === currentEditingMemberId;
                     });
                     if (member) {
-                        member.photo = compressedBase64;
+                        member.photo = originalBase64;
                         showPopup(member);
                         drawChart(globalData);
                         
-                        updatePhotoInSheet(currentEditingMemberId, compressedBase64);
+                        updatePhotoInSheet(currentEditingMemberId, originalBase64);
                     }
                 });
             }
@@ -538,7 +511,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert("Photo successfully updated and saved to Google Sheet!");
+                alert("HD Photo successfully updated and saved to Google Sheet!");
             })
             .catch(err => {
                 console.log("Sync error", err);
@@ -568,13 +541,13 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Photo Compress aur Save ho raha hai...';
+            submitBtn.innerText = 'HD Photo Upload aur Save ho raha hai...';
             submitBtn.disabled = true;
 
             const fileInput = document.getElementById('photoFile');
             if (fileInput.files.length > 0) {
-                compressImage(fileInput.files[0], function(compressedPhotoBase64) {
-                    sendDataToSheet(compressedPhotoBase64);
+                readImageFile(fileInput.files[0], function(originalPhotoBase64) {
+                    sendDataToSheet(originalPhotoBase64);
                 });
             } else {
                 sendDataToSheet('');
@@ -610,7 +583,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert('Naye member ka data photo ke sath safaltapoorvak save ho gaya!');
+                alert('Naye member ka HD data photo ke sath safaltapoorvak save ho gaya!');
                 form.reset();
                 toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
@@ -620,7 +593,7 @@
             .catch(err => {
                 alert('Data safaltapoorvak submit ho gaya!');
                 form.reset();
-                toggleSpouseDivider();
+                toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
