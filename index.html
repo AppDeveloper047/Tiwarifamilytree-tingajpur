@@ -123,17 +123,17 @@
             <form id="entryForm">
             
                 <div class="form-group">
-                    <label>Father (पिता का नाम चुनें):*</label>
+                    <label>Father / Parent (पिता का पूरा नाम चुनें):*</label>
                     <select id="fatherId" required>
                         <option value="">-- Pehle Member List Load ho rahi hai --</option>
                     </select>
-                    <span class="hint-text">सूची में से उस सदस्य को चुनें जिनके बच्चे या यह नए सदस्य हैं।</span>
+                    <span class="hint-text">सूची में से उस सदस्य का पूरा नाम चुनें जिनके बच्चे या यह नए सदस्य हैं।</span>
                 </div>
 
                 <div class="form-group">
                     <label>Member Name (सदस्य का पूरा नाम):*</label>
                     <input type="text" id="name" placeholder="Member ka naam likhein" required>
-                    <span class="hint-text">यहाँ नए सदस्य का पूरा नाम दर्ज करें।</span>
+                    <span class="hint-text">यह नाम ही सिस्टम में सदस्य की मुख्य पहचान (ID) बनेगा।</span>
                 </div>
             
                 <div class="form-group">
@@ -314,15 +314,14 @@
 
         function populateFatherDropdown(dataRows) {
             const fatherSelect = document.getElementById('fatherId');
-            fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya Chunein --</option>';
+            fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya ka naam chunein --</option>';
 
             dataRows.forEach(row => {
-                let mId = row.memberId ? row.memberId.toString().trim() : '';
                 let mName = row.name ? row.name.toString().trim() : '';
-                if (mId && mName) {
+                if (mName) {
                     let option = document.createElement('option');
-                    option.value = mId; // Backend ke liye memberId hi store hogi
-                    option.textContent = `${mName} (ID: ${mId})`; // Screen par naam aur id dikegi
+                    option.value = mName; 
+                    option.textContent = mName; 
                     fatherSelect.appendChild(option);
                 }
             });
@@ -350,8 +349,9 @@
 
             var rows = [];
             rowsData.forEach(function(row) {
-                var memberId = row.memberId ? row.memberId.toString().trim() : '';
-                var fatherId = row.fatherId ? row.fatherId.toString().trim() : '';
+                // Ab memberId ki jagah member ka naam hi ID ka kaam karega
+                var memberId = row.name ? row.name.toString().trim() : '';
+                var fatherName = row.fatherId ? row.fatherId.toString().trim() : '';
                 var name = row.name ? row.name.toString().trim() : 'Unknown';
                 var gender = row.gender ? row.gender.toString().trim() : 'Male';
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
@@ -367,223 +367,4 @@
                         : 'google-visualization-orgchart-node';
 
                     var badgeHTML = orderNum
-                        ? `<span style="background:rgba(0,0,0,0.3); padding:1px 7px; border-radius:10px; font-size:10px; color:#ffeaa7; font-weight:bold; margin-bottom:3px; display:inline-block;">No. ${orderNum}</span><br>`
-                        : '';
-
-                    var shortView =
-                        '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; padding: 6px; text-align:center;">' +
-                        '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
-                        badgeHTML +
-                        '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">' + name + '</b><br>' +
-                        '<span style="font-size:10px; color:#e0f7fa; font-weight:bold;">ID: ' + memberId + '</span></div>';
-
-                    rows.push([{v: memberId, f: shortView}, fatherId, name]);
-                }
-            });
-
-            if(rows.length === 0) {
-                rows.push([{v:'Root01', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Root']);
-            }
-
-            data.addRows(rows);
-
-            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-
-            google.visualization.events.addListener(chart, 'select', function() {
-                var selection = chart.getSelection();
-                if (selection.length > 0) {
-                    var rowIdx = selection[0].row;
-                    var selectedMemberId = data.getValue(rowIdx, 0);
-                    let memberInfo = globalData.find(m => m.memberId.toString().trim() === selectedMemberId.toString().trim());
-                    if(memberInfo) {
-                        showPopup(memberInfo);
-                    }
-                }
-            });
-
-            chart.draw(data, {
-                allowHtml: true,
-                nodeClass: 'google-visualization-orgchart-node'
-            });
-        }
-
-        function showPopup(info) {
-            var modal = document.getElementById('detailsModal');
-            var content = document.getElementById('modalContent');
-
-            var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-            if (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined' && info.photo !== 'null') {
-                photoURL = info.photo;
-            }
-
-            let dobFormatted = formatDate(info.dob);
-            let deathAnnivFormatted = formatDate(info.deathAnniversary);
-            let spouseDobFormatted = formatDate(info.spouseDob);
-            let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
-            let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
-            let orderText = info.childOrder ? `${info.childOrder}` : '-';
-            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-';
-
-            let spouseSection = '';
-            if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
-                spouseSection = `
-                    <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
-                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
-                `;
-            }
-
-            content.innerHTML = `
-                <div style="text-align:center; margin-bottom:12px;">
-                    <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
-                    <button class="edit-profile-btn" onclick="editProfilePhoto('${info.memberId}')">✏️ Edit Profile / Photo</button>
-                </div>
-                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${info.name || 'N/A'}</h3>
-                <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
-                <p style="margin:6px 0; text-align:left;"><b>Member I'd:</b> ${info.memberId}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Father I'd:</b> ${info.fatherId || 'None'}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
-                <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
-                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
-                ${spouseSection}
-                <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
-                <p style="margin:6px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
-            `;
-
-            modal.style.display = "block";
-        }
-
-        function editProfilePhoto(memberId) {
-            currentEditingMemberId = memberId;
-            document.getElementById('popupPhotoFile').click();
-        }
-
-        function uploadPopupPhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    let base64Image = e.target.result;
-                    let member = globalData.find(m => m.memberId.toString().trim() === currentEditingMemberId.toString().trim());
-                    if (member) {
-                        member.photo = base64Image;
-                        alert("Photo successfully updated locally & saving to Sheet!");
-                        showPopup(member);
-                        drawChart(globalData);
-                        
-                        updatePhotoInSheet(currentEditingMemberId, base64Image);
-                    }
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function updatePhotoInSheet(memberId, photoData) {
-            const payload = {
-                action: "updatePhoto",
-                memberId: memberId,
-                photo: photoData
-            };
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log("Photo updated in sheet successfully");
-            })
-            .catch(err => {
-                console.log("Sync initiated");
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('detailsModal').style.display = "none";
-        }
-
-        function downloadPDF() {
-            const element = document.getElementById('pdfContent');
-            document.getElementById('pdfTitle').style.display = 'block';
-            var opt = {
-                margin: 0.5,
-                filename: 'Family_Tree_Pyramid.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(element).set(opt).save().then(() => {
-                document.getElementById('pdfTitle').style.display = 'none';
-            });
-        }
-
-        const form = document.getElementById('entryForm');
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const fileInput = document.getElementById('photoFile');
-            if (fileInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    generateIdAndSend(event.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                generateIdAndSend('');
-            }
-        });
-
-        function generateIdAndSend(photoBase64) {
-            let nameVal = document.getElementById('name').value.trim();
-            // Automatically Generate Member ID from Name + Random/Sequence code to keep it unique
-            let generatedMemberId = nameVal.replace(/\s+/g, '').substring(0, 4).toUpperCase() + Math.floor(100 + Math.random() * 900);
-
-            const formData = {
-                fatherId: document.getElementById('fatherId').value,
-                memberId: generatedMemberId,
-                name: nameVal,
-                childOrder: document.getElementById('childOrder').value,
-                gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
-                aliveDeath: document.getElementById('aliveDeath').value,
-                deathAnniversary: document.getElementById('deathAnniversary').value,
-                maritalStatus: document.getElementById('maritalStatus').value,
-                spouseName: document.getElementById('spouseName').value,
-                spouseDob: document.getElementById('spouseDob').value,
-                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
-                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                mobile: document.getElementById('mobile').value,
-                photo: photoBase64
-            };
-
-            const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Save ho raha hai...';
-            submitBtn.disabled = true;
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert('Naye member ka data safaltapoorvak save ho gaya!');
-                form.reset();
-                toggleSpouseFields();
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
-            })
-            .catch(err => {
-                alert('Data safaltapoorvak submit ho gaya!');
-                form.reset();
-                toggleSpouseFields();
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
-            });
-        }
-    </script>
-</body>
-</html>
+                        ? `<span style="background
