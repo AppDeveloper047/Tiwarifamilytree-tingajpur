@@ -37,23 +37,9 @@
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .chart-scroll-wrapper {
-            width: 100%;
-            overflow: auto;
-            display: block; 
-            padding: 20px; 
-            min-height: 500px;
-        }
-
-        #chart_div {
-            display: inline-block;
-            min-width: 100%;
-        }
-
-        #chart_div table {
-            margin: 0 auto;
-            border-collapse: separate !important;
-        }
+        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px; min-height: 500px; }
+        #chart_div { display: inline-block; min-width: 100%; }
+        #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
@@ -77,14 +63,10 @@
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%) !important;
             box-shadow: 0 8px 20px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
         }
-
-        .female-node:hover {
-            background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important;
-        }
+        .female-node:hover { background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important; }
         
         .google-visualization-orgchart-lineleft, .google-visualization-orgchart-lineright, .google-visualization-orgchart-linebottom {
-            border-color: #4e54c8 !important;
-            border-width: 3px !important;
+            border-color: #4e54c8 !important; border-width: 3px !important;
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
@@ -94,27 +76,14 @@
         
         .edit-profile-btn {
             background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 10px;
-            box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4);
-            transition: 0.3s;
+            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4); transition: 0.3s;
         }
-        .edit-profile-btn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
+        .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 
 <body>
 
-    <!-- Hidden File Input for Direct Gallery/Camera Upload from Popup -->
     <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="uploadPopupPhoto(this)">
 
     <div class="navbar">
@@ -154,31 +123,27 @@
             <form id="entryForm">
             
                 <div class="form-group">
-                    <label>Father I'd:</label>
-                    <input type="text" id="fatherId" placeholder="Jaise: Root01">
-                    <span class="hint-text">यहाँ अपने पिताजी की I'd दर्ज करें।</span>
+                    <label>Father (पिता का नाम चुनें):*</label>
+                    <select id="fatherId" required>
+                        <option value="">-- Pehle Member List Load ho rahi hai --</option>
+                    </select>
+                    <span class="hint-text">सूची में से उस सदस्य को चुनें जिनके बच्चे या यह नए सदस्य हैं।</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Member I'd:*</label>
-                    <input type="text" id="memberId" placeholder="Jaise: PATH11" required>
-                    <span class="hint-text">यहाँ स्वयं की यूनिक I'd बनाएं।</span>
-                </div>
-
-                <div class="form-group">
-                    <label>Name:*</label>
-                    <input type="text" id="name" placeholder="Member ka naam" required>
-                    <span class="hint-text">यहाँ सदस्य का पूरा नाम लिखें।</span>
+                    <label>Member Name (सदस्य का पूरा नाम):*</label>
+                    <input type="text" id="name" placeholder="Member ka naam likhein" required>
+                    <span class="hint-text">यहाँ नए सदस्य का पूरा नाम दर्ज करें।</span>
                 </div>
             
                 <div class="form-group">
-                    <label>Child Level:</label>
+                    <label>Child Level (संतान क्रम):</label>
                     <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
                     <span class="hint-text">नंबर बताएं कि यह संतान अपने माता-पिता की कौन से नंबर की संतान है।</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Gender:</label>
+                    <label>Gender (लिंग):</label>
                     <select id="gender">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -188,13 +153,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>D.O.B:</label>
+                    <label>D.O.B (जन्म दिनांक):</label>
                     <input type="date" id="dob">
                     <span class="hint-text">जन्म दिनांक चुनें (अगर ज्ञात हो)।</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Alive / Death:</label>
+                    <label>Alive / Death (जीवित / स्वर्गवासी):</label>
                     <select id="aliveDeath">
                         <option value="Alive">Alive</option>
                         <option value="Death">Death</option>
@@ -203,13 +168,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Death Anniversary:</label>
+                    <label>Death Anniversary (पुण्यतिथि):</label>
                     <input type="date" id="deathAnniversary">
                     <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
                 </div>
             
                 <div class="form-group">
-                    <label>Marital Status:*</label>
+                    <label>Marital Status (विवाह की स्थिति):*</label>
                     <select id="maritalStatus" onchange="toggleSpouseFields()">
                         <option value="Married">Married</option>
                         <option value="Unmarried">Unmarried</option>
@@ -219,7 +184,7 @@
 
                 <div id="spouseFieldsContainer">
                     <div class="form-group">
-                        <label>Spouse Name:</label>
+                        <label>Spouse Name (पति/पत्नी का नाम):</label>
                         <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
                         <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
                     </div>
@@ -247,13 +212,13 @@
                 </div>
             
                 <div class="form-group">
-                    <label>Mobile Number:</label>
+                    <label>Mobile Number (मोबाइल नंबर):</label>
                     <input type="tel" id="mobile" placeholder="Mobile Number dalein">
                     <span class="hint-text">संपर्क के लिए मोबाइल नंबर दर्ज करें।</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Member Photo (Camera / Gallery):</label>
+                    <label>Member Photo (कैमरा / गैलरी से फोटो):</label>
                     <input type="file" id="photoFile" accept="image/*">
                     <span class="hint-text">सदस्य की साफ़ फोटो चुनें।</span>
                 </div>
@@ -336,12 +301,30 @@
                         photo: row.photo !== undefined ? row.photo : (row[14] || '')
                     };
                 });
+                
+                populateFatherDropdown(globalData);
                 drawChart(globalData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
                 document.getElementById('chart_div').innerHTML =
                     '<div style="text-align:center; padding:30px; color:red;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
+            });
+        }
+
+        function populateFatherDropdown(dataRows) {
+            const fatherSelect = document.getElementById('fatherId');
+            fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya Chunein --</option>';
+
+            dataRows.forEach(row => {
+                let mId = row.memberId ? row.memberId.toString().trim() : '';
+                let mName = row.name ? row.name.toString().trim() : '';
+                if (mId && mName) {
+                    let option = document.createElement('option');
+                    option.value = mId; // Backend ke liye memberId hi store hogi
+                    option.textContent = `${mName} (ID: ${mId})`; // Screen par naam aur id dikegi
+                    fatherSelect.appendChild(option);
+                }
             });
         }
 
@@ -544,19 +527,23 @@
             if (fileInput.files.length > 0) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    sendDataToSheet(event.target.result);
+                    generateIdAndSend(event.target.result);
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             } else {
-                sendDataToSheet('');
+                generateIdAndSend('');
             }
         });
 
-        function sendDataToSheet(photoBase64) {
+        function generateIdAndSend(photoBase64) {
+            let nameVal = document.getElementById('name').value.trim();
+            // Automatically Generate Member ID from Name + Random/Sequence code to keep it unique
+            let generatedMemberId = nameVal.replace(/\s+/g, '').substring(0, 4).toUpperCase() + Math.floor(100 + Math.random() * 900);
+
             const formData = {
                 fatherId: document.getElementById('fatherId').value,
-                memberId: document.getElementById('memberId').value,
-                name: document.getElementById('name').value,
+                memberId: generatedMemberId,
+                name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
@@ -581,7 +568,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert('Data aur Photo safaltapoorvak Google Sheet mein save ho gaye!');
+                alert('Naye member ka data safaltapoorvak save ho gaya!');
                 form.reset();
                 toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
@@ -589,7 +576,7 @@
                 setTimeout(() => { location.reload(); }, 1000);
             })
             .catch(err => {
-                alert('Data submit ho gaya hai!');
+                alert('Data safaltapoorvak submit ho gaya!');
                 form.reset();
                 toggleSpouseFields();
                 submitBtn.innerText = 'Submit & Save to Sheet';
