@@ -6,6 +6,9 @@
     <title>Stunning 3D Gradient Family Tree</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Cropper.js CSS & JS for manual cropping -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
@@ -79,12 +82,30 @@
             color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4); transition: 0.3s;
         }
         .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Cropper Modal Styles */
+        #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
+        .img-container { max-height: 300px; margin-bottom: 15px; }
+        .img-container img { max-width: 100%; display: block; }
+        .crop-action-btn { background: #2a5298; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 
 <body>
 
-    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="readPopupPhotoFile(this)">
+    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'popup')">
+
+    <!-- Manual Image Crop Modal -->
+    <div id="cropperModal">
+        <div class="cropper-container-box">
+            <h3 style="margin-top:0; color:#1e3c72;">फोटो क्रॉप करें (Adjust Face)</h3>
+            <div class="img-container">
+                <img id="imageToCrop" src="">
+            </div>
+            <button class="crop-action-btn" onclick="getCroppedImage()">Crop & Save</button>
+        </div>
+    </div>
 
     <div class="navbar">
         <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree View</button>
@@ -186,7 +207,7 @@
                     <div class="form-group">
                         <label>Spouse Name (पति/पत्नी का नाम):</label>
                         <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
-                        <span class="hint-text">पति या पत्नी का नाम दर्ज करें।</span>
+                        <span class="hint-text">पति या पत्नी का नाम दर्ज करें। (एक से अधिक होने पर नाम & या कॉमा से अलग लिखें)</span>
                     </div>
 
                     <div class="form-group">
@@ -219,8 +240,8 @@
 
                 <div class="form-group">
                     <label>Member Photo (कैमरा / गैलरी से HD फोटो):</label>
-                    <input type="file" id="photoFile" accept="image/*">
-                    <span class="hint-text">सदस्य की ओरिजिनल एचडी फोटो चुनें।</span>
+                    <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(this, 'entry')">
+                    <span class="hint-text">सदस्य की फोटो चुनें और अपनी पसंद अनुसार क्रॉप करें।</span>
                 </div>
 
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
@@ -244,19 +265,68 @@
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec';
         let globalData = [];
         let currentEditingMemberId = '';
+        let cropper = null;
+        let activeUploadType = ''; // 'entry' ya 'popup'
+        let finalProcessedPhoto = '';
 
         function getSafeId(nameStr) {
             if (!nameStr) return '';
             return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
         }
 
-        // बिना किसी कंप्रेशन के डायरेक्ट ओरिजिनल फाइल रीड करने का फंक्शन
-        function readImageFile(file, callback) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                callback(event.target.result);
-            };
+        // फाइल सिलेक्ट होते ही क्रॉप करने के लिए मोडल खोलना
+        function handleFileSelect(input, type) {
+            activeUploadType = type;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageElement = document.getElementById('imageToCrop');
+                    imageElement.src = e.target.result;
+                    document.getElementById('cropperModal').style.display = 'block';
+
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    // Square (1:1) आस्पेक्ट रेश्यो ताकि फोटो गोल आइकॉन में एकदम फिट बैठे
+                    cropper = new Cropper(imageElement, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.9
+                    });
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // क्रॉप बटन दबाने पर फोटो बेस64 में बदलना
+        function getCroppedImage() {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({
+                width: 400,
+                height: 400
+            });
+            finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
+
+            // मोडल बंद करें
+            document.getElementById('cropperModal').style.display = 'none';
+            cropper.destroy();
+            cropper = null;
+
+            // अगर यह पॉपअप प्रोफाइल एडिट से आया है तो तुरंत शीट में अपडेट करें
+            if (activeUploadType === 'popup') {
+                let member = globalData.find(m => {
+                    let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
+                    return mName === currentEditingMemberId;
+                });
+                if (member) {
+                    member.photo = finalProcessedPhoto;
+                    showPopup(member);
+                    drawChart(globalData);
+                    updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
+                }
+            } else {
+                alert("फोटो सफलताપૂર્વक क्रॉप और सेट हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
+            }
         }
 
         function toggleSpouseFields() {
@@ -480,24 +550,6 @@
             document.getElementById('popupPhotoFile').click();
         }
 
-        function readPopupPhotoFile(input) {
-            if (input.files && input.files[0]) {
-                readImageFile(input.files[0], function(originalBase64) {
-                    let member = globalData.find(m => {
-                        let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
-                        return mName === currentEditingMemberId;
-                    });
-                    if (member) {
-                        member.photo = originalBase64;
-                        showPopup(member);
-                        drawChart(globalData);
-                        
-                        updatePhotoInSheet(currentEditingMemberId, originalBase64);
-                    }
-                });
-            }
-        }
-
         function updatePhotoInSheet(memberName, photoData) {
             const payload = {
                 action: "updatePhoto",
@@ -511,7 +563,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert("HD Photo successfully updated and saved to Google Sheet!");
+                alert("Cropped HD Photo successfully updated and saved to Google Sheet!");
             })
             .catch(err => {
                 console.log("Sync error", err);
@@ -541,17 +593,10 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'HD Photo Upload aur Save ho raha hai...';
+            submitBtn.innerText = 'Data aur Cropped Photo save ho raha hai...';
             submitBtn.disabled = true;
 
-            const fileInput = document.getElementById('photoFile');
-            if (fileInput.files.length > 0) {
-                readImageFile(fileInput.files[0], function(originalPhotoBase64) {
-                    sendDataToSheet(originalPhotoBase64);
-                });
-            } else {
-                sendDataToSheet('');
-            }
+            sendDataToSheet(finalProcessedPhoto);
         });
 
         function sendDataToSheet(photoBase64) {
@@ -563,7 +608,7 @@
                 name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
+                dob: document.getElementById('dob'].value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
@@ -572,7 +617,7 @@
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 mobile: document.getElementById('mobile').value,
-                photo: photoBase64
+                photo: photoBase64 || ''
             };
 
             const submitBtn = document.querySelector('.submit-btn');
@@ -583,9 +628,10 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert('Naye member ka HD data photo ke sath safaltapoorvak save ho gaya!');
+                alert('Naye member ka data safaltapoorvak save ho gaya!');
                 form.reset();
                 toggleSpouseFields();
+                finalProcessedPhoto = '';
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
@@ -594,6 +640,7 @@
                 alert('Data safaltapoorvak submit ho gaya!');
                 form.reset();
                 toggleSpouseFields();
+                finalProcessedPhoto = '';
                 submitBtn.innerText = 'Submit & Save to Sheet';
                 submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
