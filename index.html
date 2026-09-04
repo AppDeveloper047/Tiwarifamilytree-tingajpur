@@ -20,7 +20,7 @@
         .navbar button:hover { background-color: rgba(255,255,255,0.1); }
         .navbar button.active { background-color: #ff9800; color: white; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
-        .tab-content { display: none; padding: 30px; max-width: 1200px; margin: auto; }
+        .tab-content { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .tab-content.active { display: block; }
 
         .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
@@ -37,13 +37,22 @@
         .contact-note a { color: #d35400; font-weight: bold; text-decoration: none; }
         .contact-note a:hover { text-decoration: underline; }
 
-        .tree-container { background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
-        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .tree-container { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px; min-height: 500px; }
-        #chart_div { display: inline-block; min-width: 100%; }
+        /* Zoom Out Wrapper Fix for Mobile View */
+        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 10px; min-height: 450px; background: #fafbfc; border-radius: 10px; border: 1px solid #eee; }
+        
+        #chart_div { 
+            display: inline-block; 
+            min-width: 100%; 
+            transform: scale(0.8); /* यहाँ से ट्री को आटोमेटिक Zoom Out किया गया है ताकि पूरा ढांचा साफ दिखे */
+            transform-origin: top center; 
+            margin-top: -10px;
+        }
+        
         #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
         .google-visualization-orgchart-node { 
@@ -51,22 +60,22 @@
             background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%) !important; 
             color: white !important;
             border: 2px solid #ffffff !important; 
-            border-radius: 14px !important; 
-            box-shadow: 0 8px 20px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
-            padding: 10px !important;
+            border-radius: 12px !important; 
+            box-shadow: 0 6px 15px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            padding: 8px !important;
             transition: all 0.3s ease !important;
         }
 
         .google-visualization-orgchart-node:hover {
-            transform: translateY(-5px) scale(1.03);
+            transform: translateY(-3px) scale(1.02);
             background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%) !important;
-            box-shadow: 0 12px 25px rgba(255, 94, 98, 0.5) !important;
+            box-shadow: 0 10px 20px rgba(255, 94, 98, 0.5) !important;
             border-color: #fff !important;
         }
 
         .female-node {
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%) !important;
-            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            box-shadow: 0 6px 15px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
         }
         .female-node:hover { background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important; }
         
@@ -117,21 +126,21 @@
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#1e3c72;">परिवार का स्वर्णिम इतिहास</h2>
+                <h2 style="margin:0; color:#1e3c72; font-size:20px;">परिवार का स्वर्णिम इतिहास</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
 
-            <p style="color: #666; font-size: 13px;">
-                किसी भी मेंबर के 3D ग्रेडिएंट बॉक्स पर क्लिक करके उसकी फोटो और डिटेल्स देखें:
+            <p style="color: #666; font-size: 12px; margin-bottom: 10px;">
+                किसी भी मेंबर के बॉक्स पर क्लिक करके उसकी डिटेल्स देखें:
             </p>
             
-            <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
+            <div id="pdfContent" style="background: #fff; padding: 10px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
 
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="chart_div">
-                        <div style="text-align:center; padding:50px; color:#666; font-weight:bold;">
-                            Family Tree Load ho raha hai... Kripya prateeksha karein!
+                        <div style="text-align:center; padding:40px; color:#666; font-weight:bold;">
+                            Family Tree Load ho raha hai...
                         </div>
                     </div>
                 </div>
@@ -144,25 +153,21 @@
             <h2>Naye Member की Entry Karein</h2>
 
             <form id="entryForm">
-            
                 <div class="form-group">
                     <label>Father / Parent (पिता का पूरा नाम चुनें):*</label>
                     <select id="fatherId" required>
-                        <option value="">-- Pehle Member List Load ho rahi hai --</option>
+                        <option value="">-- Member List Load ho rahi hai --</option>
                     </select>
-                    <span class="hint-text">सूची में से उस सदस्य का पूरा नाम चुनें जिनके बच्चे या यह नए सदस्य हैं।</span>
                 </div>
 
                 <div class="form-group">
                     <label>Member Name (सदस्य का पूरा नाम):*</label>
                     <input type="text" id="name" placeholder="Member ka naam likhein" required>
-                    <span class="hint-text">यह नाम ही गूगल शीट और पॉपअप में सेव होगा।</span>
                 </div>
             
                 <div class="form-group">
                     <label>Child Level (संतान क्रम):</label>
                     <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
-                    <span class="hint-text">नंबर बताएं कि यह संतान अपने माता-पिता की कौन से नंबर की संतान है।</span>
                 </div>
 
                 <div class="form-group">
@@ -172,13 +177,11 @@
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
                     </select>
-                    <span class="hint-text">यहाँ सदस्य का लिंग चुनें।</span>
                 </div>
 
                 <div class="form-group">
                     <label>D.O.B (जन्म दिनांक):</label>
                     <input type="date" id="dob">
-                    <span class="hint-text">जन्म दिनांक चुनें (अगर ज्ञात हो)।</span>
                 </div>
 
                 <div class="form-group">
@@ -187,13 +190,11 @@
                         <option value="Alive">Alive</option>
                         <option value="Death">Death</option>
                     </select>
-                    <span class="hint-text">जीवित हैं या स्वर्गवास हो गया, वह चुनें।</span>
                 </div>
 
                 <div class="form-group">
                     <label>Death Anniversary (पुण्यतिथि):</label>
                     <input type="date" id="deathAnniversary">
-                    <span class="hint-text">स्वर्गवास की तिथि चुनें (यदि लागू हो)।</span>
                 </div>
             
                 <div class="form-group">
@@ -202,55 +203,45 @@
                         <option value="Married">Married</option>
                         <option value="Unmarried">Unmarried</option>
                     </select>
-                    <span class="hint-text">चुनें कि सदस्य विवाहित हैं या अविवाहित।</span>
                 </div>
 
                 <div id="spouseFieldsContainer">
                     <div class="form-group">
                         <label>Spouse Name (पति/पत्नी का नाम):</label>
                         <input type="text" id="spouseName" placeholder="Pati/Patni ka naam">
-                        <span class="hint-text">पति या पत्नी का नाम दर्ज करें। (एक से अधिक होने पर नाम & या कॉमा से अलग लिखें)</span>
                     </div>
-
                     <div class="form-group">
                         <label>Spouse D.O.B:</label>
                         <input type="date" id="spouseDob">
-                        <span class="hint-text">पति या पत्नी की जन्म दिनांक चुनें।</span>
                     </div>
-
                     <div class="form-group">
                         <label>Spouse Alive / Death:</label>
                         <select id="spouseAliveDeath">
                             <option value="Alive">Alive</option>
                             <option value="Death">Death</option>
                         </select>
-                        <span class="hint-text">पति/पत्नी की वर्तमान स्थिति चुनें।</span>
                     </div>
-
                     <div class="form-group">
                         <label>Spouse Death Anniversary:</label>
                         <input type="date" id="spouseDeathAnniv">
-                        <span class="hint-text">पति/पत्नी की पुण्यतिथि चुनें (यदि लागू हो)।</span>
                     </div>
                 </div>
             
                 <div class="form-group">
                     <label>Mobile Number (मोबाइल नंबर):</label>
                     <input type="tel" id="mobile" placeholder="Mobile Number dalein">
-                    <span class="hint-text">संपर्क के लिए मोबाइल नंबर दर्ज करें।</span>
                 </div>
 
                 <div class="form-group">
-                    <label>Member Photo (कैमरा / गैलरी से HD फोटो):</label>
+                    <label>Member Photo ( HD फोटो ):</label>
                     <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(this, 'entry')">
-                    <span class="hint-text">सदस्य की फोटो चुनें और अपनी पसंद अनुसार क्रॉप करें।</span>
                 </div>
 
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
             </form>
 
             <div class="contact-note">
-                ⚠️ <b>विशेष सूचना:</b> एंट्री किए गए डेटा में किसी भी तरह का बदलाव या सुधार करवाने के लिए संपर्क करें - <br>
+                ⚠️ <b>विशेष सूचना:</b> किसी भी बदलाव के लिए संपर्क करें - <br>
                 <b>Purushottam Tiwari</b> | 📞 <a href="tel:9752266047">9752266047</a>
             </div>
         </div>
@@ -322,14 +313,13 @@
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
-                alert("फोटो सफलताપૂર્વक क्रॉप और सेट हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
+                alert("फोटो सफलतापूर्वक क्रॉप हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
             }
         }
 
         function toggleSpouseFields() {
             var status = document.getElementById('maritalStatus').value;
             var container = document.getElementById('spouseFieldsContainer');
-
             if (status === 'Unmarried') {
                 container.style.display = 'none';
                 document.getElementById('spouseName').value = '';
@@ -449,14 +439,14 @@
                         : 'google-visualization-orgchart-node';
 
                     var badgeHTML = orderNum
-                        ? `<span style="background:rgba(0,0,0,0.3); padding:1px 7px; border-radius:10px; font-size:10px; color:#ffeaa7; font-weight:bold; margin-bottom:3px; display:inline-block;">No. ${orderNum}</span><br>`
+                        ? `<span style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:8px; font-size:9px; color:#ffeaa7; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
                         : '';
 
                     var shortView =
-                        '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; padding: 6px; text-align:center;">' +
-                        '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
+                        '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 11px; padding: 4px; text-align:center;">' +
+                        '<img src="' + photoURL + '" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-bottom:3px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
                         badgeHTML +
-                        '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + rawName + '</b></div>';
+                        '<b style="color: #ffffff; font-size:12px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + rawName + '</b></div>';
 
                     rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
                 }
@@ -513,30 +503,30 @@
             let spouseSection = '';
             if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
                 spouseSection = `
-                    <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
-                    <p style="margin:6px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
-                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
+                    <hr style="margin: 10px 0; border:0; border-top:1px solid #ddd;">
+                    <p style="margin:5px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
+                    <p style="margin:5px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
+                    <p style="margin:5px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
+                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:5px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
                 `;
             }
 
             content.innerHTML = `
-                <div style="text-align:center; margin-bottom:12px;">
-                    <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                <div style="text-align:center; margin-bottom:10px;">
+                    <img src="${photoURL}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
                     <button class="edit-profile-btn" onclick="editProfilePhoto('${memberDisplayName}')">✏️ Edit Profile / Photo</button>
                 </div>
-                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${memberDisplayName}</h3>
-                <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
-                <p style="margin:6px 0; text-align:left;"><b>Father Name:</b> ${fatherDisplayName}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
-                <p style="margin:6px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
-                <p style="margin:6px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
-                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:6px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
+                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:6px;">${memberDisplayName}</h3>
+                <p style="margin:5px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
+                <p style="margin:5px 0; text-align:left;"><b>Father Name:</b> ${fatherDisplayName}</p>
+                <p style="margin:5px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
+                <p style="margin:5px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
+                <p style="margin:5px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
+                <p style="margin:5px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
+                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:5px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
                 ${spouseSection}
-                <hr style="margin: 12px 0; border:0; border-top:1px solid #ddd;">
-                <p style="margin:6px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
+                <hr style="margin: 10px 0; border:0; border-top:1px solid #ddd;">
+                <p style="margin:5px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
             `;
 
             modal.style.display = "block";
@@ -560,7 +550,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert("Cropped HD Photo successfully updated!");
+                alert("Photo successfully updated!");
             })
             .catch(err => {
                 console.log("Sync error", err);
@@ -590,7 +580,7 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Data aur Cropped Photo save ho raha hai...';
+            submitBtn.innerText = 'Saving data...';
             submitBtn.disabled = true;
 
             sendDataToSheet(finalProcessedPhoto);
@@ -613,7 +603,7 @@
                 spouseDob: document.getElementById('spouseDob').value,
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                mobile: document.getElementById('mobile').value,
+                mobile: document.getElementById('mobile.value') || document.getElementById('mobile').value,
                 photo: photoBase64 || ''
             };
 
@@ -625,7 +615,7 @@
             })
             .then(response => response.json())
             .then(result => {
-                alert('Naye member ka data safaltapoorvak save ho gaya!');
+                alert('Naye member ka data save ho gaya!');
                 form.reset();
                 toggleSpouseFields();
                 finalProcessedPhoto = '';
