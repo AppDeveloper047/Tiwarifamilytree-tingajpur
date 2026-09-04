@@ -133,7 +133,7 @@
                 <div class="form-group">
                     <label>Member Name (सदस्य का पूरा नाम):*</label>
                     <input type="text" id="name" placeholder="Member ka naam likhein" required>
-                    <span class="hint-text">यह नाम ही सिस्टम में सदस्य की मुख्य पहचान (ID) बनेगा।</span>
+                    <span class="hint-text">यह नाम ही गूगल शीट और पॉपअप में सेव होगा।</span>
                 </div>
             
                 <div class="form-group">
@@ -245,6 +245,12 @@
         let globalData = [];
         let currentEditingMemberId = '';
 
+        // नाम को सुरक्षित कोडिंग आईडी में बदलने का फंक्शन (ताकि ट्री कभी फेल न हो)
+        function getSafeId(nameStr) {
+            if (!nameStr) return '';
+            return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
         function toggleSpouseFields() {
             var status = document.getElementById('maritalStatus').value;
             var container = document.getElementById('spouseFieldsContainer');
@@ -317,7 +323,8 @@
             fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya ka naam chunein --</option>';
 
             dataRows.forEach(row => {
-                let mName = row.name ? row.name.toString().trim() : '';
+                // प्राथमिकता नाम (name) को दें, अगर नाम न हो तो memberId का इस्तेमाल करें
+                let mName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
                 if (mName) {
                     let option = document.createElement('option');
                     option.value = mName; 
@@ -349,19 +356,21 @@
 
             var rows = [];
             rowsData.forEach(function(row) {
-                // Ab memberId ki jagah member ka naam hi ID ka kaam karega
-                var memberId = row.name ? row.name.toString().trim() : '';
-                var fatherName = row.fatherId ? row.fatherId.toString().trim() : '';
-                var name = row.name ? row.name.toString().trim() : 'Unknown';
+                var rawName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
+                var rawFather = row.fatherId ? row.fatherId.toString().trim() : '';
                 var gender = row.gender ? row.gender.toString().trim() : 'Male';
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
 
-                var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-                if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
-                    photoURL = row.photo;
-                }
+                if(rawName) {
+                    // तकनीकी रूप से सुरक्षित आईडी बनाना ताकि ब्रैकेट या स्पेस से ट्री टूटे नहीं
+                    var safeNodeId = getSafeId(rawName);
+                    var safeFatherId = getSafeId(rawFather);
 
-                if(memberId) {
+                    var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                    if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
+                        photoURL = row.photo;
+                    }
+
                     var nodeClass = (gender.toLowerCase() === 'female')
                         ? 'google-visualization-orgchart-node female-node'
                         : 'google-visualization-orgchart-node';
@@ -374,14 +383,15 @@
                         '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; padding: 6px; text-align:center;">' +
                         '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 3px 6px rgba(0,0,0,0.3); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
                         badgeHTML +
-                        '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + name + '</b></div>';
+                        '<b style="color: #ffffff; font-size:13px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + rawName + '</b></div>';
 
-                    rows.push([{v: memberId, f: shortView}, fatherName, name]);
+                    // चार्ट में safe ID पास होगी लेकिन पहचान के लिए rawName रहेगा
+                    rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
                 }
             });
 
             if(rows.length === 0) {
-                rows.push([{v:'Jagdish Chandra Tiwari', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Root']);
+                rows.push([{v:'Jagdish_Chandra_Tiwari', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Jagdish Chandra Tiwari']);
             }
 
             data.addRows(rows);
@@ -392,8 +402,12 @@
                 var selection = chart.getSelection();
                 if (selection.length > 0) {
                     var rowIdx = selection[0].row;
-                    var selectedMemberName = data.getValue(rowIdx, 0);
-                    let memberInfo = globalData.find(m => m.name && m.name.toString().trim() === selectedMemberName.toString().trim());
+                    var selectedSafeId = data.getValue(rowIdx, 0);
+                    // सुरक्षित आईडी से वापस असली नाम ढूंढकर पॉपअप खोलना
+                    let memberInfo = globalData.find(m => {
+                        let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
+                        return getSafeId(mName) === selectedSafeId;
+                    });
                     if(memberInfo) {
                         showPopup(memberInfo);
                     }
@@ -415,6 +429,7 @@
                 photoURL = info.photo;
             }
 
+            let memberDisplayName = info.name ? info.name : (info.memberId ? info.memberId : 'N/A');
             let dobFormatted = formatDate(info.dob);
             let deathAnnivFormatted = formatDate(info.deathAnniversary);
             let spouseDobFormatted = formatDate(info.spouseDob);
@@ -438,9 +453,9 @@
             content.innerHTML = `
                 <div style="text-align:center; margin-bottom:12px;">
                     <img src="${photoURL}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
-                    <button class="edit-profile-btn" onclick="editProfilePhoto('${info.name}')">✏️ Edit Profile / Photo</button>
+                    <button class="edit-profile-btn" onclick="editProfilePhoto('${memberDisplayName}')">✏️ Edit Profile / Photo</button>
                 </div>
-                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${info.name || 'N/A'}</h3>
+                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">${memberDisplayName}</h3>
                 <p style="margin:6px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
                 <p style="margin:6px 0; text-align:left;"><b>Father Name:</b> ${fatherDisplayName}</p>
                 <p style="margin:6px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
@@ -466,7 +481,10 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     let base64Image = e.target.result;
-                    let member = globalData.find(m => m.name && m.name.toString().trim() === currentEditingMemberId.toString().trim());
+                    let member = globalData.find(m => {
+                        let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
+                        return mName === currentEditingMemberId;
+                    });
                     if (member) {
                         member.photo = base64Image;
                         alert("Photo successfully updated locally & saving to Sheet!");
@@ -539,7 +557,7 @@
 
             const formData = {
                 fatherId: document.getElementById('fatherId').value, // पिता का पूरा नाम
-                memberId: nameVal, // सदस्य का नाम ही उसकी आईडी बन जाएगा
+                memberId: nameVal, // सदस्य का नाम ही उसकी आईडी के रूप में सेव होगा
                 name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
@@ -548,7 +566,7 @@
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
                 spouseName: document.getElementById('spouseName').value,
-                spouseDob: document.getElementById('spouseDob.value'] || document.getElementById('spouseDob').value,
+                spouseDob: document.getElementById('spouseDob').value,
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 mobile: document.getElementById('mobile').value,
