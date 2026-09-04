@@ -91,6 +91,25 @@
         .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
         .close-btn:hover { color: #ff416c; }
+        
+        /* Edit Profile Button Style inside Modal */
+        .edit-profile-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 10px;
+            box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4);
+            transition: 0.3s;
+        }
+        .edit-profile-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 
@@ -492,7 +511,7 @@
                         <b>Spouse Status:</b>
                         <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">
                             ${spouseAliveDeath}
-                        </span>
+                        </span> 
                     </p>
 
                     ${
@@ -509,7 +528,8 @@
                 <div style="text-align:center; margin-bottom:12px;">
                     <img src="${photoURL}"
                     style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 5px 15px rgba(0,0,0,0.2);"
-                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                    <button class="edit-profile-btn" onclick="editProfilePhoto('${info.memberId}')">✏️ Edit Profile / Photo</button>
                 </div>
 
                 <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:8px;">
@@ -520,7 +540,7 @@
                     <b>Child Level:</b>
                     <span style="color:#d35400; font-weight:bold;">
                         ${orderText}
-                    </span>
+                    </span> 
                 </p>
 
                 <p style="margin:6px 0; text-align:left;">
@@ -539,7 +559,7 @@
                     <b>Marital Status:</b>
                     <span style="color:#2980b9; font-weight:bold;">
                         ${maritalStatusText}
-                    </span>
+                    </span> 
                 </p>
 
                 <p style="margin:6px 0; text-align:left;">
@@ -550,7 +570,7 @@
                     <b>Status:</b>
                     <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">
                         ${info.aliveDeath || 'Alive'}
-                    </span>
+                    </span> 
                 </p>
 
                 ${
@@ -571,6 +591,19 @@
             `;
 
             modal.style.display = "block";
+        }
+
+        function editProfilePhoto(memberId) {
+            let newPhotoUrl = prompt("Enter new photo URL or image link for Member ID: " + memberId);
+            if (newPhotoUrl !== null && newPhotoUrl.trim() !== "") {
+                let member = globalData.find(m => m.memberId.toString().trim() === memberId.toString().trim());
+                if (member) {
+                    member.photo = newPhotoUrl.trim();
+                    alert("Profile photo updated successfully locally! (Note: To save permanently in Google Sheet, ensure your backend script supports updating rows via POST).");
+                    showPopup(member);
+                    drawChart(globalData);
+                }
+            }
         }
 
         function closeModal() {
@@ -633,7 +666,6 @@
         function sendDataToSheet(photoBase64) {
 
             const formData = {
-
                 fatherId: document.getElementById('fatherId').value,
                 memberId: document.getElementById('memberId').value,
                 name: document.getElementById('name').value,
