@@ -27,7 +27,6 @@
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
-        .hint-text { display: block; font-size: 12px; color: #666; margin-top: 4px; font-style: italic; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; transition: 0.3s; }
         input:focus, select:focus { border-color: #2a5298; outline: none; box-shadow: 0 0 8px rgba(42,82,152,0.2); }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(17,153,142,0.3); }
@@ -42,45 +41,70 @@
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Zoom Out Wrapper Fix for Mobile View */
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 10px; min-height: 450px; background: #fafbfc; border-radius: 10px; border: 1px solid #eee; }
+        /* Chart Wrapper with Smooth Scroll and Zoom-Out */
+        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 15px; min-height: 480px; background: #fcfdfd; border-radius: 12px; border: 1px solid #e1e8ed; }
         
         #chart_div { 
             display: inline-block; 
             min-width: 100%; 
-            transform: scale(0.5); /* यहाँ से ट्री को आटोमेटिक Zoom Out किया गया है ताकि पूरा ढांचा साफ दिखे */
+            transform: scale(0.82); 
             transform-origin: top center; 
             margin-top: -10px;
         }
         
         #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
+        /* Base Modern Card Design */
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%) !important; 
             color: white !important;
-            border: 2px solid #ffffff !important; 
-            border-radius: 12px !important; 
-            box-shadow: 0 6px 15px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
-            padding: 8px !important;
+            border: 2px solid rgba(255,255,255,0.8) !important; 
+            border-radius: 14px !important; 
+            padding: 10px !important;
             transition: all 0.3s ease !important;
         }
 
         .google-visualization-orgchart-node:hover {
-            transform: translateY(-3px) scale(1.02);
-            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%) !important;
-            box-shadow: 0 10px 20px rgba(255, 94, 98, 0.5) !important;
-            border-color: #fff !important;
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25) !important;
         }
 
-        .female-node {
-            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%) !important;
-            box-shadow: 0 6px 15px rgba(255, 117, 140, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
-        }
-        .female-node:hover { background: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%) !important; }
+        /* --- GENERATION-WISE COLOR CODING (पीढ़ी के अनुसार सुंदर रंग) --- */
         
+        /* Gen 0 / Root (प्रथम पीढ़ी - शाही गोल्डन / कॉपर शेड) */
+        .gen-0-node {
+            background: linear-gradient(135deg, #b38728 0%, #fbf5b7 50%, #bf953f 100%) !important;
+            color: #333 !important;
+            box-shadow: 0 6px 18px rgba(191, 149, 63, 0.45), inset 0 2px 5px rgba(255,255,255,0.6) !important;
+        }
+        .gen-0-node b { color: #2c2c2c !important; }
+
+        /* Gen 1 (द्वितीय पीढ़ी - रिच रॉयल ब्लू / इंडिगो) */
+        .gen-1-node {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            box-shadow: 0 6px 16px rgba(30, 60, 114, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+        }
+
+        /* Gen 2 (तृतीय पीढ़ी - डीप पर्पल / वार्म वॉयलेट) */
+        .gen-2-node {
+            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%) !important;
+            box-shadow: 0 6px 16px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+        }
+
+        /* Gen 3+ (चतुर्थ और आगे की पीढ़ी - जीवंत टील / एमरल्ड ग्रीन) */
+        .gen-3-node {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+            box-shadow: 0 6px 16px rgba(17, 153, 142, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+        }
+
+        /* Female Member Soft Variant / Accent */
+        .female-node {
+            filter: hue-rotate(320deg);
+        }
+        
+        /* Connecting Lines Custom Styling */
         .google-visualization-orgchart-lineleft, .google-visualization-orgchart-lineright, .google-visualization-orgchart-linebottom {
-            border-color: #4e54c8 !important; border-width: 3px !important;
+            border-color: #2a5298 !important; border-width: 3px !important;
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
@@ -131,7 +155,7 @@
             </div>
 
             <p style="color: #666; font-size: 12px; margin-bottom: 10px;">
-                किसी भी मेंबर के बॉक्स पर क्लिक करके उसकी डिटेल्स देखें:
+                किसी भी मेंबर के बॉक्स पर क्लिक करके उसकी डिटेल्स देखें (जनरेशन-वाइज कलर कोडिंग):
             </p>
             
             <div id="pdfContent" style="background: #fff; padding: 10px; border-radius: 10px;">
@@ -412,11 +436,56 @@
             }
         }
 
+        // Helper function to calculate generation level of each member dynamically
+        function calculateGenerations(rowsData) {
+            let genMap = {};
+            let childrenMap = {};
+
+            rowsData.forEach(row => {
+                let name = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
+                let father = row.fatherId ? row.fatherId.toString().trim() : '';
+                if (name) {
+                    if (!childrenMap[father]) childrenMap[father] = [];
+                    childrenMap[father].push(name);
+                }
+            });
+
+            // Find roots (nodes with no father or whose father is not in dataset)
+            let allNames = new Set(rowsData.map(r => (r.name || r.memberId || '').toString().trim()));
+            let roots = rowsData.filter(r => {
+                let f = (r.fatherId || '').toString().trim();
+                return !f || !allNames.has(f);
+            }).map(r => (r.name || r.memberId || '').toString().trim());
+
+            // Assign generation levels using BFS
+            let queue = [];
+            roots.forEach(r => {
+                genMap[r] = 0;
+                queue.push(r);
+            });
+
+            while (queue.length > 0) {
+                let curr = queue.shift();
+                let currGen = genMap[curr] || 0;
+                let kids = childrenMap[curr] || [];
+                kids.forEach(kid => {
+                    if (genMap[kid] === undefined) {
+                        genMap[kid] = currGen + 1;
+                        queue.push(kid);
+                    }
+                });
+            }
+
+            return genMap;
+        }
+
         function drawChart(rowsData) {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Member');
             data.addColumn('string', 'Father');
             data.addColumn('string', 'ToolTip');
+
+            let genMap = calculateGenerations(rowsData);
 
             var rows = [];
             rowsData.forEach(function(row) {
@@ -434,12 +503,20 @@
                         photoURL = row.photo;
                     }
 
+                    // Determine Generation Level Class
+                    let genLevel = genMap[rawName] !== undefined ? genMap[rawName] : 1;
+                    let genClass = 'gen-1-node';
+                    if (genLevel === 0) genClass = 'gen-0-node';
+                    else if (genLevel === 1) genClass = 'gen-1-node';
+                    else if (genLevel === 2) genClass = 'gen-2-node';
+                    else genClass = 'gen-3-node';
+
                     var nodeClass = (gender.toLowerCase() === 'female')
-                        ? 'google-visualization-orgchart-node female-node'
-                        : 'google-visualization-orgchart-node';
+                        ? `google-visualization-orgchart-node ${genClass} female-node`
+                        : `google-visualization-orgchart-node ${genClass}`;
 
                     var badgeHTML = orderNum
-                        ? `<span style="background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:8px; font-size:9px; color:#ffeaa7; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
+                        ? `<span style="background:rgba(0,0,0,0.25); padding:1px 6px; border-radius:8px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
                         : '';
 
                     var shortView =
@@ -603,7 +680,7 @@
                 spouseDob: document.getElementById('spouseDob').value,
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                mobile: document.getElementById('mobile.value') || document.getElementById('mobile').value,
+                mobile: document.getElementById('mobile').value,
                 photo: photoBase64 || ''
             };
 
