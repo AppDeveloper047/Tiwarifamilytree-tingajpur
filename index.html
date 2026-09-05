@@ -39,7 +39,7 @@
         .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* --- ORGANIC TREE CANVAS CONTAINER --- */
+        /* --- ORGANIC TREE CANVAS CONTAINER (Scale हटा दिया गया है ताकि लाइनें परफेक्ट दिखें) --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
@@ -52,15 +52,11 @@
             position: relative;
         }
 
-#tree-canvas-area {
-    position: relative;
-    width: 5000px;
-    height: 2500px;
-    margin: 0 auto;
-    transform: scale(0.4); /* <--- 1 से कम (जैसे 0.8) करने पर पूरा ग्राफ़ छोटा हो जाएगा, 1.2 करने पर बड़ा */
-    transform-origin: top center; /* परफेक्शन के लिए सेंटर से स्केल होगा */
-}
-
+        #tree-canvas-area {
+            position: relative;
+            width: 5000px;
+            height: 2500px;
+            margin: 0 auto;
         }
 
         /* SVG Curved Branches Layer */
@@ -593,7 +589,6 @@
             }
         }
 
-        // --- RESTORED EXACT ORIGINAL POPUP DESIGN ---
         function showPopup(member) {
             let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             let photoSrc = (member.photo && member.photo.length > 10) ? member.photo : defaultAvatar;
