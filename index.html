@@ -39,7 +39,12 @@
         .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* --- ORGANIC TREE CANVAS CONTAINER (Scale हटा दिया गया है ताकि लाइनें परफेक्ट दिखें) --- */
+        /* Zoom Control Buttons Style */
+        .zoom-controls { display: flex; gap: 6px; align-items: center; }
+        .zoom-btn { background: #2e7d32; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; }
+        .zoom-btn:hover { background: #1b5e20; }
+
+        /* --- ORGANIC TREE CANVAS CONTAINER --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
@@ -57,6 +62,9 @@
             width: 5000px;
             height: 2500px;
             margin: 0 auto;
+            transform: scale(0.45); /* शुरुआती ओवरव्यू ताकि पूरा ट्री एक साथ साफ़ दिखे */
+            transform-origin: top center;
+            transition: transform 0.25s ease;
         }
 
         /* SVG Curved Branches Layer */
@@ -160,8 +168,17 @@
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष (Organic Curved Branches)</h2>
-                <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
+                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष</h2>
+                
+                <!-- Zoom Controls & PDF Button -->
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomTree(0.15)" title="Zoom In">➕ ज़ूम+</button>
+                        <button class="zoom-btn" onclick="zoomTree(-0.15)" title="Zoom Out">➖ ज़ूम-</button>
+                        <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">↺ रीसेट</button>
+                    </div>
+                    <button class="pdf-btn" onclick="downloadPDF()">📥 Save PDF</button>
+                </div>
             </div>
 
             <p style="color: #555; font-size: 12px; margin-bottom: 10px;">
@@ -294,6 +311,19 @@
         let cropper = null;
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
+        let currentScale = 0.45; // Default overview scale
+
+        function zoomTree(amount) {
+            currentScale += amount;
+            if (currentScale < 0.2) currentScale = 0.2; // Min limit
+            if (currentScale > 1.2) currentScale = 1.2; // Max limit
+            document.getElementById('tree-canvas-area').style.transform = `scale(${currentScale})`;
+        }
+
+        function resetZoom() {
+            currentScale = 0.45;
+            document.getElementById('tree-canvas-area').style.transform = `scale(${currentScale})`;
+        }
 
         function getSafeId(nameStr) {
             if (!nameStr) return '';
@@ -472,7 +502,6 @@
                 node.children.sort((a, b) => (a.childOrder || 99) - (b.childOrder || 99));
             });
 
-            // Safe starting X coordinate to prevent left-side cutting
             let startX = 2500; 
             let startY = 80;
             let levelHeight = 160;
@@ -670,7 +699,7 @@
                 finalProcessedPhoto = '';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit & Save to Sheet';
-                fetchDataAndDrawChart();
+                fetchDataAndDragChart = fetchDataAndDrawChart();
                 openTab({currentTarget: document.querySelector('.navbar button:first-child')}, 'treePage');
             })
             .catch(error => {
