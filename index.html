@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stunning 3D Gradient Family Tree</title>
+    <title>Organic Branch Family Tree</title>
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- html2pdf -->
@@ -13,117 +13,139 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #333; min-height: 100vh; }
         
-        .navbar { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .navbar { background: linear-gradient(90deg, #2e7d32 0%, #1b5e20 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; letter-spacing: 0.5px; }
-        .navbar button:hover { background-color: rgba(255,255,255,0.1); }
-        .navbar button.active { background-color: #ff9800; color: white; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
+        .navbar button:hover { background-color: rgba(255,255,255,0.15); }
+        .navbar button.active { background-color: #ffb300; color: #1b5e20; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
         .tab-content { display: none; padding: 20px; max-width: 1200px; margin: auto; }
         .tab-content.active { display: block; }
 
-        .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
-        .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
+        .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2e7d32; max-width: 800px; margin: auto; }
+        .form-card h2 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #ffb300; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; transition: 0.3s; }
-        input:focus, select:focus { border-color: #2a5298; outline: none; box-shadow: 0 0 8px rgba(42,82,152,0.2); }
-        .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(17,153,142,0.3); }
+        input:focus, select:focus { border-color: #2e7d32; outline: none; box-shadow: 0 0 8px rgba(46,125,50,0.2); }
+        .submit-btn { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(46,125,50,0.3); }
         .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .contact-note { background: #fff3cd; border-left: 5px solid #ff9800; padding: 15px; border-radius: 8px; margin-top: 25px; font-size: 14px; color: #856404; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+        .contact-note { background: #fff3cd; border-left: 5px solid #ffb300; padding: 15px; border-radius: 8px; margin-top: 25px; font-size: 14px; color: #856404; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
         .contact-note a { color: #d35400; font-weight: bold; text-decoration: none; }
         .contact-note a:hover { text-decoration: underline; }
 
-        .tree-container { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
+        .tree-container { background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ffb300; }
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
+        .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Chart Wrapper with Smooth Scroll and Zoom-Out */
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 15px; min-height: 480px; background: #fcfdfd; border-radius: 12px; border: 1px solid #e1e8ed; }
+        .chart-scroll-wrapper { 
+            width: 100%; 
+            overflow: auto; 
+            display: block; 
+            padding: 20px; 
+            min-height: 500px; 
+            background: radial-gradient(circle, #f1f8e9 0%, #dcedc8 100%); 
+            border-radius: 12px; 
+            border: 2px dashed #81c784; 
+            position: relative;
+        }
         
         #chart_div { 
             display: inline-block; 
             min-width: 100%; 
-            transform: scale(0.82); 
+            transform: scale(0.85); 
             transform-origin: top center; 
-            margin-top: -10px;
         }
         
         #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
-        /* Base Modern Card Design */
+        /* --- MODERN ORGANIC LEAF CARDS --- */
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
-            color: white !important;
-            border: 2px solid rgba(255,255,255,0.8) !important; 
-            border-radius: 14px !important; 
-            padding: 10px !important;
+            color: #263238 !important;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%) !important;
+            border: 3px solid #558b2f !important; 
+            border-radius: 30px !important; 
+            padding: 14px 18px !important;
             transition: all 0.3s ease !important;
+            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9) !important;
         }
 
         .google-visualization-orgchart-node:hover {
-            transform: translateY(-4px) scale(1.04);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25) !important;
+            transform: translateY(-5px) scale(1.05);
+            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%) !important;
+            border-color: #f57f17 !important;
+            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4) !important;
         }
 
-        /* --- GENERATION-WISE COLOR CODING (पीढ़ी के अनुसार सुंदर रंग) --- */
-        
-        /* Gen 0 / Root (प्रथम पीढ़ी - शाही गोल्डन / कॉपर शेड) */
+        /* Generation Leaf Colors */
         .gen-0-node {
-            background: linear-gradient(135deg, #b38728 0%, #fbf5b7 50%, #bf953f 100%) !important;
-            color: #333 !important;
-            box-shadow: 0 6px 18px rgba(191, 149, 63, 0.45), inset 0 2px 5px rgba(255,255,255,0.6) !important;
+            background: linear-gradient(135deg, #ffe082 0%, #ffb300 100%) !important;
+            border-color: #e65100 !important;
+            color: #fff !important;
         }
-        .gen-0-node b { color: #2c2c2c !important; }
+        .gen-0-node b { color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
 
-        /* Gen 1 (द्वितीय पीढ़ी - रिच रॉयल ब्लू / इंडिगो) */
         .gen-1-node {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
-            box-shadow: 0 6px 16px rgba(30, 60, 114, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+            background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%) !important;
+            border-color: #33691e !important;
         }
 
-        /* Gen 2 (तृतीय पीढ़ी - डीप पर्पल / वार्म वॉयलेट) */
         .gen-2-node {
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%) !important;
-            box-shadow: 0 6px 16px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+            background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%) !important;
+            border-color: #004d40 !important;
         }
 
-        /* Gen 3+ (चतुर्थ और आगे की पीढ़ी - जीवंत टील / एमरल्ड ग्रीन) */
         .gen-3-node {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
-            box-shadow: 0 6px 16px rgba(17, 153, 142, 0.4), inset 0 2px 5px rgba(255,255,255,0.3) !important;
+            background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%) !important;
+            border-color: #1a237e !important;
         }
 
-        /* Female Member Soft Variant / Accent */
-        .female-node {
-            filter: hue-rotate(320deg);
+        /* --- CURVED & ORGANIC BRANCH LINES (घुमावदार और प्राकृतिक टहनियाँ) --- */
+        .google-visualization-orgchart-lineleft {
+            border-top: 4px solid #5d4037 !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-radius: 12px 0 0 12px;
         }
         
-        /* Connecting Lines Custom Styling */
-        .google-visualization-orgchart-lineleft, .google-visualization-orgchart-lineright, .google-visualization-orgchart-linebottom {
-            border-color: #2a5298 !important; border-width: 3px !important;
+        .google-visualization-orgchart-lineright {
+            border-top: 4px solid #5d4037 !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .google-visualization-orgchart-linebottom {
+            border-left: 4px solid #5d4037 !important;
+            border-top: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-radius: 0 0 12px 12px;
+            box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
+        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #2e7d32; }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
-        .close-btn:hover { color: #ff416c; }
+        .close-btn:hover { color: #d32f2f; }
         
         .edit-profile-btn {
-            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4); transition: 0.3s;
+            background: linear-gradient(135deg, #ff8f00 0%, #e65100 100%);
+            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(230,81,0,0.4); transition: 0.3s;
         }
         .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Cropper Modal Styles */
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .img-container { max-height: 300px; margin-bottom: 15px; }
         .img-container img { max-width: 100%; display: block; }
-        .crop-action-btn { background: #2a5298; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .crop-action-btn { background: #2e7d32; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 
@@ -131,10 +153,9 @@
 
     <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'popup')">
 
-    <!-- Manual Image Crop Modal -->
     <div id="cropperModal">
         <div class="cropper-container-box">
-            <h3 style="margin-top:0; color:#1e3c72;">फोटो क्रॉप करें (Adjust Face)</h3>
+            <h3 style="margin-top:0; color:#2e7d32;">फोटो क्रॉप करें (Adjust Face)</h3>
             <div class="img-container">
                 <img id="imageToCrop" src="">
             </div>
@@ -143,28 +164,28 @@
     </div>
 
     <div class="navbar">
-        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree View</button>
+        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Curved Branch Tree</button>
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#1e3c72; font-size:20px;">परिवार का स्वर्णिम इतिहास</h2>
+                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
 
-            <p style="color: #666; font-size: 12px; margin-bottom: 10px;">
-                किसी भी मेंबर के बॉक्स पर क्लिक करके उसकी डिटेल्स देखें (जनरेशन-वाइज कलर कोडिंग):
+            <p style="color: #555; font-size: 12px; margin-bottom: 10px;">
+                किसी भी सदस्य के बॉक्स पर क्लिक करके पूरी जानकारी देखें:
             </p>
             
-            <div id="pdfContent" style="background: #fff; padding: 10px; border-radius: 10px;">
-                <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
+            <div id="pdfContent" style="background: #f1f8e9; padding: 15px; border-radius: 10px;">
+                <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Organic Family Tree Report</h3>
 
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="chart_div">
-                        <div style="text-align:center; padding:40px; color:#666; font-weight:bold;">
-                            Family Tree Load ho raha hai...
+                        <div style="text-align:center; padding:40px; color:#558b2f; font-weight:bold;">
+                            Curved branches load ho rahi hain...
                         </div>
                     </div>
                 </div>
@@ -174,7 +195,7 @@
 
     <div id="entryPage" class="tab-content">
         <div class="form-card">
-            <h2>Naye Member की Entry Karein</h2>
+            <h2>Naye Member ki Entry Karein</h2>
 
             <form id="entryForm">
                 <div class="form-group">
@@ -436,7 +457,6 @@
             }
         }
 
-        // Helper function to calculate generation level of each member dynamically
         function calculateGenerations(rowsData) {
             let genMap = {};
             let childrenMap = {};
@@ -450,14 +470,12 @@
                 }
             });
 
-            // Find roots (nodes with no father or whose father is not in dataset)
             let allNames = new Set(rowsData.map(r => (r.name || r.memberId || '').toString().trim()));
             let roots = rowsData.filter(r => {
                 let f = (r.fatherId || '').toString().trim();
                 return !f || !allNames.has(f);
             }).map(r => (r.name || r.memberId || '').toString().trim());
 
-            // Assign generation levels using BFS
             let queue = [];
             roots.forEach(r => {
                 genMap[r] = 0;
@@ -491,7 +509,6 @@
             rowsData.forEach(function(row) {
                 var rawName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
                 var rawFather = row.fatherId ? row.fatherId.toString().trim() : '';
-                var gender = row.gender ? row.gender.toString().trim() : 'Male';
                 var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
 
                 if(rawName) {
@@ -503,7 +520,6 @@
                         photoURL = row.photo;
                     }
 
-                    // Determine Generation Level Class
                     let genLevel = genMap[rawName] !== undefined ? genMap[rawName] : 1;
                     let genClass = 'gen-1-node';
                     if (genLevel === 0) genClass = 'gen-0-node';
@@ -511,19 +527,17 @@
                     else if (genLevel === 2) genClass = 'gen-2-node';
                     else genClass = 'gen-3-node';
 
-                    var nodeClass = (gender.toLowerCase() === 'female')
-                        ? `google-visualization-orgchart-node ${genClass} female-node`
-                        : `google-visualization-orgchart-node ${genClass}`;
+                    var nodeClass = `google-visualization-orgchart-node ${genClass}`;
 
                     var badgeHTML = orderNum
-                        ? `<span style="background:rgba(0,0,0,0.25); padding:1px 6px; border-radius:8px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
+                        ? `<span style="background:#558b2f; padding:1px 6px; border-radius:10px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">Branch ${orderNum}</span><br>`
                         : '';
 
                     var shortView =
-                        '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 11px; padding: 4px; text-align:center;">' +
-                        '<img src="' + photoURL + '" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.3); margin-bottom:3px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
+                        '<div class="' + nodeClass + '" style="font-family: Arial; text-align:center;">' +
+                        '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.25); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
                         badgeHTML +
-                        '<b style="color: #ffffff; font-size:12px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">✨ ' + rawName + '</b></div>';
+                        '<b style="font-size:12px; display:block;">🌿 ' + rawName + '</b></div>';
 
                     rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
                 }
@@ -590,11 +604,11 @@
 
             content.innerHTML = `
                 <div style="text-align:center; margin-bottom:10px;">
-                    <img src="${photoURL}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                    <img src="${photoURL}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
                     <button class="edit-profile-btn" onclick="editProfilePhoto('${memberDisplayName}')">✏️ Edit Profile / Photo</button>
                 </div>
-                <h3 style="margin-top:0; color:#1e3c72; border-bottom:2px solid #11998e; padding-bottom:6px;">${memberDisplayName}</h3>
-                <p style="margin:5px 0; text-align:left;"><b>Child Level:</b> <span style="color:#d35400; font-weight:bold;">${orderText}</span></p>
+                <h3 style="margin-top:0; color:#2e7d32; border-bottom:2px solid #2e7d32; padding-bottom:6px;">${memberDisplayName}</h3>
+                <p style="margin:5px 0; text-align:left;"><b>Child Level:</b> <span style="color:#e65100; font-weight:bold;">${orderText}</span></p>
                 <p style="margin:5px 0; text-align:left;"><b>Father Name:</b> ${fatherDisplayName}</p>
                 <p style="margin:5px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
                 <p style="margin:5px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
@@ -643,7 +657,7 @@
             document.getElementById('pdfTitle').style.display = 'block';
             var opt = {
                 margin: 0.5,
-                filename: 'Family_Tree_Pyramid.pdf',
+                filename: 'Organic_Branch_Tree.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
@@ -706,7 +720,7 @@
                 toggleSpouseFields();
                 finalProcessedPhoto = '';
                 submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
+                submitBtn.disabled, submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
             });
         }
