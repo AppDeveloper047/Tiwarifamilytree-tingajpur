@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bottom-to-Top 3D Gradient Family Tree</title>
-    <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Cropper.js CSS & JS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
@@ -48,7 +45,6 @@
 
         .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px 10px; min-height: 600px; background: #f8fafc; border-radius: 12px; position: relative; }
         
-        /* --- BOTTOM TO TOP TRANSFORMATION --- */
         #chart_wrapper_inner {
             transform: scaleY(-1) scale(0.45);
             transform-origin: center center;
@@ -60,14 +56,12 @@
         #chart_div { display: inline-block; min-width: 100%; }
         #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
-        /* --- NODES KO SEEDHA RKHNE KE LIYE ULTA ROTATE --- */
         .node-content-box {
             transform: scaleY(-1);
             display: inline-block;
             width: 100%;
         }
 
-        /* --- HIGH CONTRAST GENERATION-WISE NODES --- */
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
             color: #ffffff !important;
@@ -77,25 +71,18 @@
             transition: all 0.3s ease !important;
         }
 
-        /* पीढ़ी 0 (Root) - Rich Dark Orange/Red */
         .gen-0-node { 
             background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; 
             box-shadow: 0 8px 20px rgba(133, 28, 7, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
-
-        /* पीढ़ी 1 - Deep Royal Blue */
         .gen-1-node { 
             background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; 
             box-shadow: 0 8px 20px rgba(27, 54, 93, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
-
-        /* पीढ़ी 2 - Deep Forest Green / Teal */
         .gen-2-node { 
             background: linear-gradient(135deg, #0f5132 0%, #082c1b 100%) !important; 
             box-shadow: 0 8px 20px rgba(15, 81, 50, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
-
-        /* पीढ़ी 3 या आगे - Deep Purple / Maroon */
         .gen-3-node { 
             background: linear-gradient(135deg, #581845 0%, #2e0c24 100%) !important; 
             box-shadow: 0 8px 20px rgba(88, 24, 69, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
@@ -112,7 +99,6 @@
             border-color: #1b365d !important; border-width: 3px !important;
         }
 
-        /* --- FIXED MODAL ALIGNMENT --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); overflow-y: auto; }
         .modal-content { 
             background: #ffffff; 
@@ -120,7 +106,7 @@
             padding: 25px 20px; 
             border-radius: 16px; 
             width: 90%; 
-            max-width: 400px; 
+            max-width: 420px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
             position: relative; 
             text-align: left; 
@@ -332,7 +318,7 @@
         }
 
         function calculatePanchangTithi(dateStr, targetElementId) {
-            if (!dateStr) return;
+            if (!dateStr) return '';
             let date = new Date(dateStr);
             let d = date.getDate();
             let m = date.getMonth() + 1;
@@ -533,7 +519,6 @@
                 let genNum = node.generation !== undefined ? node.generation : 0;
                 let genClass = 'gen-' + (genNum > 3 ? '3' : genNum) + '-node';
 
-                // Node content wrapper taaki text seedha dikhe
                 let displayHtml = `
                     <div class="node-content-box" onclick="openMemberModal('${memberName}')">
                         <div class="${genClass}" style="text-align:center; padding:8px; border-radius:12px;">
@@ -570,18 +555,21 @@
             let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             let photoSrc = (member.photo && member.photo.length > 10) ? member.photo : defaultAvatar;
 
+            // Member Tithi
             let memberTithiInfo = '';
             if (member.aliveDeath === 'Death' && member.deathAnniversary) {
-                let tithiStr = calculatePanchangTithi(member.deathAnniversary, 'tempDiv');
+                let tithiStr = calculatePanchangTithi(member.deathAnniversary, '');
                 memberTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr}</small>`;
             }
 
+            // Spouse Tithi
             let spouseTithiInfo = '';
             if (member.spouseAliveDeath === 'Death' && member.spouseDeathAnniv) {
-                let tithiStr2 = calculatePanchangTithi(member.spouseDeathAnniv, 'tempDiv');
+                let tithiStr2 = calculatePanchangTithi(member.spouseDeathAnniv, '');
                 spouseTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr2}</small>`;
             }
 
+            // --- RE-ARRANGED ORDER: MEMBER DETAILS FIRST, THEN SPOUSE DETAILS BELOW ---
             let html = `
                 <div style="text-align: center;">
                     <img src="${photoSrc}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow:0 4px 10px rgba(0,0,0,0.2);"/><br>
@@ -593,10 +581,17 @@
                     <p style="margin: 5px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
                     <p style="margin: 5px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
                     <p style="margin: 5px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
-                    <p style="margin: 5px 0;"><b>Marital Status:</b> ${member.maritalStatus || 'Married'}</p>
-                    ${member.spouseName ? `<p style="margin: 5px 0; background:#f0f7f4; padding:6px; border-radius:6px;"><b>Spouse:</b> ${member.spouseName}<br><b>Status:</b> <span style="color:${member.spouseAliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.spouseAliveDeath || 'Alive'}</span> ${spouseTithiInfo}</p>` : ''}
                     <p style="margin: 5px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
                     <p style="margin: 5px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '<br><small style="color:#666;">दिनांक: '+member.deathAnniversary+'</small>'+memberTithiInfo : ''}</p>
+                    
+                    ${member.spouseName ? `
+                        <div style="margin-top: 15px; background: #f0f7f4; padding: 10px; border-radius: 8px; border-left: 4px solid #11998e;">
+                            <p style="margin: 3px 0;"><b>Spouse Name:</b> ${member.spouseName}</p>
+                            <p style="margin: 3px 0;"><b>Spouse D.O.B:</b> ${member.spouseDob || 'N/A'}</p>
+                            <p style="margin: 3px 0;"><b>Spouse Status:</b> <span style="color:${member.spouseAliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.spouseAliveDeath || 'Alive'}</span> ${member.spouseDeathAnniv ? '<br><small style="color:#666;">दिनांक: '+member.spouseDeathAnniv+'</small>'+spouseTithiInfo : ''}</p>
+                        </div>
+                    ` : ''}
+                    
                     <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
                     <p style="margin: 5px 0;"><b>Mobile:</b> <a href="tel:${member.mobile}" style="color:#2a5298; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
                 </div>
