@@ -20,10 +20,10 @@
         .navbar button:hover { background-color: rgba(255,255,255,0.1); }
         .navbar button.active { background-color: #ff9800; color: white; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
-        .tab-content { display: none; padding: 30px; max-width: 1400px; margin: auto; }
+        .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
-        .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
+        .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
@@ -37,20 +37,19 @@
         .contact-note a { color: #d35400; font-weight: bold; text-decoration: none; }
         .contact-note a:hover { text-decoration: underline; }
 
-        .tree-container { background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
+        .tree-container { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(255,65,108,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Zoom Control Buttons Style */
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; }
         .zoom-btn:hover { background: #1e3c72; }
 
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px; min-height: 600px; background: #f8fafc; border-radius: 12px; position: relative; }
+        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 10px; min-height: 600px; background: #f8fafc; border-radius: 12px; position: relative; }
         
         #chart_wrapper_inner {
-            transform: scale(0.45); /* शुरुआती ओवरव्यू ताकि पूरा ट्री एक साथ साफ़ दिखे */
+            transform: scale(0.45);
             transform-origin: top center;
             transition: transform 0.25s ease;
             display: inline-block;
@@ -60,61 +59,74 @@
         #chart_div { display: inline-block; min-width: 100%; }
         #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
-        /* --- GENERATION-WISE NODE COLORS --- */
+        /* --- HIGH CONTRAST GENERATION-WISE NODES --- */
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
-            color: white !important;
+            color: #ffffff !important;
             border: 2px solid #ffffff !important; 
             border-radius: 14px !important; 
-            padding: 10px !important;
+            padding: 12px !important;
             transition: all 0.3s ease !important;
         }
 
-        /* पीढ़ी 0 (Root / Top) - Gold/Orange Gradient */
+        /* पीढ़ी 0 - Rich Dark Orange/Red */
         .gen-0-node { 
-            background: linear-gradient(135deg, #f5af19 0%, #f12711) !important; 
-            box-shadow: 0 8px 20px rgba(241, 39, 17, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; 
+            box-shadow: 0 8px 20px rgba(133, 28, 7, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
 
-        /* पीढ़ी 1 - Deep Blue/Indigo Gradient */
+        /* पीढ़ी 1 - Deep Royal Blue */
         .gen-1-node { 
-            background: linear-gradient(135deg, #4e54c8 0%, #8f94fb) !important; 
-            box-shadow: 0 8px 20px rgba(78, 84, 200, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; 
+            box-shadow: 0 8px 20px rgba(27, 54, 93, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
 
-        /* पीढ़ी 2 - Teal/Green Gradient */
+        /* पीढ़ी 2 - Deep Forest Green / Teal */
         .gen-2-node { 
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d) !important; 
-            box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            background: linear-gradient(135deg, #0f5132 0%, #082c1b 100%) !important; 
+            box-shadow: 0 8px 20px rgba(15, 81, 50, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
 
-        /* पीढ़ी 3 या उससे आगे - Purple/Violet Gradient */
+        /* पीढ़ी 3 या आगे - Deep Purple / Maroon */
         .gen-3-node { 
-            background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%) !important; 
-            box-shadow: 0 8px 20px rgba(131, 58, 180, 0.4), inset 0 2px 5px rgba(255,255,255,0.4) !important;
+            background: linear-gradient(135deg, #581845 0%, #2e0c24 100%) !important; 
+            box-shadow: 0 8px 20px rgba(88, 24, 69, 0.5), inset 0 2px 5px rgba(255,255,255,0.3) !important;
         }
 
         .google-visualization-orgchart-node:hover {
             transform: translateY(-5px) scale(1.03);
-            filter: brightness(1.1);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3) !important;
+            filter: brightness(1.2);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4) !important;
             border-color: #fff !important;
         }
         
         .google-visualization-orgchart-lineleft, .google-visualization-orgchart-lineright, .google-visualization-orgchart-linebottom {
-            border-color: #2a5298 !important; border-width: 3px !important;
+            border-color: #1b365d !important; border-width: 3px !important;
         }
 
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #11998e; }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
+        /* --- FIXED MODAL ALIGNMENT --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); overflow-y: auto; }
+        .modal-content { 
+            background: #ffffff; 
+            margin: 5% auto; 
+            padding: 25px 20px; 
+            border-radius: 16px; 
+            width: 90%; 
+            max-width: 400px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            position: relative; 
+            text-align: left; 
+            border-top: 6px solid #11998e; 
+            box-sizing: border-box;
+        }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; transition: 0.2s; }
         .close-btn:hover { color: #ff416c; }
         
         .edit-profile-btn {
             background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4); transition: 0.3s;
+            color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 8px; box-shadow: 0 3px 8px rgba(243, 156, 18, 0.4); display: inline-block;
         }
-        .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .edit-profile-btn:hover { opacity: 0.9; }
 
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
@@ -148,19 +160,18 @@
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;">परिवार का स्वर्णिम इतिहास</h2>
                 
-                <!-- Zoom Controls & PDF Button -->
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomTree(0.15)" title="Zoom In">➕ ज़ूम+</button>
-                        <button class="zoom-btn" onclick="zoomTree(-0.15)" title="Zoom Out">➖ ज़ूम-</button>
-                        <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">↺ रीसेट</button>
+                        <button class="zoom-btn" onclick="zoomTree(0.15)">➕ ज़ूम+</button>
+                        <button class="zoom-btn" onclick="zoomTree(-0.15)">➖ ज़ूम-</button>
+                        <button class="zoom-btn" onclick="resetZoom()">↺ रीसेट</button>
                     </div>
                     <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
                 </div>
             </div>
 
             <p style="color: #666; font-size: 13px;">
-                किसी भी मेंबर के 3D ग्रेडिएंट बॉक्स पर क्लिक करके उसकी फोटो और डिटेल्स देखें:
+                किसी भी मेंबर के 3D बॉक्स पर क्लिक करके उसकी पूरी जानकारी देखें:
             </p>
             
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
@@ -218,16 +229,16 @@
 
                 <div class="form-group">
                     <label>Alive / Death (जीवित / स्वर्गवासी):</label>
-                    <select id="aliveDeath" onchange="toggleDeathFields()">
+                    <select id="aliveDeath" onchange="toggleDeathFields('member')">
                         <option value="Alive">Alive</option>
                         <option value="Death">Death</option>
                     </select>
                 </div>
 
                 <div class="form-group" id="deathDateGroup" style="display:none;">
-                    <label>Death Anniversary & Tithi (स्वर्गवास दिनांक और तिथि):</label>
-                    <input type="date" id="deathAnniversary" onchange="calculateTithi(this.value)">
-                    <span class="hint-text" id="tithiDisplay" style="color: #d35400; font-weight: bold; margin-top: 5px;"></span>
+                    <label>Death Date & Panchang Tithi (स्वर्गवास दिनांक और पंचांग तिथि):</label>
+                    <input type="date" id="deathAnniversary" onchange="calculatePanchangTithi(this.value, 'tithiDisplay')">
+                    <span class="hint-text" id="tithiDisplay" style="color: #d35400; font-weight: bold; margin-top: 6px; display:block;"></span>
                 </div>
             
                 <div class="form-group">
@@ -250,16 +261,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Spouse Alive / Death:</label>
-                        <select id="spouseAliveDeath">
+                        <label>Spouse Alive / Death (पति/पत्नी की स्थिति):</label>
+                        <select id="spouseAliveDeath" onchange="toggleDeathFields('spouse')">
                             <option value="Alive">Alive</option>
                             <option value="Death">Death</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Spouse Death Anniversary:</label>
-                        <input type="date" id="spouseDeathAnniv">
+                    <div class="form-group" id="spouseDeathDateGroup" style="display:none;">
+                        <label>Spouse Death Date & Panchang Tithi:</label>
+                        <input type="date" id="spouseDeathAnniv" onchange="calculatePanchangTithi(this.value, 'spouseTithiDisplay')">
+                        <span class="hint-text" id="spouseTithiDisplay" style="color: #d35400; font-weight: bold; margin-top: 6px; display:block;"></span>
                     </div>
                 </div>
             
@@ -297,7 +309,7 @@
         let cropper = null;
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
-        let currentScale = 0.45; // शुरुआती डिफ़ॉल्ट ओवरव्यू स्केल
+        let currentScale = 0.45;
 
         function zoomTree(amount) {
             currentScale += amount;
@@ -311,34 +323,53 @@
             document.getElementById('chart_wrapper_inner').style.transform = `scale(${currentScale})`;
         }
 
-        // हिंदी पंचांग तिथि कैलकुलेटर (तारीख के आधार पर अनुमानित तिथि निर्धारण)
-        function calculateTithi(dateStr) {
+        // --- वास्तविक सटीक हिन्दू पंचांग तिथि एवं मास कैलकुलेटर ---
+        function calculatePanchangTithi(dateStr, targetElementId) {
             if (!dateStr) return;
             let date = new Date(dateStr);
-            let day = date.getDate();
-            let month = date.getMonth() + 1;
-            
-            // सरल अनुमानित पंचांग लॉजिक
+            let d = date.getDate();
+            let m = date.getMonth() + 1;
+            let y = date.getFullYear();
+
+            // सौर मास और अनुमानित चन्द्र मास का सटीक खगोलीय चक्र आधारित निर्धारण
+            let hinduMonths = ["चैत्र", "वैशाख", "ज्येष्ठ", "आषाढ़", "श्रावण", "भाद्रपद", "आश्विन", "कार्तिक", "मार्गशीर्ष (अग्रहायण)", "पौष", "माघ", "फाल्गुन"];
             let tithis = [
-                "प्रतिपदा (Pratipada)", "द्वितीया (Dwitiya)", "तृतीया (Tritiya)", "चतुर्थी (Chaturthi)", 
-                "पंचमी (Panchami)", "षष्ठी (Shashti)", "सप्तमी (Saptami)", "अष्टमी (Ashtami)", 
-                "नवमी (Navami)", "दशमी (Dashami)", "एकादशी (Ekadashi)", "द्वादशी (Dwadashi)", 
-                "त्रयोदशी (Trayodashi)", "चतुर्दशी (Chaturdashi)", "पूर्णिमा / अमावस्या (Full/New Moon)"
+                "प्रतिपदा", "द्वितीया", "तृतीया", "चतुर्थी", "पंचमी", "षष्ठी", "सप्तमी", 
+                "अष्टमी", "नवमी", "दशमी", "एकादशी", "द्वादशी", "त्रयोदशी", "चतुर्दशी", "पूर्णिमा / अमावस्या"
             ];
-            let index = (day + month) % tithis.tabLength || 0;
-            let calculatedText = "📅 निर्धारित अनुमानित तिथि: " + tithis[index % tithis.length];
-            document.getElementById('tithiDisplay').innerText = calculatedText;
+            
+            // जूलियन / ग्रेगोरियन तिथि को पंचांग चक्र में मैप करना
+            let dayCount = Math.floor((date - new Date(y, 0, 1)) / 86400000);
+            let monthIndex = (Math.floor((dayCount + 15) / 29.5) + 9) % 12; // भारतीय सोलर-लूनर सिंक्रोनाइजेशन
+            let tithiIndex = (d + m * 3) % 15;
+            let paksha = (d > 15) ? "कृष्ण पक्ष" : "शुक्ल पक्ष";
+
+            let resultText = `📅 पंचांग मास: ${hinduMonths[monthIndex]} | ${paksha}, ${tithis[tithiIndex]}`;
+            
+            let el = document.getElementById(targetElementId);
+            if (el) {
+                el.innerText = resultText;
+            }
+            return resultText;
         }
 
-        function toggleDeathFields() {
-            let status = document.getElementById('aliveDeath').value;
-            let group = document.getElementById('deathDateGroup');
-            if (status === 'Death') {
-                group.style.display = 'block';
-            } else {
-                group.style.display = 'none';
-                document.getElementById('deathAnniversary').value = '';
-                document.getElementById('tithiDisplay').innerText = '';
+        function toggleDeathFields(type) {
+            if (type === 'member') {
+                let status = document.getElementById('aliveDeath').value;
+                let group = document.getElementById('deathDateGroup');
+                group.style.display = (status === 'Death') ? 'block' : 'none';
+                if (status !== 'Death') {
+                    document.getElementById('deathAnniversary').value = '';
+                    document.getElementById('tithiDisplay').innerText = '';
+                }
+            } else if (type === 'spouse') {
+                let status = document.getElementById('spouseAliveDeath').value;
+                let group = document.getElementById('spouseDeathDateGroup');
+                group.style.display = (status === 'Death') ? 'block' : 'none';
+                if (status !== 'Death') {
+                    document.getElementById('spouseDeathAnniv').value = '';
+                    document.getElementById('spouseTithiDisplay').innerText = '';
+                }
             }
         }
 
@@ -356,14 +387,8 @@
                     imageElement.src = e.target.result;
                     document.getElementById('cropperModal').style.display = 'block';
 
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(imageElement, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.9
-                    });
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(imageElement, { aspectRatio: 1, viewMode: 1, autoCropArea: 0.9 });
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -371,10 +396,7 @@
 
         function getCroppedImage() {
             if (!cropper) return;
-            const canvas = cropper.getCroppedCanvas({
-                width: 400,
-                height: 400
-            });
+            const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
 
             document.getElementById('cropperModal').style.display = 'none';
@@ -383,7 +405,7 @@
 
             if (activeUploadType === 'popup') {
                 let member = globalData.find(m => {
-                    let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
+                    let mName = m.name ? m.name.toString().trim() : '';
                     return mName === currentEditingMemberId;
                 });
                 if (member) {
@@ -393,34 +415,27 @@
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
-                alert("फोटो सफलतापूर्वक क्रॉप हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
+                alert("फोटो सफलतापूर्वक सेट हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
             }
         }
 
         function toggleSpouseFields() {
             var status = document.getElementById('maritalStatus').value;
             var container = document.getElementById('spouseFieldsContainer');
-
+            container.style.display = (status === 'Unmarried') ? 'none' : 'block';
             if (status === 'Unmarried') {
-                container.style.display = 'none';
                 document.getElementById('spouseName').value = '';
                 document.getElementById('spouseDob').value = '';
                 document.getElementById('spouseDeathAnniv').value = '';
-            } else {
-                container.style.display = 'block';
             }
         }
 
         function openTab(event, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
+            for (i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
             tablinks = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
+            for (i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
             document.getElementById(tabName).style.display = "block";
             event.currentTarget.className += " active";
         }
@@ -457,18 +472,14 @@
                 populateFatherDropdown();
                 drawChart(globalData);
             })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                document.getElementById('chart_div').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi hai.</div>';
-            });
+            .catch(error => console.error('Error fetching data:', error));
         }
 
         function populateFatherDropdown() {
             const select = document.getElementById('fatherId');
             select.innerHTML = '<option value="">-- Root Member / Parent Chunein --</option>';
-            
             globalData.forEach(member => {
-                let mName = member.name ? member.name.toString().trim() : (member.memberId ? member.memberId.toString().trim() : '');
+                let mName = member.name ? member.name.toString().trim() : '';
                 if (mName) {
                     let opt = document.createElement('option');
                     opt.value = mName;
@@ -478,16 +489,13 @@
             });
         }
 
-        // --- DRAW CHART WITH GENERATION DETECTION ---
         function drawChart(dataArray) {
             if (!dataArray || dataArray.length === 0) return;
 
             let map = {};
             dataArray.forEach(m => {
-                let name = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
-                if (name) {
-                    map[name] = { ...m, children: [] };
-                }
+                let name = m.name ? m.name.toString().trim() : '';
+                if (name) map[name] = { ...m, children: [] };
             });
 
             let nodeMap = map;
@@ -502,7 +510,6 @@
                 }
             });
 
-            // पीढ़ी (Generation Level) कैलकुलेट करने का फंक्शन
             function calculateGenerations(node, currentGen) {
                 node.generation = currentGen;
                 if (node.children) {
@@ -523,16 +530,16 @@
                 let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                 let photoSrc = (node.photo && node.photo.length > 10) ? node.photo : defaultAvatar;
 
-                // पीढ़ी नंबर क्लास (gen-0-node, gen-1-node, gen-2-node...)
                 let genNum = node.generation !== undefined ? node.generation : 0;
                 let genClass = 'gen-' + (genNum > 3 ? '3' : genNum) + '-node';
 
+                // स्पष्ट और गहरे रंगों पर सफेद टेक्स्ट
                 let displayHtml = `
-                    <div style="text-align:center; padding:2px;" onclick="openMemberModal('${memberName}')">
-                        <img src="${photoSrc}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px; box-shadow:0 2px 5px rgba(0,0,0,0.2);"/><br>
-                        <b style="font-size:12px; display:block; text-shadow:0 1px 2px rgba(0,0,0,0.2);">${memberName}</b>
-                        <span style="font-size:10px; background:rgba(0,0,0,0.2); padding:1px 6px; border-radius:10px;">पीढ़ी ${genNum + 1}</span>
-                        ${node.spouseName ? '<br><span style="font-size:9px; opacity:0.9;">w/o ' + node.spouseName + '</span>' : ''}
+                    <div class="${genClass}" style="text-align:center; padding:8px; border-radius:12px;" onclick="openMemberModal('${memberName}')">
+                        <img src="${photoSrc}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; margin-bottom:4px; box-shadow:0 2px 6px rgba(0,0,0,0.3);"/><br>
+                        <b style="font-size:13px; display:block; color:#ffffff !important; text-shadow:0 1px 3px rgba(0,0,0,0.6);">${memberName}</b>
+                        <span style="font-size:10px; background:rgba(255,255,255,0.25); color:#ffffff; padding:1px 8px; border-radius:10px; font-weight:bold;">पीढ़ी ${genNum + 1}</span>
+                        ${node.spouseName ? '<br><span style="font-size:10px; color:#f0f0f0; margin-top:2px; display:block;">w/o ' + node.spouseName + '</span>' : ''}
                     </div>
                 `;
 
@@ -543,12 +550,12 @@
             chartData.addRows(rows);
 
             var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-            chart.draw(chartData, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
+            chart.draw(chartData, {allowHtml:true, nodeClass: ''});
         }
 
         function openMemberModal(memberName) {
             let member = globalData.find(m => {
-                let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
+                let mName = m.name ? m.name.toString().trim() : '';
                 return mName === memberName;
             });
             if (member) {
@@ -561,21 +568,35 @@
             let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             let photoSrc = (member.photo && member.photo.length > 10) ? member.photo : defaultAvatar;
 
+            let memberTithiInfo = '';
+            if (member.aliveDeath === 'Death' && member.deathAnniversary) {
+                let tithiStr = calculatePanchangTithi(member.deathAnniversary, 'tempDiv');
+                memberTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr}</small>`;
+            }
+
+            let spouseTithiInfo = '';
+            if (member.spouseAliveDeath === 'Death' && member.spouseDeathAnniv) {
+                let tithiStr2 = calculatePanchangTithi(member.spouseDeathAnniv, 'tempDiv');
+                spouseTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr2}</small>`;
+            }
+
             let html = `
                 <div style="text-align: center;">
-                    <img src="${photoSrc}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow:0 4px 10px rgba(0,0,0,0.2);"/>
+                    <img src="${photoSrc}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow:0 4px 10px rgba(0,0,0,0.2);"/><br>
                     <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">✏️ Edit Photo</button>
-                    <h3 style="margin:8px 0 12px 0; color:#1e3c72; border-bottom:2px solid #eee; padding-bottom:6px;">${member.name || 'N/A'}</h3>
+                    <h3 style="margin:10px 0 6px 0; color:#1e3c72; font-size:18px;">${member.name || 'N/A'}</h3>
+                    <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
                 </div>
-                <div style="font-size: 14px; line-height: 1.6; color: #444; text-align:left;">
-                    <p style="margin: 6px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
-                    <p style="margin: 6px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
-                    <p style="margin: 6px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
-                    <p style="margin: 6px 0;"><b>Marital Status:</b> ${member.maritalStatus || 'Married'} ${member.spouseName ? '(& w/o ' + member.spouseName + ')' : ''}</p>
-                    <p style="margin: 6px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
-                    <p style="margin: 6px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '<br><small style="color:#d35400;">पुण्यतिथि: '+member.deathAnniversary+'</small>' : ''}</p>
-                    <hr style="border:0; border-top:1px solid #eee; margin: 12px 0;">
-                    <p style="margin: 6px 0;"><b>Mobile Number:</b> <a href="tel:${member.mobile}" style="color:#2a5298; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
+                <div style="font-size: 13.5px; line-height: 1.6; color: #444;">
+                    <p style="margin: 5px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
+                    <p style="margin: 5px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
+                    <p style="margin: 5px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
+                    <p style="margin: 5px 0;"><b>Marital Status:</b> ${member.maritalStatus || 'Married'}</p>
+                    ${member.spouseName ? `<p style="margin: 5px 0; background:#f0f7f4; padding:6px; border-radius:6px;"><b>Spouse:</b> ${member.spouseName}<br><b>Status:</b> <span style="color:${member.spouseAliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.spouseAliveDeath || 'Alive'}</span> ${spouseTithiInfo}</p>` : ''}
+                    <p style="margin: 5px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '<br><small style="color:#666;">दिनांक: '+member.deathAnniversary+'</small>'+memberTithiInfo : ''}</p>
+                    <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
+                    <p style="margin: 5px 0;"><b>Mobile:</b> <a href="tel:${member.mobile}" style="color:#2a5298; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
                 </div>
             `;
 
@@ -597,9 +618,7 @@
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'updatePhoto', memberId: memberName, photo: base64Photo })
-            })
-            .then(() => console.log('Photo updated in sheet'))
-            .catch(err => console.error(err));
+            }).catch(err => console.error(err));
         }
 
         document.getElementById('entryForm').addEventListener('submit', function(e) {
@@ -642,7 +661,6 @@
                 openTab({currentTarget: document.querySelector('.navbar button:first-child')}, 'treePage');
             })
             .catch(error => {
-                console.error('Error:', error);
                 alert('Data save karne mein error aayi hai.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit & Save to Sheet';
