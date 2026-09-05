@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organic Branch Family Tree</title>
-    <!-- Google Charts -->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Cropper.js CSS & JS -->
@@ -20,7 +18,7 @@
         .navbar button:hover { background-color: rgba(255,255,255,0.15); }
         .navbar button.active { background-color: #ffb300; color: #1b5e20; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
-        .tab-content { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
         .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2e7d32; max-width: 800px; margin: auto; }
@@ -41,93 +39,109 @@
         .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .chart-scroll-wrapper { 
+        /* --- Custom Organic Curved & Diagonal Branch Tree Styles --- */
+        .tree-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
-            display: block; 
-            padding: 20px; 
-            min-height: 500px; 
+            padding: 30px 10px; 
+            min-height: 600px; 
             background: radial-gradient(circle, #f1f8e9 0%, #dcedc8 100%); 
             border-radius: 12px; 
             border: 2px dashed #81c784; 
             position: relative;
         }
-        
-        #chart_div { 
-            display: inline-block; 
-            min-width: 100%; 
-            transform: scale(0.85); 
-            transform-origin: top center; 
-        }
-        
-        #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
-        /* --- MODERN ORGANIC LEAF CARDS --- */
-        .google-visualization-orgchart-node { 
-            cursor: pointer !important; 
-            color: #263238 !important;
-            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%) !important;
-            border: 3px solid #558b2f !important; 
-            border-radius: 30px !important; 
-            padding: 14px 18px !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9) !important;
+        .tree-root-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
 
-        .google-visualization-orgchart-node:hover {
+        .tree-children-container {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            margin-top: 60px;
+            gap: 30px;
+        }
+
+        /* तिरछी और प्राकृतिक घुमावदार टहनियाँ (Curved Diagonal Branch Connectors) */
+        .tree-children-container::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 15%;
+            right: 15%;
+            height: 30px;
+            border-top: 4px solid #5d4037;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tree-node-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .tree-node-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 4px;
+            height: 30px;
+            background: #5d4037;
+            transform: translateX(-50%);
+        }
+
+        /* --- Leaf Node Card --- */
+        .organic-leaf-card {
+            cursor: pointer;
+            color: #263238;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
+            border: 3px solid #558b2f;
+            border-radius: 35px;
+            padding: 12px 16px;
+            text-align: center;
+            width: 140px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .organic-leaf-card:hover {
             transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%) !important;
-            border-color: #f57f17 !important;
-            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4) !important;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
+            border-color: #f57f17;
+            box-shadow: 0 12px 25px rgba(245, 127, 23, 0.4);
         }
 
-        /* Generation Leaf Colors */
-        .gen-0-node {
-            background: linear-gradient(135deg, #ffe082 0%, #ffb300 100%) !important;
+        /* Generation Color Themes */
+        .gen-0-card {
+            background: linear-gradient(135deg, #ffe082 0%, #ffb300 !important);
             border-color: #e65100 !important;
             color: #fff !important;
+            width: 170px;
         }
-        .gen-0-node b { color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .gen-0-card b { color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
 
-        .gen-1-node {
-            background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%) !important;
-            border-color: #33691e !important;
-        }
-
-        .gen-2-node {
-            background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%) !important;
-            border-color: #004d40 !important;
+        .gen-1-card {
+            background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%);
+            border-color: #33691e;
         }
 
-        .gen-3-node {
-            background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%) !important;
-            border-color: #1a237e !important;
+        .gen-2-card {
+            background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%);
+            border-color: #004d40;
         }
 
-        /* --- NATURAL CURVED BRANCH LINES (प्राकृतिक घुमावदार टहनियाँ) --- */
-        .google-visualization-orgchart-lineleft {
-            border-top: 4px solid #5d4037 !important;
-            border-left: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 12px 0 0 12px;
-        }
-        
-        .google-visualization-orgchart-lineright {
-            border-top: 4px solid #5d4037 !important;
-            border-left: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 0 12px 12px 0;
-        }
-
-        .google-visualization-orgchart-linebottom {
-            border-left: 4px solid #5d4037 !important;
-            border-top: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 0 0 12px 12px;
-            box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);
+        .gen-3-card {
+            background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%);
+            border-color: #1a237e;
         }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
@@ -164,14 +178,14 @@
     </div>
 
     <div class="navbar">
-        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Curved Branch Tree</button>
+        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌿 Organic Curved Tree</button>
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष</h2>
+                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक तिरछी और घुमावदार टहनियों वाला वृक्ष</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
 
@@ -182,10 +196,10 @@
             <div id="pdfContent" style="background: #f1f8e9; padding: 15px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Organic Family Tree Report</h3>
 
-                <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div">
+                <div class="tree-scroll-wrapper" id="scrollWrapper">
+                    <div id="organic_tree_div" style="display: flex; justify-content: center; width: max-content; min-width: 100%;">
                         <div style="text-align:center; padding:40px; color:#558b2f; font-weight:bold;">
-                            Curved branches load ho rahi hain...
+                            Organic branches load ho rahi hain...
                         </div>
                     </div>
                 </div>
@@ -307,11 +321,6 @@
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
 
-        function getSafeId(nameStr) {
-            if (!nameStr) return '';
-            return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
-        }
-
         function handleFileSelect(input, type) {
             activeUploadType = type;
             if (input.files && input.files[0]) {
@@ -354,7 +363,7 @@
                 if (member) {
                     member.photo = finalProcessedPhoto;
                     showPopup(member);
-                    drawChart(globalData);
+                    buildOrganicTree(globalData);
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
@@ -391,10 +400,12 @@
 
         document.getElementById("defaultOpen").click();
 
-        google.charts.load('current', {packages:["orgchart"]});
-        google.charts.setOnLoadCallback(fetchDataAndDrawChart);
+        // Data Fetching on load
+        window.onload = function() {
+            fetchDataAndBuildTree();
+        };
 
-        function fetchDataAndDrawChart() {
+        function fetchDataAndBuildTree() {
             fetch(scriptURL)
             .then(response => response.json())
             .then(jsonData => {
@@ -419,11 +430,11 @@
                 });
                 
                 populateFatherDropdown(globalData);
-                drawChart(globalData);
+                buildOrganicTree(globalData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                document.getElementById('chart_div').innerHTML =
+                document.getElementById('organic_tree_div').innerHTML =
                     '<div style="text-align:center; padding:30px; color:red;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
             });
         }
@@ -457,88 +468,105 @@
             }
         }
 
-        function drawChart(rowsData) {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Member');
-            data.addColumn('string', 'Father');
-            data.addColumn('string', 'ToolTip');
+        // Recursive function to build Custom Organic Tree HTML structure
+        function createNodeElement(nodeName, dataMap, level) {
+            let member = dataMap[nodeName];
+            let wrapper = document.createElement('div');
+            wrapper.className = 'tree-node-wrapper';
 
-            let parentMap = {};
+            let card = document.createElement('div');
+            let cardClass = level === 0 ? 'organic-leaf-card gen-0-card' : `organic-leaf-card gen-${Math.min(level, 3)}-card`;
+            card.className = cardClass;
+
+            let photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            if (member && member.photo && member.photo.trim() !== '' && member.photo !== 'undefined' && member.photo !== 'null') {
+                photoURL = member.photo;
+            }
+
+            let orderNum = member && member.childOrder ? member.childOrder.toString().trim() : '';
+            let badgeHTML = orderNum
+                ? `<span style="background:rgba(0,0,0,0.15); padding:1px 6px; border-radius:10px; font-size:10px; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
+                : '';
+
+            card.innerHTML = `
+                <img src="${photoURL}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin-bottom:3px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                ${badgeHTML}
+                <b style="font-size:13px;">🍃 ${nodeName}</b>
+            `;
+
+            card.onclick = function() {
+                if (member) {
+                    showPopup(member);
+                }
+            };
+
+            wrapper.appendChild(card);
+
+            // Check if this node has children
+            let children = [];
+            for (let key in dataMap) {
+                if (dataMap[key].fatherId && dataMap[key].fatherId.toString().trim().toLowerCase() === nodeName.toLowerCase()) {
+                    children.push(key);
+                }
+            }
+
+            // Sort children by childOrder if available
+            children.sort((a, b) => {
+                let orderA = parseInt(dataMap[a].childOrder) || 999;
+                let orderB = parseInt(dataMap[b].childOrder) || 999;
+                return orderA - orderB;
+            });
+
+            if (children.length > 0) {
+                let childrenContainer = document.createElement('div');
+                childrenContainer.className = 'tree-children-container';
+
+                children.forEach(childName => {
+                    let childElement = createNodeElement(childName, dataMap, level + 1);
+                    childrenContainer.appendChild(childElement);
+                });
+
+                wrapper.appendChild(childrenContainer);
+            }
+
+            return wrapper;
+        }
+
+        function buildOrganicTree(rowsData) {
+            let dataMap = {};
+            rowsData.forEach(row => {
+                let name = row.name ? row.name.toString().trim() : '';
+                if (name) {
+                    dataMap[name] = row;
+                }
+            });
+
+            // Find Root node (jo kisi ka child nahi hai ya jiska fatherId khali/invalid hai)
+            let rootName = '';
             rowsData.forEach(row => {
                 let name = row.name ? row.name.toString().trim() : '';
                 let father = row.fatherId ? row.fatherId.toString().trim() : '';
-                if (name) parentMap[name] = father;
+                if (name && (!father || !dataMap[father])) {
+                    if (!rootName) rootName = name;
+                }
             });
 
-            function getGenLevel(name) {
-                let level = 0;
-                let current = name;
-                while (parentMap[current] && parentMap[current] !== '' && level < 5) {
-                    current = parentMap[current];
-                    level++;
-                }
-                return level;
+            if (!rootName && rowsData.length > 0) {
+                rootName = rowsData[0].name;
             }
 
-            var rows = [];
-            rowsData.forEach(function(row) {
-                var rawName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
-                var rawFather = row.fatherId ? row.fatherId.toString().trim() : '';
-                var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
+            let containerDiv = document.getElementById('organic_tree_div');
+            containerDiv.innerHTML = '';
 
-                if(rawName) {
-                    var safeNodeId = getSafeId(rawName);
-                    var safeFatherId = getSafeId(rawFather);
-
-                    var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-                    if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
-                        photoURL = row.photo;
-                    }
-
-                    let genLevel = getGenLevel(rawName);
-                    var nodeClass = 'google-visualization-orgchart-node gen-' + Math.min(genLevel, 3) + '-node';
-
-                    var badgeHTML = orderNum
-                        ? `<span style="background:rgba(0,0,0,0.15); padding:1px 6px; border-radius:10px; font-size:10px; font-weight:bold; margin-bottom:2px; display:inline-block;">No. ${orderNum}</span><br>`
-                        : '';
-
-                    var shortView =
-                        '<div class="' + nodeClass + '" style="font-family: Arial; font-size: 12px; text-align:center;">' +
-                        '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin-bottom:3px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
-                        badgeHTML +
-                        '<b style="font-size:13px;">🍃 ' + rawName + '</b></div>';
-
-                    rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
-                }
-            });
-
-            if(rows.length === 0) {
-                rows.push([{v:'Jagdish_Chandra_Tiwari', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Jagdish Chandra Tiwari']);
+            if (rootName && dataMap[rootName]) {
+                let rootElement = createNodeElement(rootName, dataMap, 0);
+                let rootBox = document.createElement('div');
+                rootBox.className = 'tree-root-box';
+                rootBox.appendChild(rootElement);
+                containerDiv.appendChild(rootBox);
+            } else {
+                containerDiv.innerHTML = '<div style="text-align:center; padding:30px; color:#558b2f; font-weight:bold;">Koi Root Member nahi mila. Kripya naya data enter karein.</div>';
             }
-
-            data.addRows(rows);
-
-            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-
-            google.visualization.events.addListener(chart, 'select', function() {
-                var selection = chart.getSelection();
-                if (selection.length > 0) {
-                    var rowIdx = selection[0].row;
-                    var selectedSafeId = data.getValue(rowIdx, 0);
-                    let memberInfo = globalData.find(m => {
-                        let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
-                        return getSafeId(mName) === selectedSafeId;
-                    });
-                    if(memberInfo) {
-                        showPopup(memberInfo);
-                    }
-                }
-            });
-
-            chart.draw(data, {
-                allowHtml: true,
-                nodeClass: 'google-visualization-orgchart-node'
-            });
         }
 
         function showPopup(info) {
@@ -626,7 +654,7 @@
             document.getElementById('pdfTitle').style.display = 'block';
             var opt = {
                 margin: 0.5,
-                filename: 'Organic_Family_Tree.pdf',
+                filename: 'Organic_Branch_Family_Tree.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
