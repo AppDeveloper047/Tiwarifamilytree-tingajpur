@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organic Branch Family Tree</title>
-    <!-- Google Charts -->
+    <title>True Organic Natural Family Tree</title>
+    <!-- Google Charts (Data management ke liye) -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -20,7 +20,7 @@
         .navbar button:hover { background-color: rgba(255,255,255,0.15); }
         .navbar button.active { background-color: #ffb300; color: #1b5e20; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
 
-        .tab-content { display: none; padding: 20px; max-width: 1200px; margin: auto; }
+        .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
         .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2e7d32; max-width: 800px; margin: auto; }
@@ -41,94 +41,68 @@
         .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
+        /* --- TRUE ORGANIC SVG BRANCH GRAPH CONTAINER --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
             display: block; 
-            padding: 20px; 
-            min-height: 500px; 
+            padding: 30px; 
+            min-height: 600px; 
             background: radial-gradient(circle, #f1f8e9 0%, #dcedc8 100%); 
             border-radius: 12px; 
             border: 2px dashed #81c784; 
             position: relative;
         }
-        
-        #chart_div { 
-            display: inline-block; 
-            min-width: 100%; 
-            transform: scale(0.85); 
-            transform-origin: top center; 
-        }
-        
-        #chart_div table { margin: 0 auto; border-collapse: separate !important; }
 
-        /* --- MODERN ORGANIC LEAF CARDS --- */
-        .google-visualization-orgchart-node { 
-            cursor: pointer !important; 
-            color: #263238 !important;
-            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%) !important;
-            border: 3px solid #558b2f !important; 
-            border-radius: 30px !important; 
-            padding: 14px 18px !important;
-            transition: all 0.3s ease !important;
-            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9) !important;
+        #organic_tree_canvas {
+            position: relative;
+            min-width: 1200px;
+            min-height: 800px;
+            margin: auto;
         }
 
-        .google-visualization-orgchart-node:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%) !important;
-            border-color: #f57f17 !important;
-            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4) !important;
+        /* SVG Curved Branches Layer */
+        #branch_svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        /* Generation Leaf Colors */
-        .gen-0-node {
-            background: linear-gradient(135deg, #ffe082 0%, #ffb300 100%) !important;
-            border-color: #e65100 !important;
-            color: #fff !important;
-        }
-        .gen-0-node b { color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-
-        .gen-1-node {
-            background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%) !important;
-            border-color: #33691e !important;
-        }
-
-        .gen-2-node {
-            background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%) !important;
-            border-color: #004d40 !important;
-        }
-
-        .gen-3-node {
-            background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%) !important;
-            border-color: #1a237e !important;
+        /* Organic Leaf / Node Styles */
+        .organic-node {
+            position: absolute;
+            cursor: pointer;
+            color: #263238;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
+            border: 3px solid #558b2f;
+            border-radius: 50px;
+            padding: 10px 18px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9);
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            min-width: 130px;
         }
 
-        /* --- CURVED & ORGANIC BRANCH LINES (घुमावदार और प्राकृतिक टहनियाँ) --- */
-        .google-visualization-orgchart-lineleft {
-            border-top: 4px solid #5d4037 !important;
-            border-left: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 12px 0 0 12px;
-        }
-        
-        .google-visualization-orgchart-lineright {
-            border-top: 4px solid #5d4037 !important;
-            border-left: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 0 12px 12px 0;
+        .organic-node:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
+            border-color: #f57f17;
+            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4);
+            z-index: 10;
         }
 
-        .google-visualization-orgchart-linebottom {
-            border-left: 4px solid #5d4037 !important;
-            border-top: none !important;
-            border-right: none !important;
-            border-bottom: none !important;
-            border-radius: 0 0 12px 12px;
-            box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);
-        }
+        /* Generation Node Colors */
+        .gen-0-node { background: linear-gradient(135deg, #ffe082 0%, #ffb300 100%); border-color: #e65100; color: #fff; }
+        .gen-0-node b { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .gen-1-node { background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%); border-color: #33691e; }
+        .gen-2-node { background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%); border-color: #004d40; }
+        .gen-3-node { background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%); border-color: #1a237e; }
 
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
         .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #2e7d32; }
@@ -164,29 +138,28 @@
     </div>
 
     <div class="navbar">
-        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Curved Branch Tree</button>
+        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Organic Curved Branches</button>
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष</h2>
+                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वंश वृक्ष</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
 
             <p style="color: #555; font-size: 12px; margin-bottom: 10px;">
-                किसी भी सदस्य के बॉक्स पर क्लिक करके पूरी जानकारी देखें:
+                किसी भी सदस्य के पत्ते (Leaf) पर क्लिक करके उसकी पूरी जानकारी देखें:
             </p>
             
             <div id="pdfContent" style="background: #f1f8e9; padding: 15px; border-radius: 10px;">
-                <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Organic Family Tree Report</h3>
+                <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Natural Organic Family Tree Report</h3>
 
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
-                    <div id="chart_div">
-                        <div style="text-align:center; padding:40px; color:#558b2f; font-weight:bold;">
-                            Curved branches load ho rahi hain...
-                        </div>
+                    <div id="organic_tree_canvas">
+                        <svg id="branch_svg"></svg>
+                        <!-- Nodes dynamic insert honge -->
                     </div>
                 </div>
             </div>
@@ -307,11 +280,6 @@
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
 
-        function getSafeId(nameStr) {
-            if (!nameStr) return '';
-            return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
-        }
-
         function handleFileSelect(input, type) {
             activeUploadType = type;
             if (input.files && input.files[0]) {
@@ -354,7 +322,7 @@
                 if (member) {
                     member.photo = finalProcessedPhoto;
                     showPopup(member);
-                    drawChart(globalData);
+                    renderOrganicTree(globalData);
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
@@ -391,10 +359,12 @@
 
         document.getElementById("defaultOpen").click();
 
-        google.charts.load('current', {packages:["orgchart"]});
-        google.charts.setOnLoadCallback(fetchDataAndDrawChart);
+        // Data fetch and render organic tree on load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchDataAndBuildTree();
+        });
 
-        function fetchDataAndDrawChart() {
+        function fetchDataAndBuildTree() {
             fetch(scriptURL)
             .then(response => response.json())
             .then(jsonData => {
@@ -419,12 +389,12 @@
                 });
                 
                 populateFatherDropdown(globalData);
-                drawChart(globalData);
+                renderOrganicTree(globalData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                document.getElementById('chart_div').innerHTML =
-                    '<div style="text-align:center; padding:30px; color:red;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
+                document.getElementById('organic_tree_canvas').innerHTML =
+                    '<div style="text-align:center; padding:50px; color:red; font-weight:bold;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
             });
         }
 
@@ -457,118 +427,145 @@
             }
         }
 
-        function calculateGenerations(rowsData) {
-            let genMap = {};
+        // --- TRUE ORGANIC CURVED BRANCH GRAPH ENGINE ---
+        function renderOrganicTree(rowsData) {
+            const canvas = document.getElementById('organic_tree_canvas');
+            const svg = document.getElementById('branch_svg');
+            
+            // Clear previous elements except svg
+            canvas.querySelectorAll('.organic-node').forEach(n => n.remove());
+            svg.innerHTML = '';
+
+            if (!rowsData || rowsData.length === 0) return;
+
+            // Map and Hierarchy Setup
+            let nodeMap = {};
             let childrenMap = {};
+            let allNames = new Set();
 
             rowsData.forEach(row => {
-                let name = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
-                let father = row.fatherId ? row.fatherId.toString().trim() : '';
+                let name = (row.name || row.memberId || '').toString().trim();
+                if (name) {
+                    allNames.add(name);
+                    nodeMap[name] = row;
+                }
+            });
+
+            rowsData.forEach(row => {
+                let name = (row.name || row.memberId || '').toString().trim();
+                let father = (row.fatherId || '').toString().trim();
                 if (name) {
                     if (!childrenMap[father]) childrenMap[father] = [];
                     childrenMap[father].push(name);
                 }
             });
 
-            let allNames = new Set(rowsData.map(r => (r.name || r.memberId || '').toString().trim()));
+            // Find Roots
             let roots = rowsData.filter(r => {
                 let f = (r.fatherId || '').toString().trim();
                 return !f || !allNames.has(f);
             }).map(r => (r.name || r.memberId || '').toString().trim());
 
-            let queue = [];
-            roots.forEach(r => {
-                genMap[r] = 0;
-                queue.push(r);
-            });
+            if (roots.length === 0 && rowsData.length > 0) {
+                roots = [(rowsData[0].name || rowsData[0].memberId).toString().trim()];
+            }
 
-            while (queue.length > 0) {
-                let curr = queue.shift();
-                let currGen = genMap[curr] || 0;
-                let kids = childrenMap[curr] || [];
-                kids.forEach(kid => {
-                    if (genMap[kid] === undefined) {
-                        genMap[kid] = currGen + 1;
-                        queue.push(kid);
+            // Assign Levels and compute layout coordinates (X, Y)
+            let levels = {};
+            let queue = roots.map(r => ({name: r, gen: 0}));
+            roots.forEach(r => levels[r] = 0);
+
+            let genRows = {};
+            while(queue.length > 0) {
+                let item = queue.shift();
+                let g = item.gen;
+                if(!genRows[g]) genRows[g] = [];
+                genRows[g].push(item.name);
+
+                let kids = childrenMap[item.name] || [];
+                kids.forEach(k => {
+                    if (levels[k] === undefined) {
+                        levels[k] = g + 1;
+                        queue.push({name: k, gen: g + 1});
                     }
                 });
             }
 
-            return genMap;
-        }
+            // Calculate Node Positions (X, Y)
+            let coords = {};
+            let maxGen = Object.keys(genRows).length;
+            let canvasHeight = Math.max(800, (maxGen + 1) * 180 + 100);
+            let canvasWidth = 1200;
+            canvas.style.height = canvasHeight + 'px';
+            canvas.style.minWidth = canvasWidth + 'px';
 
-        function drawChart(rowsData) {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Member');
-            data.addColumn('string', 'Father');
-            data.addColumn('string', 'ToolTip');
+            Object.keys(genRows).forEach(g => {
+                let membersInGen = genRows[g];
+                let count = membersInGen.length;
+                let y = 80 + parseInt(g) * 160;
+                let spacing = canvasWidth / (count + 1);
 
-            let genMap = calculateGenerations(rowsData);
+                membersInGen.forEach((mName, idx) => {
+                    let x = spacing * (idx + 1);
+                    coords[mName] = {x: x, y: y};
+                });
+            });
 
-            var rows = [];
-            rowsData.forEach(function(row) {
-                var rawName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
-                var rawFather = row.fatherId ? row.fatherId.toString().trim() : '';
-                var orderNum = row.childOrder ? row.childOrder.toString().trim() : '';
+            // Draw Curved Bezier Branches (टहनियाँ) via SVG
+            rowsData.forEach(row => {
+                let name = (row.name || row.memberId || '').toString().trim();
+                let father = (row.fatherId || '').toString().trim();
 
-                if(rawName) {
-                    var safeNodeId = getSafeId(rawName);
-                    var safeFatherId = getSafeId(rawFather);
+                if (name && coords[name] && father && coords[father]) {
+                    let p1 = coords[father];
+                    let p2 = coords[name];
 
-                    var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                    // Bezier Curve control points for natural winding organic branches (आड़ी-तिरछी घुमावदार टहनियाँ)
+                    let cx1 = p1.x;
+                    let cy1 = p1.y + (p2.y - p1.y) / 2;
+                    let cx2 = p2.x;
+                    let cy2 = p1.y + (p2.y - p1.y) / 2;
+
+                    let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    let dStr = `M ${p1.x} ${p1.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${p2.x} ${p2.y}`;
+                    path.setAttribute("d", dStr);
+                    path.setAttribute("fill", "none");
+                    path.setAttribute("stroke", "#5d4037"); // Organic bark brown color
+                    path.setAttribute("stroke-width", "4.5");
+                    path.setAttribute("stroke-linecap", "round");
+                    path.style.filter = "drop-shadow(1px 2px 2px rgba(0,0,0,0.2))";
+                    svg.appendChild(path);
+                }
+            });
+
+            // Render Member Nodes (पत्ते / फल रूपी कार्ड्स)
+            rowsData.forEach(row => {
+                let name = (row.name || row.memberId || '').toString().trim();
+                if (name && coords[name]) {
+                    let pos = coords[name];
+                    let genLevel = levels[name] !== undefined ? levels[name] : 1;
+                    let genClass = genLevel === 0 ? 'gen-0-node' : (genLevel === 1 ? 'gen-1-node' : (genLevel === 2 ? 'gen-2-node' : 'gen-3-node'));
+
+                    let photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
                     if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
                         photoURL = row.photo;
                     }
 
-                    let genLevel = genMap[rawName] !== undefined ? genMap[rawName] : 1;
-                    let genClass = 'gen-1-node';
-                    if (genLevel === 0) genClass = 'gen-0-node';
-                    else if (genLevel === 1) genClass = 'gen-1-node';
-                    else if (genLevel === 2) genClass = 'gen-2-node';
-                    else genClass = 'gen-3-node';
+                    let orderNum = row.childOrder ? `<span style="background:#558b2f; padding:1px 6px; border-radius:10px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">Branch ${row.childOrder}</span><br>` : '';
 
-                    var nodeClass = `google-visualization-orgchart-node ${genClass}`;
+                    let nodeDiv = document.createElement('div');
+                    nodeDiv.className = `organic-node ${genClass}`;
+                    nodeDiv.style.left = pos.x + 'px';
+                    nodeDiv.style.top = pos.y + 'px';
+                    nodeDiv.innerHTML = `
+                        <img src="${photoURL}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.25); margin-bottom:4px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                        ${orderNum}
+                        <b style="font-size:12px; display:block;">🌿 ${name}</b>
+                    `;
 
-                    var badgeHTML = orderNum
-                        ? `<span style="background:#558b2f; padding:1px 6px; border-radius:10px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">Branch ${orderNum}</span><br>`
-                        : '';
-
-                    var shortView =
-                        '<div class="' + nodeClass + '" style="font-family: Arial; text-align:center;">' +
-                        '<img src="' + photoURL + '" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.25); margin-bottom:4px;" onerror="this.src=\'https://cdn-icons-png.flaticon.com/512/149/149071.png\'"><br>' +
-                        badgeHTML +
-                        '<b style="font-size:12px; display:block;">🌿 ' + rawName + '</b></div>';
-
-                    rows.push([{v: safeNodeId, f: shortView}, safeFatherId, rawName]);
+                    nodeDiv.onclick = () => showPopup(row);
+                    canvas.appendChild(nodeDiv);
                 }
-            });
-
-            if(rows.length === 0) {
-                rows.push([{v:'Jagdish_Chandra_Tiwari', f: '<b>Jagdish Chandra Tiwari</b>'}, '', 'Jagdish Chandra Tiwari']);
-            }
-
-            data.addRows(rows);
-
-            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-
-            google.visualization.events.addListener(chart, 'select', function() {
-                var selection = chart.getSelection();
-                if (selection.length > 0) {
-                    var rowIdx = selection[0].row;
-                    var selectedSafeId = data.getValue(rowIdx, 0);
-                    let memberInfo = globalData.find(m => {
-                        let mName = m.name ? m.name.toString().trim() : (m.memberId ? m.memberId.toString().trim() : '');
-                        return getSafeId(mName) === selectedSafeId;
-                    });
-                    if(memberInfo) {
-                        showPopup(memberInfo);
-                    }
-                }
-            });
-
-            chart.draw(data, {
-                allowHtml: true,
-                nodeClass: 'google-visualization-orgchart-node'
             });
         }
 
@@ -657,7 +654,7 @@
             document.getElementById('pdfTitle').style.display = 'block';
             var opt = {
                 margin: 0.5,
-                filename: 'Organic_Branch_Tree.pdf',
+                filename: 'Natural_Organic_Family_Tree.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
@@ -686,7 +683,7 @@
                 name: nameVal,
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
+                dob: document.getElementById('dob'].value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
@@ -720,7 +717,7 @@
                 toggleSpouseFields();
                 finalProcessedPhoto = '';
                 submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled, submitBtn.disabled = false;
+                submitBtn.disabled = false;
                 setTimeout(() => { location.reload(); }, 1000);
             });
         }
