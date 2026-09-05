@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organic Curved Branch Family Tree</title>
+    <title>Family Tree Application</title>
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Cropper.js CSS & JS -->
@@ -11,63 +11,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); color: #333; min-height: 100vh; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f6f9; color: #333; }
         
-        .navbar { background: linear-gradient(90deg, #2e7d32 0%, #1b5e20 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; letter-spacing: 0.5px; }
-        .navbar button:hover { background-color: rgba(255,255,255,0.15); }
-        .navbar button.active { background-color: #ffb300; color: #1b5e20; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2); }
+        .navbar { background-color: #2c3e50; overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 14px 28px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; }
+        .navbar button:hover { background-color: #34495e; }
+        .navbar button.active { background-color: #3498db; }
 
         .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
-        .form-card { background: #fff; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2e7d32; max-width: 800px; margin: auto; }
-        .form-card h2 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #ffb300; padding-bottom: 12px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; transition: 0.3s; }
-        input:focus, select:focus { border-color: #2e7d32; outline: none; box-shadow: 0 0 8px rgba(46,125,50,0.2); }
-        .submit-btn { background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(46,125,50,0.3); }
-        .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .form-card { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 700px; margin: auto; }
+        .form-card h2 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #555; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        input:focus, select:focus { border-color: #3498db; outline: none; }
+        .submit-btn { background-color: #27ae60; color: white; padding: 12px; border: none; width: 100%; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .submit-btn:hover { background-color: #219653; }
 
-        .contact-note { background: #fff3cd; border-left: 5px solid #ffb300; padding: 15px; border-radius: 8px; margin-top: 25px; font-size: 14px; color: #856404; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
-        .contact-note a { color: #d35400; font-weight: bold; text-decoration: none; }
-        .contact-note a:hover { text-decoration: underline; }
+        .contact-note { background: #fff8e1; border-left: 4px solid #ffc107; padding: 12px; border-radius: 6px; margin-top: 20px; font-size: 14px; color: #856404; text-align: center; }
+        .contact-note a { color: #e67e22; font-weight: bold; text-decoration: none; }
 
-        .tree-container { background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ffb300; }
+        .tree-container { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
-        .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .pdf-btn { background-color: #e74c3c; color: white; padding: 8px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .pdf-btn:hover { background-color: #c0392b; }
 
-        /* Zoom Control Buttons Style */
-        .zoom-controls { display: flex; gap: 6px; align-items: center; }
-        .zoom-btn { background: #2e7d32; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; }
-        .zoom-btn:hover { background: #1b5e20; }
+        /* Zoom Controls Style */
+        .zoom-controls { display: flex; gap: 5px; align-items: center; }
+        .zoom-btn { background: #34495e; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .zoom-btn:hover { background: #2c3e50; }
 
-        /* --- ORGANIC TREE CANVAS CONTAINER --- */
+        /* --- CLASSIC ORIGINAL TREE LAYOUT --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
             display: block; 
             padding: 20px; 
-            min-height: 700px; 
-            background: radial-gradient(circle, #f1f8e9 0%, #dcedc8 100%); 
-            border-radius: 12px; 
-            border: 2px dashed #81c784; 
+            min-height: 650px; 
+            background: #fafbfc; 
+            border-radius: 8px; 
+            border: 1px solid #e1e4e8; 
             position: relative;
         }
 
         #tree-canvas-area {
             position: relative;
-            width: 5000px;
-            height: 2500px;
+            width: 4500px;
+            height: 2200px;
             margin: 0 auto;
             transform: scale(0.45); /* शुरुआती ओवरव्यू ताकि पूरा ट्री एक साथ साफ़ दिखे */
             transform-origin: top center;
-            transition: transform 0.25s ease;
+            transition: transform 0.2s ease;
         }
 
-        /* SVG Curved Branches Layer */
+        /* SVG Straight/Angular Connectors */
         #branch-svg {
             position: absolute;
             top: 0;
@@ -78,71 +77,52 @@
             z-index: 1;
         }
 
-        /* --- MODERN ORGANIC LEAF NODES --- */
+        /* --- CLASSIC NODE BOX DESIGN --- */
         .node-card {
             position: absolute;
             cursor: pointer;
-            color: #263238;
-            background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
-            border: 3px solid #558b2f;
-            border-radius: 30px;
-            padding: 10px 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9);
+            color: #333;
+            background: #ffffff;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            padding: 8px 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             z-index: 2;
             text-align: center;
-            width: 170px;
+            width: 160px;
             box-sizing: border-box;
         }
 
         .node-card:hover {
-            transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
-            border-color: #f57f17;
-            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4);
+            transform: translateY(-3px);
+            border-color: #2980b9;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
             z-index: 10;
         }
 
-        /* Generation Leaf Colors */
-        .gen-0-node {
-            background: linear-gradient(135deg, #ffe082 0%, #ffb300);
-            border-color: #e65100;
-            color: #fff;
-        }
-        .gen-0-node b { color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        /* Generation Box Colors */
+        .gen-0-node { background: #eaf2f8; border-color: #2980b9; }
+        .gen-1-node { background: #e8f8f5; border-color: #1abc9c; }
+        .gen-2-node { background: #fef9e7; border-color: #f1c40f; }
+        .gen-3-node { background: #f4ecf7; border-color: #8e44ad; }
 
-        .gen-1-node {
-            background: linear-gradient(135deg, #dcedc8 0%, #aed581);
-            border-color: #33691e;
-        }
-
-        .gen-2-node {
-            background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4);
-            border-color: #004d40;
-        }
-
-        .gen-3-node {
-            background: linear-gradient(135deg, #c5cae9 0%, #9fa8da);
-            border-color: #1a237e;
-        }
-
-        /* --- EXACT ORIGINAL POPUP MODAL DESIGN --- */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 340px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; text-align: left; }
-        .close-btn { color: #aaa; float: right; font-size: 24px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; transition: 0.2s; }
+        /* --- POPUP MODAL DESIGN --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background: #ffffff; margin: 6% auto; padding: 25px; border-radius: 8px; width: 320px; max-height: 85vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; text-align: left; }
+        .close-btn { color: #aaa; float: right; font-size: 24px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; }
         .close-btn:hover { color: #000; }
         
         .edit-profile-btn {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-            color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; margin: 8px auto 12px auto; display: block; box-shadow: 0 2px 6px rgba(245,124,0,0.3); transition: 0.3s;
+            background-color: #f39c12; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; margin: 8px auto 10px auto; display: block;
         }
-        .edit-profile-btn:hover { opacity: 0.9; }
+        .edit-profile-btn:hover { background-color: #d68910; }
 
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 8px; text-align: center; }
         .img-container { max-height: 300px; margin-bottom: 15px; }
         .img-container img { max-width: 100%; display: block; }
-        .crop-action-btn { background: #2e7d32; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .crop-action-btn { background: #27ae60; color: white; border: none; padding: 8px 16px; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 
@@ -152,7 +132,7 @@
 
     <div id="cropperModal">
         <div class="cropper-container-box">
-            <h3 style="margin-top:0; color:#2e7d32;">फोटो क्रॉप करें (Adjust Face)</h3>
+            <h3 style="margin-top:0;">फोटो क्रॉप करें (Adjust Face)</h3>
             <div class="img-container">
                 <img id="imageToCrop" src="">
             </div>
@@ -161,32 +141,32 @@
     </div>
 
     <div class="navbar">
-        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Organic Curved Tree</button>
+        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree Chart</button>
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
     <div id="treePage" class="tab-content">
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वृक्ष</h2>
+                <h2 style="margin:0; color:#2c3e50; font-size:20px;">🌿 पारिवारिक वृक्ष (Family Tree)</h2>
                 
                 <!-- Zoom Controls & PDF Button -->
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomTree(0.15)" title="Zoom In">➕ ज़ूम+</button>
-                        <button class="zoom-btn" onclick="zoomTree(-0.15)" title="Zoom Out">➖ ज़ूम-</button>
-                        <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom">↺ रीसेट</button>
+                        <button class="zoom-btn" onclick="zoomTree(0.15)">➕ ज़ूम+</button>
+                        <button class="zoom-btn" onclick="zoomTree(-0.15)">➖ ज़ूम-</button>
+                        <button class="zoom-btn" onclick="resetZoom()">↺ रीसेट</button>
                     </div>
                     <button class="pdf-btn" onclick="downloadPDF()">📥 Save PDF</button>
                 </div>
             </div>
 
-            <p style="color: #555; font-size: 12px; margin-bottom: 10px;">
+            <p style="color: #666; font-size: 12px; margin-bottom: 10px;">
                 किसी भी सदस्य के बॉक्स पर क्लिक करके पूरी जानकारी देखें:
             </p>
             
-            <div id="pdfContent" style="background: #f1f8e9; padding: 15px; border-radius: 10px;">
-                <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Organic Family Tree Report</h3>
+            <div id="pdfContent" style="background: #fafbfc; padding: 10px; border-radius: 6px;">
+                <h3 style="text-align: center; color: #2c3e50; display:none;" id="pdfTitle">Family Tree Report</h3>
 
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="tree-canvas-area">
@@ -283,7 +263,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Member Photo ( HD फोटो ):</label>
+                    <label>Member Photo ( फोटो ):</label>
                     <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(this, 'entry')">
                 </div>
 
@@ -315,19 +295,14 @@
 
         function zoomTree(amount) {
             currentScale += amount;
-            if (currentScale < 0.2) currentScale = 0.2; // Min limit
-            if (currentScale > 1.2) currentScale = 1.2; // Max limit
+            if (currentScale < 0.2) currentScale = 0.2; 
+            if (currentScale > 1.2) currentScale = 1.2; 
             document.getElementById('tree-canvas-area').style.transform = `scale(${currentScale})`;
         }
 
         function resetZoom() {
             currentScale = 0.45;
             document.getElementById('tree-canvas-area').style.transform = `scale(${currentScale})`;
-        }
-
-        function getSafeId(nameStr) {
-            if (!nameStr) return '';
-            return nameStr.toString().trim().replace(/[^a-zA-Z0-9]/g, '_');
         }
 
         function handleFileSelect(input, type) {
@@ -355,8 +330,8 @@
         function getCroppedImage() {
             if (!cropper) return;
             const canvas = cropper.getCroppedCanvas({
-                width: 400,
-                height: 400
+                width: 300,
+                height: 300
             });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
 
@@ -372,7 +347,7 @@
                 if (member) {
                     member.photo = finalProcessedPhoto;
                     showPopup(member);
-                    renderOrganicTree(globalData);
+                    renderClassicTree(globalData);
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
@@ -438,11 +413,11 @@
                 });
 
                 populateFatherDropdown();
-                renderOrganicTree(globalData);
+                renderClassicTree(globalData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                document.getElementById('nodes-container').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi hai. Kripya connection check karein.</div>';
+                document.getElementById('nodes-container').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi hai.</div>';
             });
         }
 
@@ -461,8 +436,8 @@
             });
         }
 
-        // --- ORGANIC CURVED TREE LAYOUT ENGINE ---
-        function renderOrganicTree(dataArray) {
+        // --- CLASSIC ORIGINAL TREE RENDERING ENGINE ---
+        function renderClassicTree(dataArray) {
             const container = document.getElementById('nodes-container');
             const svg = document.getElementById('branch-svg');
             container.innerHTML = '';
@@ -502,20 +477,20 @@
                 node.children.sort((a, b) => (a.childOrder || 99) - (b.childOrder || 99));
             });
 
-            let startX = 2500; 
-            let startY = 80;
-            let levelHeight = 160;
+            let startX = 2250; 
+            let startY = 60;
+            let levelHeight = 150;
 
             function measureSubtree(node) {
                 if (!node.children || node.children.length === 0) {
-                    node.subtreeWidth = 190;
-                    return 190;
+                    node.subtreeWidth = 180;
+                    return 180;
                 }
                 let w = 0;
                 node.children.forEach(c => {
                     w += measureSubtree(c);
                 });
-                node.subtreeWidth = Math.max(190, w);
+                node.subtreeWidth = Math.max(180, w);
                 return node.subtreeWidth;
             }
 
@@ -526,7 +501,7 @@
             function layoutNode(node, x, y, depth) {
                 node.x = x;
                 node.y = y;
-                nodePositions[node.name] = { x: x + 85, y: y + 40 };
+                nodePositions[node.name] = { x: x + 80, y: y + 35 };
 
                 let currentX = x - (node.subtreeWidth / 2);
                 if (node.children && node.children.length > 0) {
@@ -564,9 +539,9 @@
                 card.style.left = node.x + 'px';
                 card.style.top = node.y + 'px';
                 card.innerHTML = `
-                    <img src="${photoSrc}" style="width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid #558b2f; margin-bottom:3px; box-shadow:0 3px 6px rgba(0,0,0,0.15);" /><br>
-                    <b style="font-size:12px; color:#1b5e20;">${memberName}</b>
-                    ${node.spouseName ? '<br><span style="font-size:10px; color:#4e342e;">w/o ' + node.spouseName + '</span>' : ''}
+                    <img src="${photoSrc}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid #ccc; margin-bottom:2px;" /><br>
+                    <b style="font-size:11px; color:#2c3e50;">${memberName}</b>
+                    ${node.spouseName ? '<br><span style="font-size:9px; color:#555;">w/o ' + node.spouseName + '</span>' : ''}
                 `;
                 card.onclick = () => openMemberModal(memberName);
                 container.appendChild(card);
@@ -578,19 +553,18 @@
                         let childPos = nodePositions[child.name];
                         if (childPos) {
                             let x1 = parentPos.x;
-                            let y1 = parentPos.y + 20;
+                            let y1 = parentPos.y + 15;
                             let x2 = childPos.x;
-                            let y2 = childPos.y - 40;
+                            let y2 = childPos.y - 35;
                             
                             let midY = (y1 + y2) / 2;
-                            let pathData = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+                            let pathData = `M ${x1} ${y1} L ${x1} ${midY} L ${x2} ${midY} L ${x2} ${y2}`;
 
                             let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
                             path.setAttribute("d", pathData);
-                            path.setAttribute("stroke", "#5d4037");
-                            path.setAttribute("stroke-width", "4");
+                            path.setAttribute("stroke", "#95a5a6");
+                            path.setAttribute("stroke-width", "2");
                             path.setAttribute("fill", "none");
-                            path.setAttribute("stroke-linecap", "round");
                             svg.appendChild(path);
                         }
                         renderRecursive(child);
@@ -624,19 +598,19 @@
 
             let html = `
                 <div style="text-align: center;">
-                    <img src="${photoSrc}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32; box-shadow:0 3px 10px rgba(0,0,0,0.2);"/>
-                    <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">✏️ Edit Profile / Photo</button>
-                    <h3 style="margin:5px 0 12px 0; color:#1b5e20; border-bottom:2px solid #2e7d32; padding-bottom:8px;">${member.name || 'N/A'}</h3>
+                    <img src="${photoSrc}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid #3498db;"/>
+                    <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">✏️ Edit Photo</button>
+                    <h3 style="margin:5px 0 10px 0; color:#2c3e50; border-bottom:1px solid #eee; padding-bottom:5px;">${member.name || 'N/A'}</h3>
                 </div>
-                <div style="font-size: 14px; line-height: 1.6; color: #333;">
-                    <p style="margin: 6px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
-                    <p style="margin: 6px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
-                    <p style="margin: 6px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
-                    <p style="margin: 6px 0;"><b>Marital Status:</b> <span style="color:#0277bd; font-weight:bold;">${member.maritalStatus || 'Married'}</span> ${member.spouseName ? '(& w/o ' + member.spouseName + ')' : ''}</p>
-                    <p style="margin: 6px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
-                    <p style="margin: 6px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '('+member.deathAnniversary+')' : ''}</p>
-                    <hr style="border:0; border-top:1px solid #ddd; margin: 12px 0;">
-                    <p style="margin: 6px 0;"><b>Mobile Number:</b> <a href="tel:${member.mobile}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
+                <div style="font-size: 13px; line-height: 1.5; color: #444;">
+                    <p style="margin: 5px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
+                    <p style="margin: 5px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
+                    <p style="margin: 5px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
+                    <p style="margin: 5px 0;"><b>Marital Status:</b> ${member.maritalStatus || 'Married'} ${member.spouseName ? '(& w/o ' + member.spouseName + ')' : ''}</p>
+                    <p style="margin: 5px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
+                    <p style="margin: 5px 0;"><b>Status:</b> ${member.aliveDeath || 'Alive'} ${member.deathAnniversary ? '('+member.deathAnniversary+')' : ''}</p>
+                    <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
+                    <p style="margin: 5px 0;"><b>Mobile Number:</b> <a href="tel:${member.mobile}" style="color:#2980b9; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
                 </div>
             `;
 
@@ -659,8 +633,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'updatePhoto', memberId: memberName, photo: base64Photo })
             })
-            .then(() => console.log('Photo updated in sheet successfully'))
-            .catch(err => console.error('Error updating photo:', err));
+            .then(() => console.log('Photo updated in sheet'))
+            .catch(err => console.error(err));
         }
 
         document.getElementById('entryForm').addEventListener('submit', function(e) {
@@ -699,7 +673,7 @@
                 finalProcessedPhoto = '';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit & Save to Sheet';
-                fetchDataAndDragChart = fetchDataAndDrawChart();
+                fetchDataAndDrawChart = fetchDataAndDrawChart();
                 openTab({currentTarget: document.querySelector('.navbar button:first-child')}, 'treePage');
             })
             .catch(error => {
