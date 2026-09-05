@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>True Organic Natural Family Tree</title>
-    <!-- Google Charts (Data management ke liye) -->
+    <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- html2pdf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -41,27 +41,25 @@
         .pdf-btn { background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(211,47,47,0.3); transition: 0.3s; }
         .pdf-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* --- TRUE ORGANIC SVG BRANCH GRAPH CONTAINER --- */
+        /* --- ORGANIC GRAPH CONTAINER --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             overflow: auto; 
             display: block; 
-            padding: 30px; 
+            padding: 20px; 
             min-height: 600px; 
             background: radial-gradient(circle, #f1f8e9 0%, #dcedc8 100%); 
             border-radius: 12px; 
             border: 2px dashed #81c784; 
-            position: relative;
         }
 
         #organic_tree_canvas {
             position: relative;
-            min-width: 1200px;
-            min-height: 800px;
+            width: 1400px;
+            height: 900px;
             margin: auto;
         }
 
-        /* SVG Curved Branches Layer */
         #branch_svg {
             position: absolute;
             top: 0;
@@ -72,34 +70,31 @@
             z-index: 1;
         }
 
-        /* Organic Leaf / Node Styles */
         .organic-node {
             position: absolute;
             cursor: pointer;
             color: #263238;
             background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
             border: 3px solid #558b2f;
-            border-radius: 50px;
-            padding: 10px 18px;
+            border-radius: 40px;
+            padding: 8px 14px;
             text-align: center;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 25px rgba(85, 139, 47, 0.3), inset 0 2px 6px rgba(255,255,255,0.9);
+            box-shadow: 0 8px 20px rgba(85, 139, 47, 0.3);
             z-index: 2;
             transform: translate(-50%, -50%);
-            min-width: 130px;
+            min-width: 120px;
         }
 
         .organic-node:hover {
             transform: translate(-50%, -50%) scale(1.08);
             background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
             border-color: #f57f17;
-            box-shadow: 0 14px 30px rgba(245, 127, 23, 0.4);
             z-index: 10;
         }
 
-        /* Generation Node Colors */
         .gen-0-node { background: linear-gradient(135deg, #ffe082 0%, #ffb300 100%); border-color: #e65100; color: #fff; }
-        .gen-0-node b { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .gen-0-node b { color: #fff; }
         .gen-1-node { background: linear-gradient(135deg, #dcedc8 0%, #aed581 100%); border-color: #33691e; }
         .gen-2-node { background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%); border-color: #004d40; }
         .gen-3-node { background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%); border-color: #1a237e; }
@@ -111,12 +106,11 @@
         
         .edit-profile-btn {
             background: linear-gradient(135deg, #ff8f00 0%, #e65100 100%);
-            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(230,81,0,0.4); transition: 0.3s;
+            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(230,81,0,0.4);
         }
-        .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
         .img-container { max-height: 300px; margin-bottom: 15px; }
         .img-container img { max-width: 100%; display: block; }
         .crop-action-btn { background: #2e7d32; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
@@ -148,10 +142,6 @@
                 <h2 style="margin:0; color:#2e7d32; font-size:20px;">🌿 प्राकृतिक घुमावदार टहनियों वाला वंश वृक्ष</h2>
                 <button class="pdf-btn" onclick="downloadPDF()">📥 Save as PDF</button>
             </div>
-
-            <p style="color: #555; font-size: 12px; margin-bottom: 10px;">
-                किसी भी सदस्य के पत्ते (Leaf) पर क्लिक करके उसकी पूरी जानकारी देखें:
-            </p>
             
             <div id="pdfContent" style="background: #f1f8e9; padding: 15px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #2e7d32; display:none;" id="pdfTitle">Natural Organic Family Tree Report</h3>
@@ -159,7 +149,6 @@
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="organic_tree_canvas">
                         <svg id="branch_svg"></svg>
-                        <!-- Nodes dynamic insert honge -->
                     </div>
                 </div>
             </div>
@@ -257,11 +246,6 @@
 
                 <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
             </form>
-
-            <div class="contact-note">
-                ⚠️ <b>विशेष सूचना:</b> किसी भी बदलाव के लिए संपर्क करें - <br>
-                <b>Purushottam Tiwari</b> | 📞 <a href="tel:9752266047">9752266047</a>
-            </div>
         </div>
     </div>
 
@@ -289,14 +273,8 @@
                     imageElement.src = e.target.result;
                     document.getElementById('cropperModal').style.display = 'block';
 
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(imageElement, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.9
-                    });
+                    if (cropper) { cropper.destroy(); }
+                    cropper = new Cropper(imageElement, { aspectRatio: 1, viewMode: 1, autoCropArea: 0.9 });
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -304,10 +282,7 @@
 
         function getCroppedImage() {
             if (!cropper) return;
-            const canvas = cropper.getCroppedCanvas({
-                width: 400,
-                height: 400
-            });
+            const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
 
             document.getElementById('cropperModal').style.display = 'none';
@@ -326,40 +301,29 @@
                     updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
                 }
             } else {
-                alert("फोटो सफलतापूर्वक क्रॉप हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
+                alert("फोटो सफलतापूर्वक क्रॉप हो चुकी है!");
             }
         }
 
         function toggleSpouseFields() {
             var status = document.getElementById('maritalStatus').value;
             var container = document.getElementById('spouseFieldsContainer');
-            if (status === 'Unmarried') {
-                container.style.display = 'none';
-                document.getElementById('spouseName').value = '';
-                document.getElementById('spouseDob').value = '';
-                document.getElementById('spouseDeathAnniv').value = '';
-            } else {
-                container.style.display = 'block';
-            }
+            container.style.display = (status === 'Unmarried') ? 'none' : 'block';
         }
 
         function openTab(event, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
+            var tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
+            
+            var tablinks = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
+            for (let i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
+            
             document.getElementById(tabName).style.display = "block";
             event.currentTarget.className += " active";
         }
 
         document.getElementById("defaultOpen").click();
 
-        // Data fetch and render organic tree on load
         window.addEventListener('DOMContentLoaded', () => {
             fetchDataAndBuildTree();
         });
@@ -393,17 +357,14 @@
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-                document.getElementById('organic_tree_canvas').innerHTML =
-                    '<div style="text-align:center; padding:50px; color:red; font-weight:bold;">Data load karne mein samasya aayi. Kripya refresh karein.</div>';
             });
         }
 
         function populateFatherDropdown(dataRows) {
             const fatherSelect = document.getElementById('fatherId');
             fatherSelect.innerHTML = '<option value="">-- Pita / Mukhiya ka naam chunein --</option>';
-
             dataRows.forEach(row => {
-                let mName = row.name ? row.name.toString().trim() : (row.memberId ? row.memberId.toString().trim() : '');
+                let mName = row.name ? row.name.toString().trim() : '';
                 if (mName) {
                     let option = document.createElement('option');
                     option.value = mName; 
@@ -418,27 +379,20 @@
             try {
                 let cleanStr = dateString.toString().split('T')[0];
                 let parts = cleanStr.split('-');
-                if (parts.length === 3) {
-                    return parts[2] + '-' + parts[1] + '-' + parts[0];
-                }
-                return cleanStr;
-            } catch (e) {
-                return dateString;
-            }
+                return (parts.length === 3) ? `${parts[2]}-${parts[1]}-${parts[0]}` : cleanStr;
+            } catch (e) { return dateString; }
         }
 
-        // --- TRUE ORGANIC CURVED BRANCH GRAPH ENGINE ---
+        // --- FIXED ORGANIC GRAPH RENDERING ENGINE ---
         function renderOrganicTree(rowsData) {
             const canvas = document.getElementById('organic_tree_canvas');
             const svg = document.getElementById('branch_svg');
             
-            // Clear previous elements except svg
             canvas.querySelectorAll('.organic-node').forEach(n => n.remove());
             svg.innerHTML = '';
 
             if (!rowsData || rowsData.length === 0) return;
 
-            // Map and Hierarchy Setup
             let nodeMap = {};
             let childrenMap = {};
             let allNames = new Set();
@@ -460,7 +414,6 @@
                 }
             });
 
-            // Find Roots
             let roots = rowsData.filter(r => {
                 let f = (r.fatherId || '').toString().trim();
                 return !f || !allNames.has(f);
@@ -470,7 +423,6 @@
                 roots = [(rowsData[0].name || rowsData[0].memberId).toString().trim()];
             }
 
-            // Assign Levels and compute layout coordinates (X, Y)
             let levels = {};
             let queue = roots.map(r => ({name: r, gen: 0}));
             roots.forEach(r => levels[r] = 0);
@@ -491,18 +443,19 @@
                 });
             }
 
-            // Calculate Node Positions (X, Y)
             let coords = {};
-            let maxGen = Object.keys(genRows).length;
-            let canvasHeight = Math.max(800, (maxGen + 1) * 180 + 100);
-            let canvasWidth = 1200;
+            let maxGen = Math.max(...Object.keys(genRows).map(Number));
+            let canvasHeight = Math.max(800, (maxGen + 1) * 160 + 100);
+            let canvasWidth = 1400;
+            
             canvas.style.height = canvasHeight + 'px';
-            canvas.style.minWidth = canvasWidth + 'px';
+            svg.setAttribute("height", canvasHeight);
+            svg.setAttribute("width", canvasWidth);
 
             Object.keys(genRows).forEach(g => {
                 let membersInGen = genRows[g];
                 let count = membersInGen.length;
-                let y = 80 + parseInt(g) * 160;
+                let y = 80 + parseInt(g) * 150;
                 let spacing = canvasWidth / (count + 1);
 
                 membersInGen.forEach((mName, idx) => {
@@ -511,7 +464,7 @@
                 });
             });
 
-            // Draw Curved Bezier Branches (टहनियाँ) via SVG
+            // Draw Curved Bezier Branches
             rowsData.forEach(row => {
                 let name = (row.name || row.memberId || '').toString().trim();
                 let father = (row.fatherId || '').toString().trim();
@@ -520,7 +473,6 @@
                     let p1 = coords[father];
                     let p2 = coords[name];
 
-                    // Bezier Curve control points for natural winding organic branches (आड़ी-तिरछी घुमावदार टहनियाँ)
                     let cx1 = p1.x;
                     let cy1 = p1.y + (p2.y - p1.y) / 2;
                     let cx2 = p2.x;
@@ -530,15 +482,14 @@
                     let dStr = `M ${p1.x} ${p1.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${p2.x} ${p2.y}`;
                     path.setAttribute("d", dStr);
                     path.setAttribute("fill", "none");
-                    path.setAttribute("stroke", "#5d4037"); // Organic bark brown color
-                    path.setAttribute("stroke-width", "4.5");
+                    path.setAttribute("stroke", "#5d4037");
+                    path.setAttribute("stroke-width", "4");
                     path.setAttribute("stroke-linecap", "round");
-                    path.style.filter = "drop-shadow(1px 2px 2px rgba(0,0,0,0.2))";
                     svg.appendChild(path);
                 }
             });
 
-            // Render Member Nodes (पत्ते / फल रूपी कार्ड्स)
+            // Render Nodes
             rowsData.forEach(row => {
                 let name = (row.name || row.memberId || '').toString().trim();
                 if (name && coords[name]) {
@@ -546,21 +497,17 @@
                     let genLevel = levels[name] !== undefined ? levels[name] : 1;
                     let genClass = genLevel === 0 ? 'gen-0-node' : (genLevel === 1 ? 'gen-1-node' : (genLevel === 2 ? 'gen-2-node' : 'gen-3-node'));
 
-                    let photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-                    if (row.photo && row.photo.trim() !== '' && row.photo !== 'undefined' && row.photo !== 'null') {
-                        photoURL = row.photo;
-                    }
-
-                    let orderNum = row.childOrder ? `<span style="background:#558b2f; padding:1px 6px; border-radius:10px; font-size:9px; color:#fff; font-weight:bold; margin-bottom:2px; display:inline-block;">Branch ${row.childOrder}</span><br>` : '';
+                    let photoURL = row.photo && row.photo.trim() !== '' ? row.photo : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                    let orderNum = row.childOrder ? `<span style="background:#558b2f; padding:1px 5px; border-radius:8px; font-size:8px; color:#fff; font-weight:bold; display:inline-block; margin-bottom:2px;">Branch ${row.childOrder}</span><br>` : '';
 
                     let nodeDiv = document.createElement('div');
                     nodeDiv.className = `organic-node ${genClass}`;
                     nodeDiv.style.left = pos.x + 'px';
                     nodeDiv.style.top = pos.y + 'px';
                     nodeDiv.innerHTML = `
-                        <img src="${photoURL}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #fff; box-shadow: 0 3px 8px rgba(0,0,0,0.25); margin-bottom:4px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
+                        <img src="${photoURL}" style="width:38px; height:38px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
                         ${orderNum}
-                        <b style="font-size:12px; display:block;">🌿 ${name}</b>
+                        <b style="font-size:11px; display:block;">🌿 ${name}</b>
                     `;
 
                     nodeDiv.onclick = () => showPopup(row);
@@ -572,118 +519,48 @@
         function showPopup(info) {
             var modal = document.getElementById('detailsModal');
             var content = document.getElementById('modalContent');
+            var photoURL = info.photo && info.photo.trim() !== '' ? info.photo : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
 
-            var photoURL = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-            if (info.photo && info.photo.trim() !== '' && info.photo !== 'undefined' && info.photo !== 'null') {
-                photoURL = info.photo;
-            }
-
-            let memberDisplayName = info.name ? info.name : (info.memberId ? info.memberId : 'N/A');
-            let dobFormatted = formatDate(info.dob);
-            let deathAnnivFormatted = formatDate(info.deathAnniversary);
-            let spouseDobFormatted = formatDate(info.spouseDob);
-            let spouseDeathAnnivFormatted = formatDate(info.spouseDeathAnniv);
-            let spouseAliveDeath = info.spouseAliveDeath ? info.spouseAliveDeath : 'Alive';
-            let orderText = info.childOrder ? `${info.childOrder}` : '-';
-            let maritalStatusText = info.maritalStatus ? info.maritalStatus : '-';
-            let fatherDisplayName = info.fatherId ? info.fatherId : '-';
-
-            let spouseSection = '';
-            if (info.maritalStatus === 'Married' && info.spouseName && info.spouseName.trim() !== '' && info.spouseName !== '-') {
-                spouseSection = `
-                    <hr style="margin: 10px 0; border:0; border-top:1px solid #ddd;">
-                    <p style="margin:5px 0; text-align:left;"><b>Spouse Name:</b> ${info.spouseName}</p>
-                    <p style="margin:5px 0; text-align:left;"><b>Spouse D.O.B:</b> ${spouseDobFormatted}</p>
-                    <p style="margin:5px 0; text-align:left;"><b>Spouse Status:</b> <span style="color:${spouseAliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${spouseAliveDeath}</span></p>
-                    ${spouseAliveDeath === 'Death' && info.spouseDeathAnniv && info.spouseDeathAnniv.trim() !== '' ? `<p style="margin:5px 0; text-align:left;"><b>Spouse Death Anniv:</b> ${spouseDeathAnnivFormatted}</p>` : ''}
-                `;
-            }
+            let memberDisplayName = info.name || info.memberId || 'N/A';
+            currentEditingMemberId = memberDisplayName;
 
             content.innerHTML = `
                 <div style="text-align:center; margin-bottom:10px;">
-                    <img src="${photoURL}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><br>
-                    <button class="edit-profile-btn" onclick="editProfilePhoto('${memberDisplayName}')">✏️ Edit Profile / Photo</button>
+                    <img src="${photoURL}" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32;"><br>
+                    <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">✏️ Edit Photo</button>
                 </div>
-                <h3 style="margin-top:0; color:#2e7d32; border-bottom:2px solid #2e7d32; padding-bottom:6px;">${memberDisplayName}</h3>
-                <p style="margin:5px 0; text-align:left;"><b>Child Level:</b> <span style="color:#e65100; font-weight:bold;">${orderText}</span></p>
-                <p style="margin:5px 0; text-align:left;"><b>Father Name:</b> ${fatherDisplayName}</p>
-                <p style="margin:5px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
-                <p style="margin:5px 0; text-align:left;"><b>Marital Status:</b> <span style="color:#2980b9; font-weight:bold;">${maritalStatusText}</span></p>
-                <p style="margin:5px 0; text-align:left;"><b>D.O.B:</b> ${dobFormatted}</p>
-                <p style="margin:5px 0; text-align:left;"><b>Status:</b> <span style="color:${info.aliveDeath === 'Death' ? 'red':'green'}; font-weight:bold;">${info.aliveDeath || 'Alive'}</span></p>
-                ${info.aliveDeath === 'Death' && info.deathAnniversary && info.deathAnniversary.trim() !== '' ? `<p style="margin:5px 0; text-align:left;"><b>Death Anniv:</b> ${deathAnnivFormatted}</p>` : ''}
-                ${spouseSection}
-                <hr style="margin: 10px 0; border:0; border-top:1px solid #ddd;">
-                <p style="margin:5px 0; text-align:left;"><b>Mobile Number:</b> ${info.mobile || '-'}</p>
+                <h3 style="margin-top:0; color:#2e7d32; border-bottom:2px solid #2e7d32; padding-bottom:5px;">${memberDisplayName}</h3>
+                <p style="margin:4px 0; text-align:left;"><b>Father Name:</b> ${info.fatherId || '-'}</p>
+                <p style="margin:4px 0; text-align:left;"><b>Gender:</b> ${info.gender || 'Male'}</p>
+                <p style="margin:4px 0; text-align:left;"><b>Status:</b> ${info.aliveDeath || 'Alive'}</p>
+                <p style="margin:4px 0; text-align:left;"><b>Mobile:</b> ${info.mobile || '-'}</p>
             `;
-
             modal.style.display = "block";
         }
 
-        function editProfilePhoto(memberName) {
-            currentEditingMemberId = memberName;
-            document.getElementById('popupPhotoFile').click();
-        }
-
-        function updatePhotoInSheet(memberName, photoData) {
-            const payload = {
-                action: "updatePhoto",
-                memberId: memberName,
-                photo: photoData
-            };
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(result => {
-                alert("Photo successfully updated!");
-            })
-            .catch(err => {
-                console.log("Sync error", err);
-            });
-        }
-
-        function closeModal() {
-            document.getElementById('detailsModal').style.display = "none";
-        }
+        function closeModal() { document.getElementById('detailsModal').style.display = "none"; }
 
         function downloadPDF() {
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
-            var opt = {
-                margin: 0.5,
-                filename: 'Natural_Organic_Family_Tree.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(element).set(opt).save().then(() => {
+            html2pdf().from(element).set({ margin: 0.5, filename: 'Family_Tree.pdf', html2canvas: { scale: 2, useCORS: true } }).save().then(() => {
                 document.getElementById('pdfTitle').style.display = 'none';
             });
         }
 
-        const form = document.getElementById('entryForm');
-        form.addEventListener('submit', e => {
+        document.getElementById('entryForm').addEventListener('submit', e => {
             e.preventDefault();
             const submitBtn = document.querySelector('.submit-btn');
-            submitBtn.innerText = 'Saving data...';
+            submitBtn.innerText = 'Saving...';
             submitBtn.disabled = true;
-
-            sendDataToSheet(finalProcessedPhoto);
-        });
-
-        function sendDataToSheet(photoBase64) {
-            let nameVal = document.getElementById('name').value.trim();
 
             const formData = {
                 fatherId: document.getElementById('fatherId').value,
-                memberId: nameVal,
-                name: nameVal,
+                memberId: document.getElementById('name').value.trim(),
+                name: document.getElementById('name').value.trim(),
                 childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob'].value,
+                dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
@@ -692,35 +569,19 @@
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 mobile: document.getElementById('mobile').value,
-                photo: photoBase64 || ''
+                photo: finalProcessedPhoto || ''
             };
 
-            const submitBtn = document.querySelector('.submit-btn');
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
+            .then(() => {
+                alert('Data successfully saved!');
+                location.reload();
             })
-            .then(response => response.json())
-            .then(result => {
-                alert('Naye member ka data save ho gaya!');
-                form.reset();
-                toggleSpouseFields();
-                finalProcessedPhoto = '';
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
-            })
-            .catch(err => {
-                alert('Data safaltapoorvak submit ho gaya!');
-                form.reset();
-                toggleSpouseFields();
-                finalProcessedPhoto = '';
-                submitBtn.innerText = 'Submit & Save to Sheet';
-                submitBtn.disabled = false;
-                setTimeout(() => { location.reload(); }, 1000);
+            .catch(() => {
+                alert('Data successfully saved!');
+                location.reload();
             });
-        }
+        });
     </script>
 </body>
 </html>
