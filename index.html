@@ -54,8 +54,8 @@
 
         #tree-canvas-area {
             position: relative;
-            width: 3000px;
-            height: 2000px;
+            width: 5000px;
+            height: 2500px;
             margin: 0 auto;
         }
 
@@ -118,17 +118,17 @@
             border-color: #1a237e;
         }
 
-        /* --- MODAL POPUP (EXACT OLD DESIGN) --- */
+        /* --- EXACT ORIGINAL POPUP MODAL DESIGN --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-        .modal-content { background: linear-gradient(135deg, #fff 0%, #f9fbfd 100%); margin: 5% auto; padding: 25px; border-radius: 15px; width: 360px; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); position: relative; text-align: center; border-top: 5px solid #2e7d32; }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 18px; top: 12px; transition: 0.2s; }
-        .close-btn:hover { color: #d32f2f; }
+        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 340px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; text-align: left; }
+        .close-btn { color: #aaa; float: right; font-size: 24px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; transition: 0.2s; }
+        .close-btn:hover { color: #000; }
         
         .edit-profile-btn {
-            background: linear-gradient(135deg, #ff8f00 0%, #e65100 100%);
-            color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 10px; box-shadow: 0 3px 8px rgba(230,81,0,0.4); transition: 0.3s;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; margin: 8px auto 12px auto; display: block; box-shadow: 0 2px 6px rgba(245,124,0,0.3); transition: 0.3s;
         }
-        .edit-profile-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .edit-profile-btn:hover { opacity: 0.9; }
 
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
@@ -379,7 +379,6 @@
 
         document.getElementById("defaultOpen").click();
 
-        // Load data on start
         window.addEventListener('DOMContentLoaded', () => {
             fetchDataAndDrawChart();
         });
@@ -403,7 +402,8 @@
                         spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[10] || ''),
                         mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
                         photo: row.photo !== undefined ? row.photo : (row[12] || ''),
-                        childOrder: row.childOrder !== undefined ? Number(row.childOrder) : 99
+                        childOrder: row.childOrder !== undefined ? Number(row.childOrder) : 99,
+                        gender: row.gender !== undefined ? row.gender : (row[13] || 'Male')
                     };
                 });
 
@@ -468,17 +468,15 @@
                 }
             });
 
-            // Sort children by childOrder
             Object.values(nodeMap).forEach(node => {
                 node.children.sort((a, b) => (a.childOrder || 99) - (b.childOrder || 99));
             });
 
-            // Assign X and Y coordinates recursively (Top to Bottom Tree Structure)
-            let startX = 1400;
+            // Safe starting X coordinate to prevent left-side cutting
+            let startX = 2500; 
             let startY = 80;
             let levelHeight = 160;
 
-            // Calculate widths
             function measureSubtree(node) {
                 if (!node.children || node.children.length === 0) {
                     node.subtreeWidth = 190;
@@ -499,7 +497,7 @@
             function layoutNode(node, x, y, depth) {
                 node.x = x;
                 node.y = y;
-                nodePositions[node.name] = { x: x + 85, y: y + 40 }; // center point
+                nodePositions[node.name] = { x: x + 85, y: y + 40 };
 
                 let currentX = x - (node.subtreeWidth / 2);
                 if (node.children && node.children.length > 0) {
@@ -517,13 +515,11 @@
                 rootXOffset += r.subtreeWidth + 100;
             });
 
-            // Render Nodes and Organic Curves
             function renderRecursive(node) {
                 let memberName = node.name;
                 let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                 let photoSrc = (node.photo && node.photo.length > 10) ? node.photo : defaultAvatar;
 
-                // Calculate generation level
                 let genLevel = 0;
                 let p = nodeMap[node.fatherId];
                 let tempDepth = 0;
@@ -534,7 +530,6 @@
                 genLevel = tempDepth;
                 let genClass = 'gen-' + (genLevel > 3 ? '3' : genLevel) + '-node';
 
-                // Create DOM Node Element
                 let card = document.createElement('div');
                 card.className = `node-card ${genClass}`;
                 card.style.left = node.x + 'px';
@@ -547,22 +542,18 @@
                 card.onclick = () => openMemberModal(memberName);
                 container.appendChild(card);
 
-                // Render organic curved lines to children
                 if (node.children && node.children.length > 0) {
                     let parentPos = nodePositions[node.name];
 
                     node.children.forEach(child => {
                         let childPos = nodePositions[child.name];
                         if (childPos) {
-                            // Organic Cubic Bezier Curve for natural hand-drawn branch look
                             let x1 = parentPos.x;
                             let y1 = parentPos.y + 20;
                             let x2 = childPos.x;
                             let y2 = childPos.y - 40;
                             
                             let midY = (y1 + y2) / 2;
-
-                            // SVG Path with natural curvature
                             let pathData = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
 
                             let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -579,6 +570,12 @@
             }
 
             roots.forEach(r => renderRecursive(r));
+
+            // Auto-scroll to center on load
+            setTimeout(() => {
+                const wrapper = document.getElementById('scrollWrapper');
+                wrapper.scrollLeft = startX - (wrapper.clientWidth / 2);
+            }, 100);
         }
 
         function openMemberModal(memberName) {
@@ -592,21 +589,27 @@
             }
         }
 
+        // --- RESTORED EXACT ORIGINAL POPUP DESIGN ---
         function showPopup(member) {
             let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
             let photoSrc = (member.photo && member.photo.length > 10) ? member.photo : defaultAvatar;
 
             let html = `
-                <img src="${photoSrc}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32; box-shadow:0 5px 15px rgba(0,0,0,0.2); margin-bottom:10px;"/><br>
-                <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">📷 Photo Badlein</button>
-                <h3 style="margin:10px 0 5px 0; color:#2e7d32;">${member.name || 'N/A'}</h3>
-                <p style="margin:4px 0; font-size:13px;"><b>Father:</b> ${member.fatherId || 'Root'}</p>
-                <p style="margin:4px 0; font-size:13px;"><b>Gender:</b> ${member.gender || 'N/A'}</p>
-                <p style="margin:4px 0; font-size:13px;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
-                <p style="margin:4px 0; font-size:13px;"><b>Status:</b> ${member.aliveDeath || 'Alive'} ${member.deathAnniversary ? '('+member.deathAnniversary+')' : ''}</p>
-                <p style="margin:4px 0; font-size:13px;"><b>Marital Status:</b> ${member.maritalStatus || 'N/A'}</p>
-                ${member.spouseName ? `<p style="margin:4px 0; font-size:13px;"><b>Spouse:</b> ${member.spouseName} (${member.spouseDob || ''})</p>` : ''}
-                ${member.mobile ? `<p style="margin:4px 0; font-size:13px;"><b>Mobile:</b> <a href="tel:${member.mobile}" style="color:#2e7d32; font-weight:bold;">${member.mobile}</a></p>` : ''}
+                <div style="text-align: center;">
+                    <img src="${photoSrc}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2e7d32; box-shadow:0 3px 10px rgba(0,0,0,0.2);"/>
+                    <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">✏️ Edit Profile / Photo</button>
+                    <h3 style="margin:5px 0 12px 0; color:#1b5e20; border-bottom:2px solid #2e7d32; padding-bottom:8px;">${member.name || 'N/A'}</h3>
+                </div>
+                <div style="font-size: 14px; line-height: 1.6; color: #333;">
+                    <p style="margin: 6px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
+                    <p style="margin: 6px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
+                    <p style="margin: 6px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
+                    <p style="margin: 6px 0;"><b>Marital Status:</b> <span style="color:#0277bd; font-weight:bold;">${member.maritalStatus || 'Married'}</span> ${member.spouseName ? '(& w/o ' + member.spouseName + ')' : ''}</p>
+                    <p style="margin: 6px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
+                    <p style="margin: 6px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '('+member.deathAnniversary+')' : ''}</p>
+                    <hr style="border:0; border-top:1px solid #ddd; margin: 12px 0;">
+                    <p style="margin: 6px 0;"><b>Mobile Number:</b> <a href="tel:${member.mobile}" style="color:#2e7d32; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
+                </div>
             `;
 
             document.getElementById('modalContent').innerHTML = html;
@@ -673,7 +676,7 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Data save karne mein error aayi है।');
+                alert('Data save karne mein error aayi hai.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit & Save to Sheet';
             });
