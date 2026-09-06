@@ -32,16 +32,21 @@
         .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px 10px; min-height: 600px; background: #f8fafc; border-radius: 12px; }
         #chart_wrapper_inner { transform: scaleY(-1) scale(0.45); transform-origin: center center; transition: transform 0.25s ease; display: inline-block; min-width: 100%; }
         #chart_div { display: inline-block; min-width: 100%; }
-        .node-content-box { transform: scaleY(-1); display: inline-block; width: 100%; }
-        .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 14px !important; padding: 12px !important; }
+        
+        /* Fixed Tree Box Padding & Shape */
+        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; padding: 8px; box-sizing: border-box; text-align: center; }
+        .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 14px !important; padding: 4px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
         .gen-1-node { background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; }
         .gen-2-node { background: linear-gradient(135deg, #0f5132 0%, #082c1b 100%) !important; }
         .gen-3-node { background: linear-gradient(135deg, #581845 0%, #2e0c24 100%) !important; }
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow-y: auto; }
-        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 420px; position: relative; border-top: 6px solid #11998e; box-sizing: border-box; }
+        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; border-top: 6px solid #11998e; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; }
-        .edit-profile-btn { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 8px; }
+        .edit-profile-btn { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 12px; }
+        
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
         .img-container { max-height: 300px; margin-bottom: 15px; }
@@ -228,6 +233,16 @@
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            let dPart = String(dateStr).split('T')[0];
+            let parts = dPart.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return dPart;
+        }
+
         function autoFillDay(dateStr, targetInputId) {
             if (!dateStr) return;
             let date = new Date(dateStr);
@@ -308,7 +323,8 @@
             data.forEach(item => {
                 let opt = document.createElement('option');
                 opt.value = item.name; 
-                opt.textContent = `${item.name} (ID: ${item.memberId})`;
+                let spouseLabel = (item.maritalStatus === 'Married' && item.spouseName) ? ` एवं ${item.spouseName}` : '';
+                opt.textContent = `${item.name}${spouseLabel} (ID: ${item.memberId})`;
                 select.appendChild(opt);
             });
         }
@@ -340,12 +356,12 @@
                 }
 
                 let photoHtml = item.photo ? `<img src="${item.photo}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:4px;">` : `<div style="width:45px; height:45px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#555; margin-bottom:4px;">${item.name.charAt(0)}</div>`;
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<br><span style="font-size:11px; opacity:0.9;">Spouse: ${item.spouseName}</span>` : '';
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.9; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">Spouse: ${item.spouseName}</div>` : '';
 
                 let nodeContent = `
                     <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
                         ${photoHtml}
-                        <div style="font-weight:bold; font-size:13px; white-space:nowrap;">${item.name}</div>
+                        <div style="font-weight:bold; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.name}</div>
                         ${spouseText}
                     </div>
                 `;
@@ -362,32 +378,33 @@
             if (!item) return;
             currentEditingMemberId = memberId;
 
-            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px;">` : `<div style="width:90px; height:90px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#555; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
-            let deathInfo = item.aliveDeath === 'Death' ? `<br><b>स्वर्गवास दिनांक:</b> ${item.deathAnniversary || 'N/A'}<br><b>वार:</b> ${item.deathDay || 'N/A'}<br><b>तिथि:</b> ${item.deathTithi || 'N/A'}` : '<br><b>स्थिति:</b> जीवित (Alive)';
+            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">` : `<div style="width:90px; height:90px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#1e3c72; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
+            
+            let deathInfo = item.aliveDeath === 'Death' ? `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">स्वर्गवास दिनांक:</span> ${formatDate(item.deathAnniversary)}<br><span style="color:#c53030; font-weight:bold;">वार:</span> ${item.deathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">तिथि:</span> ${item.deathTithi || 'N/A'}</div>` : '<div style="margin-top:6px; padding:6px; background:#f0fff4; border-left:4px solid #38a169; border-radius:4px;"><span style="color:#2f855a; font-weight:bold;">स्थिति:</span> जीवित (Alive)</div>';
             
             let spouseDeathInfo = '';
             if(item.maritalStatus === 'Married' && item.spouseAliveDeath === 'Death') {
-                spouseDeathInfo = `<br><b>Spouse Death Date:</b> ${item.spouseDeathAnniv || 'N/A'}<br><b>Spouse Day:</b> ${item.spouseDeathDay || 'N/A'}<br><b>Spouse Tithi:</b> ${item.spouseDeathTithi || 'N/A'}`;
+                spouseDeathInfo = `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">पति/पत्नी स्वर्गवास दिनांक:</span> ${formatDate(item.spouseDeathAnniv)}<br><span style="color:#c53030; font-weight:bold;">वार:</span> ${item.spouseDeathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">तिथि:</span> ${item.spouseDeathTithi || 'N/A'}</div>`;
             }
 
             let html = `
                 <div style="text-align:center;">
                     ${photoHtml}
-                    <h3 style="margin:5px 0; color:#1e3c72;">${item.name}</h3>
-                    <p style="font-size:13px; color:#666; margin:0 0 15px 0;">ID: ${item.memberId}</p>
+                    <h3 style="margin:5px 0; color:#1e3c72; font-size:20px; font-weight:bold;">${item.name}</h3>
+                    <div style="display:inline-block; background:#ebf8ff; color:#2b6cb0; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:bold;">ID: ${item.memberId}</div>
                 </div>
-                <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-                <div style="font-size:14px; line-height:1.6; color:#333;">
-                    <b>पिता का नाम:</b> ${item.fatherId || 'Mukhya'}<br>
-                    <b>लिंग:</b> ${item.gender}<br>
-                    <b>जन्म दिनांक:</b> ${item.dob || 'N/A'}<br>
-                    <b>विवाह स्थिति:</b> ${item.maritalStatus}
-                    ${item.maritalStatus === 'Married' ? `<br><b>पति/पत्नी:</b> ${item.spouseName || 'N/A'} (DOB: ${item.spouseDob || 'N/A'})` : ''}
+                <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+                <div style="font-size:14px; line-height:1.7; color:#2d3748;">
+                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पिता का नाम:</strong> ${item.fatherId || 'Mukhya'}</div>
+                    <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">लिंग:</strong> ${item.gender}</div>
+                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">जन्म दिनांक:</strong> ${formatDate(item.dob)}</div>
+                    <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">विवाह स्थिति:</strong> ${item.maritalStatus}</div>
+                    ${item.maritalStatus === 'Married' ? `<div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पति/पत्नी:</strong> <span style="color:#742a2a; font-weight:600;">${item.spouseName || 'N/A'}</span> <br><span style="font-size:12px; color:#555;">(DOB: ${formatDate(item.spouseDob)})</span></div>` : ''}
                     ${deathInfo}
                     ${spouseDeathInfo}
-                    <br><b>मोबाइल नंबर:</b> ${item.mobile || 'N/A'}
+                    <div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-top:6px;"><strong style="color:#2a5298;">मोबाइल नंबर:</strong> <a href="tel:${item.mobile}" style="color:#2b6cb0; text-decoration:none; font-weight:bold;">${item.mobile || 'N/A'}</a></div>
                 </div>
-                <div style="text-align:center; margin-top:15px;">
+                <div style="text-align:center; margin-top:18px;">
                     <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">📷 फोटो बदलें</button>
                 </div>
             `;
