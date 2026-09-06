@@ -28,13 +28,93 @@
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* Slider & Tithi Section */
-        .event-slider-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border-top: 5px solid #0083b0; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .event-header-title { font-size: 20px; font-weight: bold; color: #0083b0; margin-bottom: 15px; background: #e0f7fa; padding: 8px 20px; border-radius: 20px; }
-        .slider-content-box { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center; width: 100%; }
-        .slider-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid #0083b0; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
-        .slider-details { text-align: left; max-width: 500px; font-size: 14px; line-height: 1.6; }
+        /* Slider & Tithi Section - Attractive Glow & Border */
+.event-slider-card { 
+    background: #fff; 
+    border-radius: 18px; 
+    padding: 25px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+    margin-bottom: 25px; 
+    border-top: 5px solid #ff9800; 
+    border-bottom: 5px solid #0083b0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
+    position: relative;
+    overflow: hidden;
+}
 
+.event-header-title { 
+    font-size: 18px; 
+    font-weight: bold; 
+    color: #fff; 
+    margin-bottom: 15px; 
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); 
+    padding: 8px 25px; 
+    border-radius: 25px; 
+    box-shadow: 0 4px 15px rgba(255,65,108,0.4);
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.slider-content-box { 
+    display: flex; 
+    align-items: center; 
+    gap: 20px; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    width: 100%; 
+    animation: fadeInSlide 0.6s ease-in-out;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slider-img { 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 4px solid #ff9800; 
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25); 
+}
+
+.slider-details { 
+    text-align: left; 
+    max-width: 500px; 
+    font-size: 14px; 
+    line-height: 1.6; 
+}
+
+/* Member Name and ID Styling (Up-Down layout) */
+.slider-name-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #1e3c72;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+}
+
+.slider-id-badge {
+    display: inline-block;
+    background: #e0f7fa;
+    color: #00796b;
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    border: 1px dashed #0083b0;
+}
+        
         /* Comment Box Section */
         .comment-section { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: 20px; width: 100%; box-sizing: border-box; }
         .comment-section textarea { width: 100%; height: 70px; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; }
@@ -630,7 +710,7 @@
             drawChart(filteredList);
         }
 
-        function processUpcomingEvents(data) {
+       function processUpcomingEvents(data) {
             sliderEventsList = [];
             let today = new Date();
             
@@ -650,12 +730,20 @@
             });
 
             if(sliderEventsList.length > 0) {
-                renderSliderItem(0);
+                // स्लाइडर इंडेक्स को रीसेट करें ताकि एनिमेशन सही से चले
+                window.sliderIndex = 0;
+                renderSliderItem(sliderIndex);
+                
+                // अगर पहले से कोई टाइमर चल रहा हो तो उसे साफ़ करें ताकि स्पीड डबल न हो
+                if (window.sliderInterval) {
+                    clearInterval(window.sliderInterval);
+                }
+
                 if(sliderEventsList.length > 1) {
-                    setInterval(() => {
+                    window.sliderInterval = setInterval(() => {
                         sliderIndex = (sliderIndex + 1) % sliderEventsList.length;
                         renderSliderItem(sliderIndex);
-                    }, 5000);
+                    }, 5000); // हर 5 सेकंड में अगला विज्ञापन/इवेंट बदलेगा
                 }
             } else {
                 let t = dictionary[currentLang];
@@ -663,39 +751,6 @@
                 document.getElementById('sliderBodyContainer').innerHTML = `<p>${t.noEventDesc}</p>`;
             }
         }
-
-        function isWithinNext7Days(today, targetDate) {
-            let tMonth = today.getMonth();
-            let tDay = today.getDate();
-            let targetMonth = targetDate.getMonth();
-            let targetDay = targetDate.getDate();
-
-            if(tMonth === targetMonth && targetDay >= tDay && targetDay <= tDay + 7) {
-                return true;
-            }
-            return false;
-        }
-
-        function renderSliderItem(index) {
-            let ev = sliderEventsList[index];
-            let item = ev.item;
-            
-            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
-            
-            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#ddd; font-size:40px; color:#555;">${item.name.charAt(0)}</div>`;
-            
-            let t = dictionary[currentLang];
-            let detailsHtml = `
-                <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${item.name} (ID: ${item.memberId})</h3>
-                <div><strong>${t.fatherLabel}</strong> ${item.fatherId || 'Root'}</div>
-                <div><strong>Date:</strong> ${formatDate(ev.type.includes('पुण्य') || ev.type.includes('Death') ? item.deathAnniversary : item.dob)}</div>
-                <div><strong>${t.mobileLabel}</strong> ${item.mobile || 'N/A'}</div>
-                <button class="edit-profile-btn" style="margin-top:8px; padding:5px 12px; font-size:12px;" onclick="showDetails('${item.memberId}')">${currentLang === 'hi' ? 'पूरी जानकारी देखें' : 'View Full Details'}</button>
-            `;
-
-            document.getElementById('sliderBodyContainer').innerHTML = `${photoHtml} <div class="slider-details">${detailsHtml}</div>`;
-        }
-
         function postComment() {
             let text = document.getElementById('visitorComment').value;
             if(!text.trim()) { alert(currentLang === 'hi' ? 'कृपया कुछ संदेश लिखें!' : 'Please write a message!'); return; }
