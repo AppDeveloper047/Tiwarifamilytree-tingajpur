@@ -246,7 +246,7 @@
             </div>
         </div>
 
-        <!-- 7 Days Upcoming Events Slider Widget (Redesigned & Animated) -->
+        <!-- 7 Days Upcoming Events Slider Widget -->
         <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
             <div class="slider-content-box" id="sliderBodyContainer">
@@ -503,11 +503,13 @@
             }
         };
 
-        function toggleDropdown(id) {
+        window.toggleDropdown = function(id) {
             let panels = document.getElementsByClassName('dropdown-panel');
             for(let p of panels) { if(p.id !== id) p.style.display = 'none'; }
             let panel = document.getElementById(id);
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            if(panel) {
+                panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+            }
         }
 
         window.onclick = function(event) {
@@ -517,7 +519,7 @@
             }
         }
 
-        function changeLanguage(lang) {
+        window.changeLanguage = function(lang) {
             currentLang = lang;
             let t = dictionary[lang];
             
@@ -575,14 +577,14 @@
             if(globalData.length > 0) populateDropdowns(globalData);
         }
 
-        function zoomTree(amount) {
+        window.zoomTree = function(amount) {
             currentScale += amount;
             if (currentScale < 0.25) currentScale = 0.25; 
             if (currentScale > 1.2) currentScale = 1.2; 
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
-        function resetZoom() {
+        window.resetZoom = function() {
             currentScale = 0.5;
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
             centerTreeScroll();
@@ -596,7 +598,7 @@
             return dPart;
         }
 
-        function toggleDeathFields(type) {
+        window.toggleDeathFields = function(type) {
             if (type === 'member') {
                 let status = document.getElementById('aliveDeath').value;
                 document.getElementById('memberDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
@@ -606,12 +608,12 @@
             }
         }
 
-        function toggleSpouseFields() {
+        window.toggleSpouseFields = function() {
             let status = document.getElementById('maritalStatus').value;
             document.getElementById('spouseFieldsContainer').style.display = (status === 'Married') ? 'block' : 'none';
         }
 
-        function handleFileSelect(input, type) {
+        window.handleFileSelect = function(input, type) {
             activeUploadType = type;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -626,7 +628,7 @@
             }
         }
 
-        function getCroppedImage() {
+        window.getCroppedImage = function() {
             if (!cropper) return;
             const canvas = cropper.getCroppedCanvas({ width: 250, height: 250 });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.8);
@@ -636,7 +638,7 @@
             }
         }
 
-        function openTab(evt, tabName) {
+        window.openTab = function(evt, tabName) {
             let contents = document.getElementsByClassName("tab-content");
             for (let c of contents) c.classList.remove("active");
             let buttons = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
@@ -646,6 +648,7 @@
             if (tabName === 'treePage') setTimeout(centerTreeScroll, 150);
         }
 
+        // Initialize Google Charts
         google.charts.load('current', {packages:['orgchart']});
         google.charts.setOnLoadCallback(fetchFamilyData);
 
@@ -654,7 +657,8 @@
                 .then(res => res.json())
                 .then(data => {
                     globalData = data;
-                    document.getElementById('treeLoadingText').style.display = 'none';
+                    let treeLoadText = document.getElementById('treeLoadingText');
+                    if(treeLoadText) treeLoadText.style.display = 'none';
                     populateDropdowns(data);
                     processUpcomingEvents(data);
                     drawChart(data);
@@ -698,14 +702,16 @@
             });
         }
 
-        function selectMemberFromTithi(memberId) {
+        window.selectMemberFromTithi = function(memberId) {
             if(!memberId) return;
             showDetails(memberId);
-            document.getElementById('tithiPanel').style.display = 'none';
+            let p = document.getElementById('tithiPanel');
+            if(p) p.style.display = 'none';
         }
 
-        function filterNextGenTree(selectedParentName) {
-            document.getElementById('searchPanel').style.display = 'none';
+        window.filterNextGenTree = function(selectedParentName) {
+            let p = document.getElementById('searchPanel');
+            if(p) p.style.display = 'none';
             if(!selectedParentName) {
                 drawChart(globalData);
                 return;
@@ -765,8 +771,10 @@
                 }
             } else {
                 let t = dictionary[currentLang];
-                document.getElementById('sliderHeaderTitle').innerText = t.noEventTitle;
-                document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#718096; font-weight:600; padding:15px;">${t.noEventDesc}</p>`;
+                let headerTitle = document.getElementById('sliderHeaderTitle');
+                let bodyContainer = document.getElementById('sliderBodyContainer');
+                if(headerTitle) headerTitle.innerText = t.noEventTitle;
+                if(bodyContainer) bodyContainer.innerHTML = `<p style="color:#718096; font-weight:600; padding:15px;">${t.noEventDesc}</p>`;
             }
         }
 
@@ -782,12 +790,12 @@
             return false;
         }
 
-        /* --- REDESIGNED SLIDER ITEM RENDERER --- */
         function renderSliderItem(index) {
             let ev = sliderEventsList[index];
             let item = ev.item;
             
-            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
+            let headerTitle = document.getElementById('sliderHeaderTitle');
+            if(headerTitle) headerTitle.innerText = `✨ ${ev.type}`;
             
             let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:45px; color:#4a5568; font-weight:bold;">${item.name.charAt(0)}</div>`;
             
@@ -803,22 +811,30 @@
                 <button class="edit-profile-btn" onclick="showDetails('${item.memberId}')">${currentLang === 'hi' ? '📂 पूरी जानकारी देखें' : '📂 View Full Details'}</button>
             `;
 
-            document.getElementById('sliderBodyContainer').innerHTML = `
-                <div class="slider-img-wrapper">${photoHtml}</div>
-                <div class="slider-details">${detailsHtml}</div>
-            `;
+            let bodyContainer = document.getElementById('sliderBodyContainer');
+            if(bodyContainer) {
+                bodyContainer.innerHTML = `
+                    <div class="slider-img-wrapper">${photoHtml}</div>
+                    <div class="slider-details">${detailsHtml}</div>
+                `;
+            }
         }
 
-        function postComment() {
-            let text = document.getElementById('visitorComment').value;
+        window.postComment = function() {
+            let commentInput = document.getElementById('visitorComment');
+            if(!commentInput) return;
+            let text = commentInput.value;
             if(!text.trim()) { alert(currentLang === 'hi' ? 'कृपया कुछ संदेश लिखें!' : 'Please write a message!'); return; }
             alert(currentLang === 'hi' ? 'आपका संदेश / श्रद्धांजलि सफलता पूर्वक प्रेषित कर दी गई है!' : 'Your message/tribute has been sent successfully!');
-            document.getElementById('visitorComment').value = '';
+            commentInput.value = '';
         }
 
         function drawChart(dataToDraw) {
+            let chartDiv = document.getElementById('chart_div');
+            if (!chartDiv) return;
+
             if (!dataToDraw || dataToDraw.length === 0) {
-                document.getElementById('chart_div').innerHTML = `<div style="text-align:center; padding:30px;">${currentLang === 'hi' ? 'कोई डेटा उपलब्ध नहीं है।' : 'No data available.'}</div>`;
+                chartDiv.innerHTML = `<div style="text-align:center; padding:30px;">${currentLang === 'hi' ? 'कोई डेटा उपलब्ध नहीं है।' : 'No data available.'}</div>`;
                 return;
             }
 
@@ -857,7 +873,7 @@
             });
 
             chartData.addRows(rows);
-            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            let chart = new google.visualization.OrgChart(chartDiv);
             chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
 
             setTimeout(centerTreeScroll, 250);
@@ -871,7 +887,7 @@
             }
         }
 
-        function showDetails(memberId) {
+        window.showDetails = function(memberId) {
             let item = globalData.find(d => d.memberId === memberId);
             if (!item) return;
             currentEditingMemberId = memberId;
@@ -901,11 +917,16 @@
                     <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">${t.editPhotoBtn}</button>
                 </div>
             `;
-            document.getElementById('modalContent').innerHTML = html;
-            document.getElementById('detailsModal').style.display = 'block';
+            let modalContent = document.getElementById('modalContent');
+            let detailsModal = document.getElementById('detailsModal');
+            if(modalContent) modalContent.innerHTML = html;
+            if(detailsModal) detailsModal.style.display = 'block';
         }
 
-        function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
+        window.closeModal = function() { 
+            let detailsModal = document.getElementById('detailsModal');
+            if(detailsModal) detailsModal.style.display = 'none'; 
+        }
 
         function updateMemberPhotoOnServer(memberId, base64Photo) {
             fetch(scriptURL, {
@@ -914,37 +935,43 @@
             }).then(() => { alert(currentLang === 'hi' ? 'फोटो अपडेट हो गई!' : 'Photo updated successfully!'); location.reload(); });
         }
 
-        document.getElementById('entryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            let formData = {
-                fatherId: document.getElementById('fatherId').value,
-                name: document.getElementById('name').value,
-                gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob'].value,
-                aliveDeath: document.getElementById('aliveDeath').value,
-                deathAnniversary: document.getElementById('deathAnniversary').value,
-                deathDay: document.getElementById('deathDay').value,
-                deathTithi: document.getElementById('deathTithi').value,
-                maritalStatus: document.getElementById('maritalStatus').value,
-                spouseName: document.getElementById('spouseName').value,
-                spouseDob: document.getElementById('spouseDob').value,
-                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
-                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                spouseDeathDay: document.getElementById('spouseDeathDay').value,
-                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                mobile: document.getElementById('mobile').value,
-                photo: finalProcessedPhoto
-            };
-            fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
-            .then(res => res.json())
-            .then(data => { alert(currentLang === 'hi' ? 'एंट्री सेव हो गई है!' : 'Entry saved successfully!'); location.reload(); });
+        document.addEventListener('DOMContentLoaded', () => {
+            let entryForm = document.getElementById('entryForm');
+            if(entryForm) {
+                entryForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    let formData = {
+                        fatherId: document.getElementById('fatherId').value,
+                        name: document.getElementById('name').value,
+                        gender: document.getElementById('gender').value,
+                        dob: document.getElementById('dob').value,
+                        aliveDeath: document.getElementById('aliveDeath').value,
+                        deathAnniversary: document.getElementById('deathAnniversary').value,
+                        deathDay: document.getElementById('deathDay').value,
+                        deathTithi: document.getElementById('deathTithi').value,
+                        maritalStatus: document.getElementById('maritalStatus').value,
+                        spouseName: document.getElementById('spouseName').value,
+                        spouseDob: document.getElementById('spouseDob').value,
+                        spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                        spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                        spouseDeathDay: document.getElementById('spouseDeathDay').value,
+                        spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+                        mobile: document.getElementById('mobile').value,
+                        photo: finalProcessedPhoto
+                    };
+                    fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
+                    .then(res => res.json())
+                    .then(data => { alert(currentLang === 'hi' ? 'एंट्री सेव हो गई है!' : 'Entry saved successfully!'); location.reload(); });
+                });
+            }
         });
 
-        function downloadPDF() {
+        window.downloadPDF = function() {
             let element = document.getElementById('pdfContent');
+            let pdfTitle = document.getElementById('pdfTitle');
             let opt = { margin: 0.5, filename: 'Family_Tree.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-            document.getElementById('pdfTitle').style.display = 'block';
-            html2pdf().from(element).set(opt).save().then(() => { document.getElementById('pdfTitle').style.display = 'none'; });
+            if(pdfTitle) pdfTitle.style.display = 'block';
+            html2pdf().from(element).set(opt).save().then(() => { if(pdfTitle) pdfTitle.style.display = 'none'; });
         }
     </script>
 </body>
