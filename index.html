@@ -229,10 +229,19 @@
                     </select>
                 </div>
 
-                <div class="form-group" id="deathDateGroup" style="display:none;">
-                    <label>Death Date & Panchang Tithi (स्वर्गवास दिनांक और पंचांग तिथि):</label>
-                    <input type="date" id="deathAnniversary" onchange="calculatePanchangTithi(this.value, 'tithiDisplay')">
-                    <span class="hint-text" id="tithiDisplay" style="color: #d35400; font-weight: bold; margin-top: 6px; display:block;"></span>
+                <div id="memberDeathContainer" style="display:none;">
+                    <div class="form-group">
+                        <label>Death Date (स्वर्गवास दिनांक):</label>
+                        <input type="date" id="deathAnniversary" onchange="autoFillDay(this.value, 'deathDay')">
+                    </div>
+                    <div class="form-group">
+                        <label>Death Day / Vaar (वार):</label>
+                        <input type="text" id="deathDay" placeholder="Jaise: Somwar / Monday">
+                    </div>
+                    <div class="form-group">
+                        <label>Death Tithi (पंचांग तिथि - Manual):</label>
+                        <input type="text" id="deathTithi" placeholder="Jaise: Ekadashi, Purnima, etc.">
+                    </div>
                 </div>
             
                 <div class="form-group">
@@ -262,10 +271,19 @@
                         </select>
                     </div>
 
-                    <div class="form-group" id="spouseDeathDateGroup" style="display:none;">
-                        <label>Spouse Death Date & Panchang Tithi:</label>
-                        <input type="date" id="spouseDeathAnniv" onchange="calculatePanchangTithi(this.value, 'spouseTithiDisplay')">
-                        <span class="hint-text" id="spouseTithiDisplay" style="color: #d35400; font-weight: bold; margin-top: 6px; display:block;"></span>
+                    <div id="spouseDeathContainer" style="display:none;">
+                        <div class="form-group">
+                            <label>Spouse Death Date:</label>
+                            <input type="date" id="spouseDeathAnniv" onchange="autoFillDay(this.value, 'spouseDeathDay')">
+                        </div>
+                        <div class="form-group">
+                            <label>Spouse Death Day / Vaar:</label>
+                            <input type="text" id="spouseDeathDay" placeholder="Jaise: Mangalwar">
+                        </div>
+                        <div class="form-group">
+                            <label>Spouse Death Tithi (Manual):</label>
+                            <input type="text" id="spouseDeathTithi" placeholder="Jaise: Amavasya, Dwadashi">
+                        </div>
                     </div>
                 </div>
             
@@ -317,51 +335,45 @@
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
-        function calculatePanchangTithi(dateStr, targetElementId) {
-            if (!dateStr) return '';
+        // Automatically calculate Day (Vaar) from Date
+        function autoFillDay(dateStr, targetInputId) {
+            if (!dateStr) return;
             let date = new Date(dateStr);
-            let d = date.getDate();
-            let m = date.getMonth() + 1;
-            let y = date.getFullYear();
-
-            let hinduMonths = ["चैत्र", "वैशाख", "ज्येष्ठ", "आषाढ़", "श्रावण", "भाद्रपद", "आश्विन", "कार्तिक", "मार्गशीर्ष (अग्रहायण)", "पौष", "माघ", "फाल्गुन"];
-            let tithis = [
-                "प्रतिपदा", "द्वितीया", "तृतीया", "चतुर्थी", "पंचमी", "षष्ठी", "सप्तमी", 
-                "अष्टमी", "नवमी", "दशमी", "एकादशी", "द्वादशी", "त्रयोदशी", "चतुर्दशी", "पूर्णिमा / अमावस्या"
-            ];
-            
-            let dayCount = Math.floor((date - new Date(y, 0, 1)) / 86400000);
-            let monthIndex = (Math.floor((dayCount + 15) / 29.5) + 9) % 12; 
-            let tithiIndex = (d + m * 3) % 15;
-            let paksha = (d > 15) ? "कृष्ण पक्ष" : "शुक्ल पक्ष";
-
-            let resultText = `📅 पंचांग मास: ${hinduMonths[monthIndex]} | ${paksha}, ${tithis[tithiIndex]}`;
-            
-            let el = document.getElementById(targetElementId);
+            let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            let hindiDays = ['रविवार (Sunday)', 'सोमवार (Monday)', 'मंगलवार (Tuesday)', 'बुधवार (Wednesday)', 'गुरुवार (Thursday)', 'शुक्रवार (Friday)', 'शनिवार (Saturday)'];
+            let dayIndex = date.getDay();
+            let el = document.getElementById(targetInputId);
             if (el) {
-                el.innerText = resultText;
+                el.value = hindiDays[dayIndex];
             }
-            return resultText;
         }
 
         function toggleDeathFields(type) {
             if (type === 'member') {
                 let status = document.getElementById('aliveDeath').value;
-                let group = document.getElementById('deathDateGroup');
+                let group = document.getElementById('memberDeathContainer');
                 group.style.display = (status === 'Death') ? 'block' : 'none';
                 if (status !== 'Death') {
                     document.getElementById('deathAnniversary').value = '';
-                    document.getElementById('tithiDisplay').innerText = '';
+                    document.getElementById('deathDay').value = '';
+                    document.getElementById('deathTithi').value = '';
                 }
             } else if (type === 'spouse') {
                 let status = document.getElementById('spouseAliveDeath').value;
-                let group = document.getElementById('spouseDeathDateGroup');
+                let group = document.getElementById('spouseDeathContainer');
                 group.style.display = (status === 'Death') ? 'block' : 'none';
                 if (status !== 'Death') {
                     document.getElementById('spouseDeathAnniv').value = '';
-                    document.getElementById('spouseTithiDisplay').innerText = '';
+                    document.getElementById('spouseDeathDay').value = '';
+                    document.getElementById('spouseDeathTithi').value = '';
                 }
             }
+        }
+
+        function toggleSpouseFields() {
+            let status = document.getElementById('maritalStatus').value;
+            let container = document.getElementById('spouseFieldsContainer');
+            container.style.display = (status === 'Married') ? 'block' : 'none';
         }
 
         function handleFileSelect(input, type) {
@@ -382,218 +394,134 @@
 
         function getCroppedImage() {
             if (!cropper) return;
-            const canvas = cropper.getCroppedCanvas({ width: 400, height: 400 });
-            finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.9);
-
+            const canvas = cropper.getCroppedCanvas({ width: 250, height: 250 });
+            finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.8);
             document.getElementById('cropperModal').style.display = 'none';
-            cropper.destroy();
-            cropper = null;
+            
+            if (activeUploadType === 'popup' && currentEditingMemberId) {
+                updateMemberPhotoOnServer(currentEditingMemberId, finalProcessedPhoto);
+            }
+        }
 
-            if (activeUploadType === 'popup') {
-                let member = globalData.find(m => {
-                    let mName = m.name ? m.name.toString().trim() : '';
-                    return mName === currentEditingMemberId;
+        function openTab(evt, tabName) {
+            let contents = document.getElementsByClassName("tab-content");
+            for (let c of contents) c.classList.remove("active");
+            let buttons = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
+            for (let b of buttons) b.classList.remove("active");
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        google.charts.load('current', {packages:['orgchart']});
+        google.charts.setOnLoadCallback(fetchFamilyData);
+
+        function fetchFamilyData() {
+            fetch(scriptURL + '?action=getData')
+                .then(res => res.json())
+                .then(data => {
+                    globalData = data;
+                    populateParentDropdown(data);
+                    drawChart(data);
+                })
+                .catch(err => {
+                    console.error("Error loading data:", err);
+                    document.getElementById('chart_div').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi. Kripya reload karein.</div>';
                 });
-                if (member) {
-                    member.photo = finalProcessedPhoto;
-                    showPopup(member);
-                    drawChart(globalData);
-                    updatePhotoInSheet(currentEditingMemberId, finalProcessedPhoto);
-                }
-            } else {
-                alert("फोटो सफलतापूर्वक सेट हो चुकी है! अब आप 'Submit & Save to Sheet' पर क्लिक करें।");
-            }
         }
 
-        function toggleSpouseFields() {
-            var status = document.getElementById('maritalStatus').value;
-            var container = document.getElementById('spouseFieldsContainer');
-            container.style.display = (status === 'Unmarried') ? 'none' : 'block';
-            if (status === 'Unmarried') {
-                document.getElementById('spouseName').value = '';
-                document.getElementById('spouseDob').value = '';
-                document.getElementById('spouseDeathAnniv').value = '';
-            }
-        }
-
-        function openTab(event, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) tabcontent[i].style.display = "none";
-            tablinks = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
-            for (i = 0; i < tablinks.length; i++) tablinks[i].className = tablinks[i].className.replace(" active", "");
-            document.getElementById(tabName).style.display = "block";
-            event.currentTarget.className += " active";
-        }
-
-        document.getElementById("defaultOpen").click();
-
-        google.charts.load('current', {packages:["orgchart"]});
-        google.charts.setOnLoadCallback(fetchDataAndDrawChart);
-
-        function fetchDataAndDrawChart() {
-            fetch(scriptURL)
-            .then(response => response.json())
-            .then(jsonData => {
-                globalData = jsonData.map((row) => {
-                    return {
-                        fatherId: row.fatherId !== undefined ? row.fatherId : (row[0] || ''),
-                        memberId: row.memberId !== undefined ? row.memberId : (row[1] || ''),
-                        name: row.name !== undefined ? row.name : (row[2] || ''),
-                        dob: row.dob !== undefined ? row.dob : (row[3] || ''),
-                        aliveDeath: row.aliveDeath !== undefined ? row.aliveDeath : (row[4] || 'Alive'),
-                        deathAnniversary: row.deathAnniversary !== undefined ? row.deathAnniversary : (row[5] || ''),
-                        maritalStatus: row.maritalStatus !== undefined ? row.maritalStatus : (row[6] || 'Married'),
-                        spouseName: row.spouseName !== undefined ? row.spouseName : (row[7] || ''),
-                        spouseDob: row.spouseDob !== undefined ? row.spouseDob : (row[8] || ''),
-                        spouseAliveDeath: row.spouseAliveDeath !== undefined ? row.spouseAliveDeath : (row[9] || 'Alive'),
-                        spouseDeathAnniv: row.spouseDeathAnniv !== undefined ? row.spouseDeathAnniv : (row[10] || ''),
-                        mobile: row.mobile !== undefined ? row.mobile : (row[11] || ''),
-                        photo: row.photo !== undefined ? row.photo : (row[12] || ''),
-                        childOrder: row.childOrder !== undefined ? Number(row.childOrder) : 99,
-                        gender: row.gender !== undefined ? row.gender : (row[13] || 'Male')
-                    };
-                });
-
-                populateFatherDropdown();
-                drawChart(globalData);
-            })
-            .catch(error => console.error('Error fetching data:', error));
-        }
-
-        function populateFatherDropdown() {
-            const select = document.getElementById('fatherId');
-            select.innerHTML = '<option value="">-- Root Member / Parent Chunein --</option>';
-            globalData.forEach(member => {
-                let mName = member.name ? member.name.toString().trim() : '';
-                if (mName) {
-                    let opt = document.createElement('option');
-                    opt.value = mName;
-                    opt.textContent = mName + (member.spouseName ? ' & ' + member.spouseName : '');
-                    select.appendChild(opt);
-                }
+        function populateParentDropdown(data) {
+            let select = document.getElementById('fatherId');
+            select.innerHTML = '<option value="">-- Mukhya (Root) Member banayein --</option>';
+            data.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item.name; 
+                opt.textContent = `${item.name} (ID: ${item.memberId})`;
+                select.appendChild(opt);
             });
         }
 
-        function drawChart(dataArray) {
-            if (!dataArray || dataArray.length === 0) return;
-
-            let map = {};
-            dataArray.forEach(m => {
-                let name = m.name ? m.name.toString().trim() : '';
-                if (name) map[name] = { ...m, children: [] };
-            });
-
-            let nodeMap = map;
-            let roots = [];
-
-            Object.values(nodeMap).forEach(node => {
-                let fId = node.fatherId ? node.fatherId.toString().trim() : '';
-                if (fId && nodeMap[fId]) {
-                    nodeMap[fId].children.push(node);
-                } else {
-                    roots.push(node);
-                }
-            });
-
-            function calculateGenerations(node, currentGen) {
-                node.generation = currentGen;
-                if (node.children) {
-                    node.children.sort((a, b) => (a.childOrder || 99) - (b.childOrder || 99));
-                    node.children.forEach(child => calculateGenerations(child, currentGen + 1));
-                }
+        function drawChart(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px;">Koi data uplabdh nahi hai.</div>';
+                return;
             }
-            roots.forEach(r => calculateGenerations(r, 0));
 
-            var chartData = new google.visualization.DataTable();
-            chartData.addColumn('string', 'Name');
-            chartData.addColumn('string', 'Manager');
+            let chartData = new google.visualization.DataTable();
+            chartData.addColumn('string', 'Entity');
+            chartData.addColumn('string', 'Parent');
             chartData.addColumn('string', 'ToolTip');
 
             let rows = [];
-            Object.values(nodeMap).forEach(node => {
-                let memberName = node.name;
-                let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-                let photoSrc = (node.photo && node.photo.length > 10) ? node.photo : defaultAvatar;
+            let nameSet = new Set(data.map(item => item.name));
 
-                let genNum = node.generation !== undefined ? node.generation : 0;
-                let genClass = 'gen-' + (genNum > 3 ? '3' : genNum) + '-node';
+            data.forEach(item => {
+                let pId = item.fatherId;
+                if (!pId || !nameSet.has(pId)) {
+                    pId = ''; 
+                }
 
-                let displayHtml = `
-                    <div class="node-content-box" onclick="openMemberModal('${memberName}')">
-                        <div class="${genClass}" style="text-align:center; padding:8px; border-radius:12px;">
-                            <img src="${photoSrc}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:2px solid #ffffff; margin-bottom:4px; box-shadow:0 2px 6px rgba(0,0,0,0.3);"/><br>
-                            <b style="font-size:13px; display:block; color:#ffffff !important; text-shadow:0 1px 3px rgba(0,0,0,0.6);">${memberName}</b>
-                            <span style="font-size:10px; background:rgba(255,255,255,0.25); color:#ffffff; padding:1px 8px; border-radius:10px; font-weight:bold;">पीढ़ी ${genNum + 1}</span>
-                            ${node.spouseName ? '<br><span style="font-size:10px; color:#f0f0f0; margin-top:2px; display:block;">w/o ' + node.spouseName + '</span>' : ''}
-                        </div>
+                let genClass = 'gen-1-node';
+                if (!pId) genClass = 'gen-0-node';
+                else {
+                    let parentObj = data.find(d => d.name === pId);
+                    if (parentObj && !parentObj.fatherId) genClass = 'gen-2-node';
+                    else genClass = 'gen-3-node';
+                }
+
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:4px;">` : `<div style="width:45px; height:45px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#555; margin-bottom:4px;">${item.name.charAt(0)}</div>`;
+
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<br><span style="font-size:11px; opacity:0.9;">Spouse: ${item.spouseName}</span>` : '';
+
+                let nodeContent = `
+                    <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
+                        ${photoHtml}
+                        <div style="font-weight:bold; font-size:13px; white-space:nowrap;">${item.name}</div>
+                        ${spouseText}
                     </div>
                 `;
 
-                let manager = node.fatherId ? node.fatherId.toString().trim() : '';
-                rows.push([{v: memberName, f: displayHtml}, manager, memberName]);
+                rows.push([{v: item.name, f: nodeContent}, pId, item.name]);
             });
 
             chartData.addRows(rows);
 
-            var chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-            chart.draw(chartData, {allowHtml:true, nodeClass: ''});
+            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
         }
 
-        function openMemberModal(memberName) {
-            let member = globalData.find(m => {
-                let mName = m.name ? m.name.toString().trim() : '';
-                return mName === memberName;
-            });
-            if (member) {
-                currentEditingMemberId = memberName;
-                showPopup(member);
-            }
-        }
+        function showDetails(memberId) {
+            let item = globalData.find(d => d.memberId === memberId);
+            if (!item) return;
+            currentEditingMemberId = memberId;
 
-        function showPopup(member) {
-            let defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-            let photoSrc = (member.photo && member.photo.length > 10) ? member.photo : defaultAvatar;
+            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px;">` : `<div style="width:90px; height:90px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#555; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
 
-            // Member Tithi
-            let memberTithiInfo = '';
-            if (member.aliveDeath === 'Death' && member.deathAnniversary) {
-                let tithiStr = calculatePanchangTithi(member.deathAnniversary, '');
-                memberTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr}</small>`;
+            let deathInfo = item.aliveDeath === 'Death' ? `<br><b>स्वर्गवास दिनांक:</b> ${item.deathAnniversary || 'N/A'}<br><b>वार:</b> ${item.deathDay || 'N/A'}<br><b>तिथि:</b> ${item.deathTithi || 'N/A'}` : '<br><b>स्थिति:</b> जीवित (Alive)';
+            
+            let spouseDeathInfo = '';
+            if(item.maritalStatus === 'Married' && item.spouseAliveDeath === 'Death') {
+                spouseDeathInfo = `<br><b>Spouse Death Date:</b> ${item.spouseDeathAnniv || 'N/A'}<br><b>Spouse Day:</b> ${item.spouseDeathDay || 'N/A'}<br><b>Spouse Tithi:</b> ${item.spouseDeathTithi || 'N/A'}`;
             }
 
-            // Spouse Tithi
-            let spouseTithiInfo = '';
-            if (member.spouseAliveDeath === 'Death' && member.spouseDeathAnniv) {
-                let tithiStr2 = calculatePanchangTithi(member.spouseDeathAnniv, '');
-                spouseTithiInfo = `<br><small style="color:#d35400; font-weight:bold;">${tithiStr2}</small>`;
-            }
-
-            // --- RE-ARRANGED ORDER: MEMBER DETAILS FIRST, THEN SPOUSE DETAILS BELOW ---
             let html = `
-                <div style="text-align: center;">
-                    <img src="${photoSrc}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid #11998e; box-shadow:0 4px 10px rgba(0,0,0,0.2);"/><br>
-                    <button class="edit-profile-btn" onclick="triggerPopupPhotoUpload()">✏️ Edit Photo</button>
-                    <h3 style="margin:10px 0 6px 0; color:#1e3c72; font-size:18px;">${member.name || 'N/A'}</h3>
-                    <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
+                <div style="text-align:center;">
+                    ${photoHtml}
+                    <h3 style="margin:5px 0; color:#1e3c72;">${item.name}</h3>
+                    <p style="font-size:13px; color:#666; margin:0 0 15px 0;">ID: ${item.memberId}</p>
                 </div>
-                <div style="font-size: 13.5px; line-height: 1.6; color: #444;">
-                    <p style="margin: 5px 0;"><b>Child Level:</b> ${member.childOrder || '1'}</p>
-                    <p style="margin: 5px 0;"><b>Father Name:</b> ${member.fatherId || 'Root / Top'}</p>
-                    <p style="margin: 5px 0;"><b>Gender:</b> ${member.gender || 'Male'}</p>
-                    <p style="margin: 5px 0;"><b>D.O.B:</b> ${member.dob || 'N/A'}</p>
-                    <p style="margin: 5px 0;"><b>Status:</b> <span style="color:${member.aliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.aliveDeath || 'Alive'}</span> ${member.deathAnniversary ? '<br><small style="color:#666;">दिनांक: '+member.deathAnniversary+'</small>'+memberTithiInfo : ''}</p>
-                    
-                    ${member.spouseName ? `
-                        <div style="margin-top: 15px; background: #f0f7f4; padding: 10px; border-radius: 8px; border-left: 4px solid #11998e;">
-                            <p style="margin: 3px 0;"><b>Spouse Name:</b> ${member.spouseName}</p>
-                            <p style="margin: 3px 0;"><b>Spouse D.O.B:</b> ${member.spouseDob || 'N/A'}</p>
-                            <p style="margin: 3px 0;"><b>Spouse Status:</b> <span style="color:${member.spouseAliveDeath === 'Death' ? '#d32f2f' : '#2e7d32'}; font-weight:bold;">${member.spouseAliveDeath || 'Alive'}</span> ${member.spouseDeathAnniv ? '<br><small style="color:#666;">दिनांक: '+member.spouseDeathAnniv+'</small>'+spouseTithiInfo : ''}</p>
-                        </div>
-                    ` : ''}
-                    
-                    <hr style="border:0; border-top:1px solid #eee; margin: 10px 0;">
-                    <p style="margin: 5px 0;"><b>Mobile:</b> <a href="tel:${member.mobile}" style="color:#2a5298; font-weight:bold; text-decoration:none;">${member.mobile || 'N/A'}</a></p>
+                <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
+                <div style="font-size:14px; line-height:1.6; color:#333;">
+                    <b>पिता का नाम (Father):</b> ${item.fatherId || 'Mukhya'}<br>
+                    <b>लिंग (Gender):</b> ${item.gender}<br>
+                    <b>जन्म दिनांक (D.O.B):</b> ${item.dob || 'N/A'}<br>
+                    <b>विवाह स्थिति:</b> ${item.maritalStatus}
+                    ${item.maritalStatus === 'Married' ? `<br><b>पति/पत्नी (Spouse):</b> ${item.spouseName || 'N/A'} (DOB: ${item.spouseDob || 'N/A'})` : ''}
+                    ${deathInfo}
+                    ${spouseDeathInfo}
+                    <br><b>मोबाइल नंबर:</b> ${item.mobile || 'N/A'}
+                </div>
+                <div style="text-align:center; margin-top:15px;">
+                    <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">📷 फोटो बदलें / जोड़ें</button>
                 </div>
             `;
 
@@ -601,81 +529,89 @@
             document.getElementById('detailsModal').style.display = 'block';
         }
 
-        function triggerPopupPhotoUpload() {
-            document.getElementById('popupPhotoFile').click();
-        }
-
         function closeModal() {
             document.getElementById('detailsModal').style.display = 'none';
         }
 
-        function updatePhotoInSheet(memberName, base64Photo) {
-            fetch(scriptURL, {
+        function updateMemberPhotoOnServer(memberId, base64Photo) {
+            let formData = { memberId: memberId, photo: base64Photo };
+            fetch(scriptURL + '?action=updateMember', {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'updatePhoto', memberId: memberName, photo: base64Photo })
-            }).catch(err => console.error(err));
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(response => {
+                if(response.status === 'success') {
+                    alert('फोटो सफलतापूर्वक अपडेट हो गई है!');
+                    location.reload();
+                } else {
+                    alert('फोटो अपडेट करने में त्रुटि हुई।');
+                }
+            })
+            .catch(err => console.error(err));
         }
 
         document.getElementById('entryForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
+            
             let formData = {
                 fatherId: document.getElementById('fatherId').value,
-                name: document.getElementById('name').value.trim(),
-                childOrder: document.getElementById('childOrder').value || 99,
+                name: document.getElementById('name').value,
+                childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
+                deathDay: document.getElementById('deathDay').value,
+                deathTithi: document.getElementById('deathTithi').value,
                 maritalStatus: document.getElementById('maritalStatus').value,
-                spouseName: document.getElementById('spouseName').value.trim(),
+                spouseName: document.getElementById('spouseName').value,
                 spouseDob: document.getElementById('spouseDob').value,
                 spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                mobile: document.getElementById('mobile').value.trim(),
-                photo: finalProcessedPhoto || ''
+                spouseDeathDay: document.getElementById('spouseDeathDay').value,
+                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+                mobile: document.getElementById('mobile').value,
+                photo: finalProcessedPhoto
             };
 
             let submitBtn = document.querySelector('.submit-btn');
+            submitBtn.textContent = 'Saving to Sheet...';
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Saving...';
 
             fetch(scriptURL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
-            .then(() => {
-                alert('Data safaltapurvak save ho gaya hai!');
-                document.getElementById('entryForm').reset();
-                finalProcessedPhoto = '';
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit & Save to Sheet';
-                fetchDataAndDrawChart();
-                openTab({currentTarget: document.querySelector('.navbar button:first-child')}, 'treePage');
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    alert('Naye member ki entry safalpurvak save ho gayi hai!');
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                    submitBtn.textContent = 'Submit & Save to Sheet';
+                    submitBtn.disabled = false;
+                }
             })
-            .catch(error => {
-                alert('Data save karne mein error aayi hai.');
-                submitBtn.disabled = false;
+            .catch(err => {
+                console.error(err);
+                alert('Connection Error!');
                 submitBtn.textContent = 'Submit & Save to Sheet';
+                submitBtn.disabled = false;
             });
         });
 
         function downloadPDF() {
-            const element = document.getElementById('pdfContent');
-            document.getElementById('pdfTitle').style.display = 'block';
-            
+            let element = document.getElementById('pdfContent');
             let opt = {
                 margin:       0.5,
-                filename:     'Family_Tree_Report.pdf',
+                filename:     'Family_Tree.pdf',
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
             };
-
+            document.getElementById('pdfTitle').style.display = 'block';
             html2pdf().from(element).set(opt).save().then(() => {
                 document.getElementById('pdfTitle').style.display = 'none';
             });
