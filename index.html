@@ -28,40 +28,39 @@
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* --- STYLISH GRADIENT & ANIMATED SLIDER WIDGET --- */
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.96); }
-            100% { opacity: 1; transform: scale(1); }
+        /* --- PROFESSIONAL RICH BANNER WIDGET (Like Examples) --- */
+        @keyframes fadeInSlide {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 10px 30px rgba(255, 152, 0, 0.2); }
-            50% { box-shadow: 0 15px 40px rgba(255, 152, 0, 0.4); }
-            100% { box-shadow: 0 10px 30px rgba(255, 152, 0, 0.2); }
+        @keyframes premiumGlow {
+            0% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
+            50% { box-shadow: 0 20px 45px rgba(24, 119, 242, 0.35); }
+            100% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
         }
 
         .event-slider-card { 
-            background: linear-gradient(135deg, #ffffff 0%, #fdfcfb 100%); 
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); 
             border-radius: 20px; 
             padding: 30px; 
             margin-bottom: 30px; 
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12); 
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
             position: relative;
             overflow: hidden;
-            animation: pulseGlow 4s infinite;
+            animation: premiumGlow 5s infinite;
         }
         
         .event-header-title { 
-            font-size: 18px; 
+            font-size: 17px; 
             font-weight: 800; 
             color: #fff; 
-            margin-bottom: 20px; 
-            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); 
-            padding: 10px 25px; 
+            margin-bottom: 22px; 
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%); 
+            padding: 8px 24px; 
             border-radius: 30px; 
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4);
             letter-spacing: 0.5px;
         }
 
@@ -72,20 +71,20 @@
             flex-wrap: wrap; 
             justify-content: center; 
             width: 100%; 
-            animation: fadeInScale 0.6s ease-in-out;
+            animation: fadeInSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .slider-img-wrapper {
             position: relative;
-            padding: 4px;
-            background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 5px;
+            background: linear-gradient(135deg, #ff9e00 0%, #ff0054 50%, #9b5de5 100%);
             border-radius: 50%;
-            box-shadow: 0 8px 25px rgba(220, 39, 67, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .slider-img { 
-            width: 140px; 
-            height: 140px; 
+            width: 150px; 
+            height: 150px; 
             border-radius: 50%; 
             object-fit: cover; 
             border: 4px solid #fff; 
@@ -94,54 +93,73 @@
 
         .slider-details { 
             text-align: left; 
-            max-width: 520px; 
+            max-width: 540px; 
             font-size: 15px; 
             line-height: 1.8; 
-            background: linear-gradient(135deg, #f8f9fa 0%, #edf2f7 100%);
-            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px 28px;
             border-radius: 16px;
-            border-left: 6px solid #ff4b2b;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+            border-left: 6px solid #4361ee;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             flex: 1;
-            min-width: 280px;
+            min-width: 290px;
         }
 
-        .slider-name-id {
-            font-size: 20px;
+        /* Name & ID Stacked Layout */
+        .slider-name-box {
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .slider-person-name {
+            font-size: 22px;
             font-weight: 800;
-            color: #1a202c;
-            margin-bottom: 8px;
-            border-bottom: 2px dashed #cbd5e0;
-            padding-bottom: 6px;
+            color: #1d3557;
+            display: block;
+            line-height: 1.3;
+        }
+
+        .slider-person-id {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e63946;
+            background: #ffe5ec;
+            padding: 2px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
         }
 
         .slider-meta-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 4px;
-            color: #4a5568;
+            margin-bottom: 5px;
+            color: #495057;
+            font-size: 14px;
         }
 
         .edit-profile-btn { 
-            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%); 
-            color: #744210; 
+            background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%); 
+            color: #432818; 
             border: none; 
-            padding: 8px 18px; 
+            padding: 9px 20px; 
             border-radius: 8px; 
             cursor: pointer; 
             font-size: 13px; 
             font-weight: bold; 
-            margin-top: 10px; 
-            box-shadow: 0 4px 12px rgba(255, 179, 71, 0.4);
+            margin-top: 12px; 
+            box-shadow: 0 4px 12px rgba(247, 127, 0, 0.4);
             transition: 0.2s;
         }
-        .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 179, 71, 0.6); }
+        .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 127, 0, 0.6); }
 
-        /* Comment Box Section */
-        .comment-section { background: #fff; border: 2px solid #e2e8f0; border-radius: 14px; padding: 18px; margin-top: 25px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        /* Comment Box Section Inside Widget */
+        .comment-section { background: rgba(255, 255, 255, 0.95); border-radius: 14px; padding: 18px; margin-top: 25px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
         .comment-section textarea { width: 100%; height: 75px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; }
-        .comment-submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; float: right; box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3); transition: 0.2s; }
-        .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(17, 153, 142, 0.5); }
+        .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
+        .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(43, 147, 72, 0.5); }
 
         /* Form Card & Tree */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
@@ -246,16 +264,16 @@
             </div>
         </div>
 
-        <!-- 7 Days Upcoming Events Slider Widget -->
+        <!-- 7 Days Upcoming Events Slider Widget (Professional Redesign) -->
         <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
             <div class="slider-content-box" id="sliderBodyContainer">
-                <p id="loadingText">डाटा लोड हो रहा है...</p>
+                <p id="loadingText" style="color: #fff;">डाटा लोड हो रहा है...</p>
             </div>
             
             <!-- Comment Box Section Inside Widget -->
             <div class="comment-section">
-                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1e3c72; font-weight:bold; display:block; margin-bottom:6px;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
+                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1d3557; font-weight:bold; display:block; margin-bottom:6px;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
                 <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
                 <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
                 <div style="clear: both;"></div>
@@ -503,13 +521,11 @@
             }
         };
 
-        window.toggleDropdown = function(id) {
+        function toggleDropdown(id) {
             let panels = document.getElementsByClassName('dropdown-panel');
             for(let p of panels) { if(p.id !== id) p.style.display = 'none'; }
             let panel = document.getElementById(id);
-            if(panel) {
-                panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-            }
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
         window.onclick = function(event) {
@@ -519,7 +535,7 @@
             }
         }
 
-        window.changeLanguage = function(lang) {
+        function changeLanguage(lang) {
             currentLang = lang;
             let t = dictionary[lang];
             
@@ -577,14 +593,14 @@
             if(globalData.length > 0) populateDropdowns(globalData);
         }
 
-        window.zoomTree = function(amount) {
+        function zoomTree(amount) {
             currentScale += amount;
             if (currentScale < 0.25) currentScale = 0.25; 
             if (currentScale > 1.2) currentScale = 1.2; 
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
-        window.resetZoom = function() {
+        function resetZoom() {
             currentScale = 0.5;
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
             centerTreeScroll();
@@ -598,7 +614,7 @@
             return dPart;
         }
 
-        window.toggleDeathFields = function(type) {
+        function toggleDeathFields(type) {
             if (type === 'member') {
                 let status = document.getElementById('aliveDeath').value;
                 document.getElementById('memberDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
@@ -608,12 +624,12 @@
             }
         }
 
-        window.toggleSpouseFields = function() {
+        function toggleSpouseFields() {
             let status = document.getElementById('maritalStatus').value;
             document.getElementById('spouseFieldsContainer').style.display = (status === 'Married') ? 'block' : 'none';
         }
 
-        window.handleFileSelect = function(input, type) {
+        function handleFileSelect(input, type) {
             activeUploadType = type;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -628,7 +644,7 @@
             }
         }
 
-        window.getCroppedImage = function() {
+        function getCroppedImage() {
             if (!cropper) return;
             const canvas = cropper.getCroppedCanvas({ width: 250, height: 250 });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.8);
@@ -638,7 +654,7 @@
             }
         }
 
-        window.openTab = function(evt, tabName) {
+        function openTab(evt, tabName) {
             let contents = document.getElementsByClassName("tab-content");
             for (let c of contents) c.classList.remove("active");
             let buttons = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
@@ -648,7 +664,6 @@
             if (tabName === 'treePage') setTimeout(centerTreeScroll, 150);
         }
 
-        // Initialize Google Charts
         google.charts.load('current', {packages:['orgchart']});
         google.charts.setOnLoadCallback(fetchFamilyData);
 
@@ -657,8 +672,7 @@
                 .then(res => res.json())
                 .then(data => {
                     globalData = data;
-                    let treeLoadText = document.getElementById('treeLoadingText');
-                    if(treeLoadText) treeLoadText.style.display = 'none';
+                    document.getElementById('treeLoadingText').style.display = 'none';
                     populateDropdowns(data);
                     processUpcomingEvents(data);
                     drawChart(data);
@@ -702,16 +716,14 @@
             });
         }
 
-        window.selectMemberFromTithi = function(memberId) {
+        function selectMemberFromTithi(memberId) {
             if(!memberId) return;
             showDetails(memberId);
-            let p = document.getElementById('tithiPanel');
-            if(p) p.style.display = 'none';
+            document.getElementById('tithiPanel').style.display = 'none';
         }
 
-        window.filterNextGenTree = function(selectedParentName) {
-            let p = document.getElementById('searchPanel');
-            if(p) p.style.display = 'none';
+        function filterNextGenTree(selectedParentName) {
+            document.getElementById('searchPanel').style.display = 'none';
             if(!selectedParentName) {
                 drawChart(globalData);
                 return;
@@ -771,10 +783,8 @@
                 }
             } else {
                 let t = dictionary[currentLang];
-                let headerTitle = document.getElementById('sliderHeaderTitle');
-                let bodyContainer = document.getElementById('sliderBodyContainer');
-                if(headerTitle) headerTitle.innerText = t.noEventTitle;
-                if(bodyContainer) bodyContainer.innerHTML = `<p style="color:#718096; font-weight:600; padding:15px;">${t.noEventDesc}</p>`;
+                document.getElementById('sliderHeaderTitle').innerText = t.noEventTitle;
+                document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#e2e8f0; font-weight:600; padding:15px;">${t.noEventDesc}</p>`;
             }
         }
 
@@ -790,20 +800,20 @@
             return false;
         }
 
+        /* --- PROFESSIONAL STACKED NAME & ID RENDERER --- */
         function renderSliderItem(index) {
             let ev = sliderEventsList[index];
             let item = ev.item;
             
-            let headerTitle = document.getElementById('sliderHeaderTitle');
-            if(headerTitle) headerTitle.innerText = `✨ ${ev.type}`;
+            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
             
             let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:45px; color:#4a5568; font-weight:bold;">${item.name.charAt(0)}</div>`;
             
             let t = dictionary[currentLang];
             let detailsHtml = `
-                <div class="slider-name-id">
-                    ${item.name} 
-                    <span style="font-size: 13px; color: #e53e3e; background: #fff5f5; padding: 2px 8px; border-radius: 6px; border: 1px solid #fed7d7; float: right; font-weight: normal;">ID: ${item.memberId}</span>
+                <div class="slider-name-box">
+                    <span class="slider-person-name">${item.name}</span>
+                    <span class="slider-person-id">ID: ${item.memberId}</span>
                 </div>
                 <div class="slider-meta-row"><strong>${t.fatherLabel}</strong> <span>${item.fatherId || 'Root'}</span></div>
                 <div class="slider-meta-row"><strong>Date:</strong> <span>${formatDate(ev.type.includes('पुण्य') || ev.type.includes('Death') ? item.deathAnniversary : item.dob)}</span></div>
@@ -811,30 +821,22 @@
                 <button class="edit-profile-btn" onclick="showDetails('${item.memberId}')">${currentLang === 'hi' ? '📂 पूरी जानकारी देखें' : '📂 View Full Details'}</button>
             `;
 
-            let bodyContainer = document.getElementById('sliderBodyContainer');
-            if(bodyContainer) {
-                bodyContainer.innerHTML = `
-                    <div class="slider-img-wrapper">${photoHtml}</div>
-                    <div class="slider-details">${detailsHtml}</div>
-                `;
-            }
+            document.getElementById('sliderBodyContainer').innerHTML = `
+                <div class="slider-img-wrapper">${photoHtml}</div>
+                <div class="slider-details">${detailsHtml}</div>
+            `;
         }
 
-        window.postComment = function() {
-            let commentInput = document.getElementById('visitorComment');
-            if(!commentInput) return;
-            let text = commentInput.value;
+        function postComment() {
+            let text = document.getElementById('visitorComment').value;
             if(!text.trim()) { alert(currentLang === 'hi' ? 'कृपया कुछ संदेश लिखें!' : 'Please write a message!'); return; }
             alert(currentLang === 'hi' ? 'आपका संदेश / श्रद्धांजलि सफलता पूर्वक प्रेषित कर दी गई है!' : 'Your message/tribute has been sent successfully!');
-            commentInput.value = '';
+            document.getElementById('visitorComment').value = '';
         }
 
         function drawChart(dataToDraw) {
-            let chartDiv = document.getElementById('chart_div');
-            if (!chartDiv) return;
-
             if (!dataToDraw || dataToDraw.length === 0) {
-                chartDiv.innerHTML = `<div style="text-align:center; padding:30px;">${currentLang === 'hi' ? 'कोई डेटा उपलब्ध नहीं है।' : 'No data available.'}</div>`;
+                document.getElementById('chart_div').innerHTML = `<div style="text-align:center; padding:30px;">${currentLang === 'hi' ? 'कोई डेटा उपलब्ध नहीं है।' : 'No data available.'}</div>`;
                 return;
             }
 
@@ -873,7 +875,7 @@
             });
 
             chartData.addRows(rows);
-            let chart = new google.visualization.OrgChart(chartDiv);
+            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
             chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
 
             setTimeout(centerTreeScroll, 250);
@@ -887,7 +889,7 @@
             }
         }
 
-        window.showDetails = function(memberId) {
+        function showDetails(memberId) {
             let item = globalData.find(d => d.memberId === memberId);
             if (!item) return;
             currentEditingMemberId = memberId;
@@ -917,16 +919,11 @@
                     <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">${t.editPhotoBtn}</button>
                 </div>
             `;
-            let modalContent = document.getElementById('modalContent');
-            let detailsModal = document.getElementById('detailsModal');
-            if(modalContent) modalContent.innerHTML = html;
-            if(detailsModal) detailsModal.style.display = 'block';
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('detailsModal').style.display = 'block';
         }
 
-        window.closeModal = function() { 
-            let detailsModal = document.getElementById('detailsModal');
-            if(detailsModal) detailsModal.style.display = 'none'; 
-        }
+        function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
 
         function updateMemberPhotoOnServer(memberId, base64Photo) {
             fetch(scriptURL, {
@@ -935,43 +932,37 @@
             }).then(() => { alert(currentLang === 'hi' ? 'फोटो अपडेट हो गई!' : 'Photo updated successfully!'); location.reload(); });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            let entryForm = document.getElementById('entryForm');
-            if(entryForm) {
-                entryForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    let formData = {
-                        fatherId: document.getElementById('fatherId').value,
-                        name: document.getElementById('name').value,
-                        gender: document.getElementById('gender').value,
-                        dob: document.getElementById('dob').value,
-                        aliveDeath: document.getElementById('aliveDeath').value,
-                        deathAnniversary: document.getElementById('deathAnniversary').value,
-                        deathDay: document.getElementById('deathDay').value,
-                        deathTithi: document.getElementById('deathTithi').value,
-                        maritalStatus: document.getElementById('maritalStatus').value,
-                        spouseName: document.getElementById('spouseName').value,
-                        spouseDob: document.getElementById('spouseDob').value,
-                        spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
-                        spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                        spouseDeathDay: document.getElementById('spouseDeathDay').value,
-                        spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                        mobile: document.getElementById('mobile').value,
-                        photo: finalProcessedPhoto
-                    };
-                    fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
-                    .then(res => res.json())
-                    .then(data => { alert(currentLang === 'hi' ? 'एंट्री सेव हो गई है!' : 'Entry saved successfully!'); location.reload(); });
-                });
-            }
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let formData = {
+                fatherId: document.getElementById('fatherId').value,
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob'].value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                deathDay: document.getElementById('deathDay').value,
+                deathTithi: document.getElementById('deathTithi').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob'].value,
+                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv'].value,
+                spouseDeathDay: document.getElementById('spouseDeathDay'].value,
+                spouseDeathTithi: document.getElementById('spouseDeathTithi'].value,
+                mobile: document.getElementById('mobile').value,
+                photo: finalProcessedPhoto
+            };
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
+            .then(res => res.json())
+            .then(data => { alert(currentLang === 'hi' ? 'एंट्री सेव हो गई है!' : 'Entry saved successfully!'); location.reload(); });
         });
 
-        window.downloadPDF = function() {
+        function downloadPDF() {
             let element = document.getElementById('pdfContent');
-            let pdfTitle = document.getElementById('pdfTitle');
             let opt = { margin: 0.5, filename: 'Family_Tree.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
-            if(pdfTitle) pdfTitle.style.display = 'block';
-            html2pdf().from(element).set(opt).save().then(() => { if(pdfTitle) pdfTitle.style.display = 'none'; });
+            document.getElementById('pdfTitle').style.display = 'block';
+            html2pdf().from(element).set(opt).save().then(() => { document.getElementById('pdfTitle').style.display = 'none'; });
         }
     </script>
 </body>
