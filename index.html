@@ -54,8 +54,24 @@
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        .chart-scroll-wrapper { width: 100%; overflow: auto; min-height: 500px; background: #f8fafc; border-radius: 12px; padding: 30px; display: flex; justify-content: center; align-items: flex-start; }
-        #chart_wrapper_inner { transform: scaleY(-1) scale(0.6); transform-origin: center top; transition: transform 0.25s ease; }
+        .chart-scroll-wrapper { 
+    width: 100%; 
+    height: 600px; 
+    overflow: auto; 
+    background: #f8fafc; 
+    border-radius: 12px; 
+    padding: 30px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+#chart_wrapper_inner { 
+    transform: scaleY(-1) scale(0.5); 
+    transform-origin: center center; 
+    transition: transform 0.25s ease; 
+}
+
         #chart_div { display: flex; justify-content: center; }
         
         .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; padding: 8px 6px; box-sizing: border-box; text-align: center; word-wrap: break-word; overflow: hidden; }
