@@ -29,13 +29,12 @@
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px 10px; min-height: 600px; background: #f8fafc; border-radius: 12px; }
+        #chart_wrapper_inner { transform: scaleY(-1) scale(0.45); transform-origin: center center; transition: transform 0.25s ease; display: inline-block; min-width: 100%; }
+        #chart_div { display: inline-block; min-width: 100%; }
         
-        /* Proper Scroll Wrapper & Centering Fix */
-        .chart-scroll-wrapper { width: 100%; overflow: auto; min-height: 600px; background: #f8fafc; border-radius: 12px; padding: 30px; display: flex; justify-content: center; align-items: flex-start; }
-        #chart_wrapper_inner { transform: scaleY(-1) scale(0.6); transform-origin: center top; transition: transform 0.25s ease; }
-        #chart_div { display: flex; justify-content: center; }
-        
-        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; padding: 8px 6px; box-sizing: border-box; text-align: center; word-wrap: break-word; overflow: hidden; }
+        /* Fixed Tree Box Padding & Shape */
+        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; padding: 8px; box-sizing: border-box; text-align: center; }
         .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 14px !important; padding: 4px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
@@ -220,19 +219,18 @@
         let cropper = null;
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
-        let currentScale = 0.6;
+        let currentScale = 0.45;
 
         function zoomTree(amount) {
             currentScale += amount;
-            if (currentScale < 0.25) currentScale = 0.25; 
+            if (currentScale < 0.2) currentScale = 0.2; 
             if (currentScale > 1.2) currentScale = 1.2; 
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
         function resetZoom() {
-            currentScale = 0.6;
+            currentScale = 0.45;
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
-            centerTreeScroll();
         }
 
         function formatDate(dateStr) {
@@ -288,7 +286,6 @@
             const canvas = cropper.getCroppedCanvas({ width: 250, height: 250 });
             finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.8);
             document.getElementById('cropperModal').style.display = 'none';
-            
             if (activeUploadType === 'popup' && currentEditingMemberId) {
                 updateMemberPhotoOnServer(currentEditingMemberId, finalProcessedPhoto);
             }
@@ -301,10 +298,6 @@
             for (let b of buttons) b.classList.remove("active");
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
-
-            if (tabName === 'treePage') {
-                setTimeout(centerTreeScroll, 150);
-            }
         }
 
         google.charts.load('current', {packages:['orgchart']});
@@ -362,14 +355,13 @@
                     else genClass = 'gen-3-node';
                 }
 
-                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px;">` : `<div style="width:40px; height:40px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; color:#555; margin-bottom:3px;">${item.name.charAt(0)}</div>`;
-                
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.95; margin-top:2px; word-break: break-word;">${item.spouseName}</div>` : '';
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:4px;">` : `<div style="width:45px; height:45px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#555; margin-bottom:4px;">${item.name.charAt(0)}</div>`;
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.9; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">Spouse: ${item.spouseName}</div>` : '';
 
                 let nodeContent = `
                     <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
                         ${photoHtml}
-                        <div style="font-weight:bold; font-size:12px; word-break: break-word; line-height:1.2;">${item.name}</div>
+                        <div style="font-weight:bold; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.name}</div>
                         ${spouseText}
                     </div>
                 `;
@@ -379,17 +371,6 @@
             chartData.addRows(rows);
             let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
             chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
-
-            setTimeout(centerTreeScroll, 250);
-        }
-
-        function centerTreeScroll() {
-            let wrapper = document.getElementById('scrollWrapper');
-            let inner = document.getElementById('chart_wrapper_inner');
-            if (wrapper && inner) {
-                // सीधे बीच वाले हिस्से पर ऑटोमैटिक स्क्रॉल सेट कर देगा
-                wrapper.scrollLeft = (inner.scrollWidth - wrapper.clientWidth) / 2;
-            }
         }
 
         function showDetails(memberId) {
@@ -434,22 +415,14 @@
         function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
 
         function updateMemberPhotoOnServer(memberId, base64Photo) {
-            let updateBtn = document.querySelector('.edit-profile-btn');
-            if(updateBtn) { updateBtn.textContent = 'Saving Photo...'; updateBtn.disabled = true; }
-
-            fetch(scriptURL, {
+            fetch(scriptURL + '?action=updateMember', {
                 method: 'POST',
-                body: JSON.stringify({ action: 'updateMemberPhoto', memberId: memberId, photo: base64Photo })
+                body: JSON.stringify({ memberId: memberId, photo: base64Photo })
             })
             .then(res => res.json())
             .then(response => {
-                alert('फोटो सफलताપूर्वक अपडेट हो गई!');
-                location.reload();
-            })
-            .catch(err => {
-                console.error(err);
-                alert('फोटो अपडेट हो गई है!');
-                location.reload();
+                if(response.status === 'success') { alert('फोटो अपडेट हो गई!'); location.reload(); }
+                else { alert('त्रुटि हुई।'); }
             });
         }
 
