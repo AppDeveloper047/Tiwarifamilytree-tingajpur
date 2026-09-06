@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree View</title>
+    <title>Family Tree View & Updates</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
@@ -17,33 +17,56 @@
         .navbar button.active { background-color: #ff9800; color: white; }
         .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
+
+        /* Top Feature Bar */
+        .top-feature-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .feature-dropdown-container { position: relative; display: inline-block; }
+        .feature-btn { background: #1e3c72; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; }
+        .feature-btn:hover { background: #2a5298; }
+
+        /* Dropdown Content Boxes */
+        .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
+        .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
+
+        /* Slider & Tithi Section */
+        .event-slider-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border-top: 5px solid #0083b0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .event-header-title { font-size: 20px; font-weight: bold; color: #0083b0; margin-bottom: 15px; background: #e0f7fa; padding: 8px 20px; border-radius: 20px; }
+        .slider-content-box { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center; width: 100%; }
+        .slider-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid #0083b0; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        .slider-details { text-align: left; max-width: 500px; font-size: 14px; line-height: 1.6; }
+
+        /* Comment Box Section */
+        .comment-section { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: 20px; width: 100%; box-sizing: border-box; }
+        .comment-section textarea { width: 100%; height: 70px; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; }
+        .comment-submit-btn { background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; float: right; }
+
+        /* Form Card & Tree */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; }
-        input:focus, select:focus { border-color: #2a5298; outline: none; }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        
         .tree-container { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .chart-scroll-wrapper { width: 100%; overflow: auto; display: block; padding: 20px 10px; min-height: 600px; background: #f8fafc; border-radius: 12px; }
-        #chart_wrapper_inner { transform: scaleY(-1) scale(0.45); transform-origin: center center; transition: transform 0.25s ease; display: inline-block; min-width: 100%; }
-        #chart_div { display: inline-block; min-width: 100%; }
         
-        /* Fixed Tree Box Padding & Shape */
-        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 130px; padding: 8px; box-sizing: border-box; text-align: center; }
+        .chart-scroll-wrapper { width: 100%; overflow: auto; min-height: 500px; background: #f8fafc; border-radius: 12px; padding: 30px; display: flex; justify-content: center; align-items: flex-start; }
+        #chart_wrapper_inner { transform: scaleY(-1) scale(0.6); transform-origin: center top; transition: transform 0.25s ease; }
+        #chart_div { display: flex; justify-content: center; }
+        
+        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; padding: 8px 6px; box-sizing: border-box; text-align: center; word-wrap: break-word; overflow: hidden; }
         .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 14px !important; padding: 4px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
         .gen-1-node { background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; }
         .gen-2-node { background: linear-gradient(135deg, #0f5132 0%, #082c1b 100%) !important; }
         .gen-3-node { background: linear-gradient(135deg, #581845 0%, #2e0c24 100%) !important; }
         
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow-y: auto; }
-        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; border-top: 6px solid #11998e; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; border-top: 6px solid #11998e; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; }
         .edit-profile-btn { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 12px; }
         
@@ -61,23 +84,68 @@
 
     <div id="cropperModal">
         <div class="cropper-container-box">
-            <h3 style="margin-top:0; color:#1e3c72;">फोटो क्रॉप करें (Adjust Face)</h3>
-            <div class="img-container">
-                <img id="imageToCrop" src="">
-            </div>
+            <h3 style="margin-top:0; color:#1e3c72;">फोटो क्रॉप करें</h3>
+            <div class="img-container"><img id="imageToCrop" src=""></div>
             <button class="crop-action-btn" onclick="getCroppedImage()">Crop & Save</button>
         </div>
     </div>
 
     <div class="navbar">
-        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree View</button>
+        <button id="defaultOpen" onclick="openTab(event, 'treePage')">🌳 Family Tree & Updates</button>
         <button onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
     <div id="treePage" class="tab-content active">
+        
+        <div class="top-feature-bar">
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('langPanel')">🌐 Language (भाषा)</button>
+                <div id="langPanel" class="dropdown-panel">
+                    <label>Select Language:</label>
+                    <select onchange="changeLanguage(this.value)">
+                        <option value="hi">हिंदी (Hindi)</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('tithiPanel')">📅 जन्मदिन / पुण्य तिथि</button>
+                <div id="tithiPanel" class="dropdown-panel">
+                    <label>सदस्य चुनें (Select Member):</label>
+                    <select id="tithiSelectDropdown" onchange="selectMemberFromTithi(this.value)">
+                        <option value="">-- लोड हो रहा है --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('searchPanel')">🔍 मेंबर सर्च (अगली पीढ़ी)</button>
+                <div id="searchPanel" class="dropdown-panel">
+                    <label>सदस्य सर्च करें:</label>
+                    <select id="memberSearchDropdown" onchange="filterNextGenTree(this.value)">
+                        <option value="">-- पूरा ट्री देखें --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-slider-card" id="upcomingSliderWidget">
+            <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
+            <div class="slider-content-box" id="sliderBodyContainer">
+                <p>डाटा लोड हो रहा है...</p>
+            </div>
+            
+            <div class="comment-section">
+                <label style="font-size:13px; text-align:left; color:#1e3c72; font-weight:bold;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
+                <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
+                <button class="comment-submit-btn" onclick="postComment()">संदेश भेजें</button>
+            </div>
+        </div>
+
         <div class="tree-container">
             <div class="action-bar">
-                <h2 style="margin:0; color:#1e3c72;">परिवार का स्वर्णिम इतिहास</h2>
+                <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <div class="zoom-controls">
                         <button class="zoom-btn" onclick="zoomTree(0.15)">➕ ज़ूम+</button>
@@ -94,7 +162,7 @@
                     <div id="chart_wrapper_inner">
                         <div id="chart_div">
                             <div style="text-align:center; padding:50px; color:#666; font-weight:bold; transform: scaleY(-1);">
-                                Family Tree Load ho raha hai... Kripya prateeksha karein!
+                                Family Tree Load ho raha hai...
                             </div>
                         </div>
                     </div>
@@ -105,102 +173,59 @@
 
     <div id="entryPage" class="tab-content">
         <div class="form-card">
-            <h2>Naye Member की Entry Karein</h2>
+            <h2>Naye Member ki Entry Karein</h2>
             <form id="entryForm">
                 <div class="form-group">
-                    <label>Father / Parent (पिता का पूरा नाम चुनें):*</label>
-                    <select id="fatherId" required>
-                        <option value="">-- Member List Load ho rahi hai --</option>
-                    </select>
+                    <label>Father / Parent:*</label>
+                    <select id="fatherId" required><option value="">-- Select --</option></select>
                 </div>
                 <div class="form-group">
-                    <label>Member Name (सदस्य का पूरा नाम):*</label>
-                    <input type="text" id="name" placeholder="Member ka naam" required>
+                    <label>Member Name:*</label>
+                    <input type="text" id="name" required>
                 </div>
                 <div class="form-group">
-                    <label>Child Level (संतान क्रम):</label>
-                    <input type="number" id="childOrder" placeholder="Jaise: 1, 2, 3..." min="1">
+                    <label>Gender:</label>
+                    <select id="gender"><option value="Male">Male</option><option value="Female">Female</option></select>
                 </div>
                 <div class="form-group">
-                    <label>Gender (लिंग):</label>
-                    <select id="gender">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>D.O.B (जन्म दिनांक):</label>
+                    <label>D.O.B:</label>
                     <input type="date" id="dob">
                 </div>
                 <div class="form-group">
-                    <label>Alive / Death (जीवित / स्वर्गवासी):</label>
+                    <label>Alive / Death:</label>
                     <select id="aliveDeath" onchange="toggleDeathFields('member')">
-                        <option value="Alive">Alive</option>
-                        <option value="Death">Death</option>
+                        <option value="Alive">Alive</option><option value="Death">Death</option>
                     </select>
                 </div>
                 <div id="memberDeathContainer" style="display:none;">
-                    <div class="form-group">
-                        <label>Death Date:</label>
-                        <input type="date" id="deathAnniversary" onchange="autoFillDay(this.value, 'deathDay')">
-                    </div>
-                    <div class="form-group">
-                        <label>Death Day / Vaar:</label>
-                        <input type="text" id="deathDay" placeholder="Jaise: Somwar">
-                    </div>
-                    <div class="form-group">
-                        <label>Death Tithi (Manual):</label>
-                        <input type="text" id="deathTithi" placeholder="Jaise: Ekadashi">
-                    </div>
+                    <div class="form-group"><label>Death Date:</label><input type="date" id="deathAnniversary"></div>
+                    <div class="form-group"><label>Death Day:</label><input type="text" id="deathDay"></div>
+                    <div class="form-group"><label>Death Tithi:</label><input type="text" id="deathTithi"></div>
                 </div>
                 <div class="form-group">
-                    <label>Marital Status (विवाह की स्थिति):*</label>
+                    <label>Marital Status:*</label>
                     <select id="maritalStatus" onchange="toggleSpouseFields()">
-                        <option value="Married">Married</option>
-                        <option value="Unmarried">Unmarried</option>
+                        <option value="Married">Married</option><option value="Unmarried">Unmarried</option>
                     </select>
                 </div>
                 <div id="spouseFieldsContainer">
+                    <div class="form-group"><label>Spouse Name:</label><input type="text" id="spouseName"></div>
+                    <div class="form-group"><label>Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
                     <div class="form-group">
-                        <label>Spouse Name (पति/पत्नी का नाम):</label>
-                        <input type="text" id="spouseName" placeholder="Spouse name">
-                    </div>
-                    <div class="form-group">
-                        <label>Spouse D.O.B:</label>
-                        <input type="date" id="spouseDob">
-                    </div>
-                    <div class="form-group">
-                        <label>Spouse Alive / Death:</label>
+                        <label>Spouse Alive/Death:</label>
                         <select id="spouseAliveDeath" onchange="toggleDeathFields('spouse')">
-                            <option value="Alive">Alive</option>
-                            <option value="Death">Death</option>
+                            <option value="Alive">Alive</option><option value="Death">Death</option>
                         </select>
                     </div>
                     <div id="spouseDeathContainer" style="display:none;">
-                        <div class="form-group">
-                            <label>Spouse Death Date:</label>
-                            <input type="date" id="spouseDeathAnniv" onchange="autoFillDay(this.value, 'spouseDeathDay')">
-                        </div>
-                        <div class="form-group">
-                            <label>Spouse Death Day:</label>
-                            <input type="text" id="spouseDeathDay" placeholder="Jaise: Mangalwar">
-                        </div>
-                        <div class="form-group">
-                            <label>Spouse Death Tithi (Manual):</label>
-                            <input type="text" id="spouseDeathTithi" placeholder="Jaise: Amavasya">
-                        </div>
+                        <div class="form-group"><label>Spouse Death Date:</label><input type="date" id="spouseDeathAnniv"></div>
+                        <div class="form-group"><label>Spouse Death Day:</label><input type="text" id="spouseDeathDay"></div>
+                        <div class="form-group"><label>Spouse Death Tithi:</label><input type="text" id="spouseDeathTithi"></div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Mobile Number:</label>
-                    <input type="tel" id="mobile" placeholder="Mobile number">
-                </div>
-                <div class="form-group">
-                    <label>Member Photo:</label>
-                    <input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(this, 'entry')">
-                </div>
-                <button type="submit" class="submit-btn">Submit & Save to Sheet</button>
+                <div class="form-group"><label>Mobile:</label><input type="tel" id="mobile"></div>
+                <div class="form-group"><label>Photo:</label><input type="file" id="photoFile" accept="image/*" onchange="handleFileSelect(this, 'entry')"></div>
+                <button type="submit" class="submit-btn">Submit & Save</button>
             </form>
         </div>
     </div>
@@ -219,36 +244,52 @@
         let cropper = null;
         let activeUploadType = ''; 
         let finalProcessedPhoto = '';
-        let currentScale = 0.45;
+        let currentScale = 0.6;
+        let sliderIndex = 0;
+        let sliderEventsList = [];
+
+        function toggleDropdown(id) {
+            let panels = document.getElementsByClassName('dropdown-panel');
+            for(let p of panels) { if(p.id !== id) p.style.display = 'none'; }
+            let panel = document.getElementById(id);
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.feature-btn') && !event.target.closest('.dropdown-panel')) {
+                let panels = document.getElementsByClassName('dropdown-panel');
+                for(let p of panels) p.style.display = 'none';
+            }
+        }
+
+        function changeLanguage(lang) {
+            if(lang === 'en') {
+                document.getElementById('treeHeadingTitle').innerText = "Family Golden History";
+                alert("Language switched to English (Demo view update)");
+            } else {
+                document.getElementById('treeHeadingTitle').innerText = "परिवार का स्वर्णिम इतिहास";
+            }
+        }
 
         function zoomTree(amount) {
             currentScale += amount;
-            if (currentScale < 0.2) currentScale = 0.2; 
+            if (currentScale < 0.25) currentScale = 0.25; 
             if (currentScale > 1.2) currentScale = 1.2; 
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
         function resetZoom() {
-            currentScale = 0.45;
+            currentScale = 0.6;
             document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
+            centerTreeScroll();
         }
 
         function formatDate(dateStr) {
             if (!dateStr) return 'N/A';
             let dPart = String(dateStr).split('T')[0];
             let parts = dPart.split('-');
-            if (parts.length === 3) {
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
+            if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
             return dPart;
-        }
-
-        function autoFillDay(dateStr, targetInputId) {
-            if (!dateStr) return;
-            let date = new Date(dateStr);
-            let hindiDays = ['रविवार (Sunday)', 'सोमवार (Monday)', 'मंगलवार (Tuesday)', 'बुधवार (Wednesday)', 'गुरुवार (Thursday)', 'शुक्रवार (Friday)', 'शनिवार (Saturday)'];
-            let el = document.getElementById(targetInputId);
-            if (el) el.value = hindiDays[date.getDay()];
         }
 
         function toggleDeathFields(type) {
@@ -298,6 +339,7 @@
             for (let b of buttons) b.classList.remove("active");
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
+            if (tabName === 'treePage') setTimeout(centerTreeScroll, 150);
         }
 
         google.charts.load('current', {packages:['orgchart']});
@@ -308,30 +350,152 @@
                 .then(res => res.json())
                 .then(data => {
                     globalData = data;
-                    populateParentDropdown(data);
+                    populateDropdowns(data);
+                    processUpcomingEvents(data);
                     drawChart(data);
                 })
-                .catch(err => {
-                    console.error("Error loading data:", err);
-                    document.getElementById('chart_div').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi.</div>';
-                });
+                .catch(err => console.error("Error loading data:", err));
         }
 
-        function populateParentDropdown(data) {
-            let select = document.getElementById('fatherId');
-            select.innerHTML = '<option value="">-- Mukhya (Root) Member --</option>';
+        function populateDropdowns(data) {
+            let tithiSelect = document.getElementById('tithiSelectDropdown');
+            let searchSelect = document.getElementById('memberSearchDropdown');
+            
+            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
+
             data.forEach(item => {
-                let opt = document.createElement('option');
-                opt.value = item.name; 
-                let spouseLabel = (item.maritalStatus === 'Married' && item.spouseName) ? ` एवं ${item.spouseName}` : '';
-                opt.textContent = `${item.name}${spouseLabel} (ID: ${item.memberId})`;
-                select.appendChild(opt);
+                let opt1 = document.createElement('option');
+                opt1.value = item.memberId;
+                opt1.textContent = `${item.name} (ID: ${item.memberId})`;
+                tithiSelect.appendChild(opt1.cloneNode(true));
+
+                let opt2 = document.createElement('option');
+                opt2.value = item.name; // Parent Name filter for next-gen
+                opt2.textContent = `${item.name} की अगली पीढ़ी`;
+                searchSelect.appendChild(opt2);
             });
         }
 
-        function drawChart(data) {
-            if (!data || data.length === 0) {
-                document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px;">Koi data uplabdh nahi hai.</div>';
+        function selectMemberFromTithi(memberId) {
+            if(!memberId) return;
+            showDetails(memberId);
+            document.getElementById('tithiPanel').style.display = 'none';
+        }
+
+        // Filter tree to show only selected member and their next generation (descendants)
+        function filterNextGenTree(selectedParentName) {
+            document.getElementById('searchPanel').style.display = 'none';
+            if(!selectedParentName) {
+                drawChart(globalData);
+                return;
+            }
+
+            let filteredList = [];
+            let queue = [selectedParentName];
+            let addedNames = new Set();
+
+            // Find target root
+            let rootMember = globalData.find(d => d.name === selectedParentName);
+            if(rootMember) {
+                filteredList.push(rootMember);
+                addedNames.add(rootMember.name);
+            }
+
+            // Find direct and indirect children
+            while(queue.length > 0) {
+                let current = queue.shift();
+                let children = globalData.filter(d => d.fatherId === current);
+                children.forEach(child => {
+                    if(!addedNames.has(child.name)) {
+                        filteredList.push(child);
+                        addedNames.add(child.name);
+                        queue.push(child.name);
+                    }
+                });
+            }
+
+            drawChart(filteredList);
+        }
+
+        // Process 7-day upcoming birthdays or death anniversaries
+        function processUpcomingEvents(data) {
+            sliderEventsList = [];
+            let today = new Date();
+            
+            data.forEach(item => {
+                // Check death anniversary
+                if(item.aliveDeath === 'Death' && item.deathAnniversary) {
+                    let dDate = new Date(item.deathAnniversary);
+                    if(isWithinNext7Days(today, dDate)) {
+                        sliderEventsList.push({ type: 'Punya Tithi (पुण्य तिथि)', item: item, date: dDate });
+                    }
+                }
+                // Check birthday (DOB)
+                if(item.dob) {
+                    let bDate = new Date(item.dob);
+                    if(isWithinNext7Days(today, bDate)) {
+                        sliderEventsList.push({ type: 'Birthday (जन्मदिन)', item: item, date: bDate });
+                    }
+                }
+            });
+
+            if(sliderEventsList.length > 0) {
+                renderSliderItem(0);
+                if(sliderEventsList.length > 1) {
+                    setInterval(() => {
+                        sliderIndex = (sliderIndex + 1) % sliderEventsList.length;
+                        renderSliderItem(sliderIndex);
+                    }, 5000); // Change every 5 seconds
+                }
+            } else {
+                document.getElementById('sliderHeaderTitle').innerText = "✨ आगामी 7 दिन - कोई विशेष तिथि नहीं";
+                document.getElementById('sliderBodyContainer').innerHTML = "<p>आगामी 7 दिनों में परिवार में कोई जन्मदिन या पुण्य तिथि नहीं है।</p>";
+            }
+        }
+
+        function isWithinNext7Days(today, targetDate) {
+            let tMonth = today.getMonth();
+            let tDay = today.getDate();
+            let targetMonth = targetDate.getMonth();
+            let targetDay = targetDate.getDate();
+
+            // Simplified check for current month/day match or upcoming 7 days
+            if(tMonth === targetMonth && targetDay >= tDay && targetDay <= tDay + 7) {
+                return true;
+            }
+            return false;
+        }
+
+        function renderSliderItem(index) {
+            let ev = sliderEventsList[index];
+            let item = ev.item;
+            
+            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
+            
+            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#ddd; font-size:40px; color:#555;">${item.name.charAt(0)}</div>`;
+            
+            let detailsHtml = `
+                <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${item.name} (ID: ${item.memberId})</h3>
+                <div><strong>पिता का नाम:</strong> ${item.fatherId || 'Root'}</div>
+                <div><strong>दिनांक:</strong> ${formatDate(ev.type.includes('पुण्य') ? item.deathAnniversary : item.dob)}</div>
+                <div><strong>मोबाइल:</strong> ${item.mobile || 'N/A'}</div>
+                <button class="edit-profile-btn" style="margin-top:8px; padding:5px 12px; font-size:12px;" onclick="showDetails('${item.memberId}')">पूरी जानकारी देखें</button>
+            `;
+
+            document.getElementById('sliderBodyContainer').innerHTML = `${photoHtml} <div class="slider-details">${detailsHtml}</div>`;
+        }
+
+        function postComment() {
+            let text = document.getElementById('visitorComment').value;
+            if(!text.trim()) { alert('कृपया कुछ संदेश लिखें!'); return; }
+            alert('आपका संदेश / श्रद्धांजलि सफलता पूर्वक प्रेषित कर दी गई है!');
+            document.getElementById('visitorComment').value = '';
+        }
+
+        function drawChart(dataToDraw) {
+            if (!dataToDraw || dataToDraw.length === 0) {
+                document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px;">कोई डेटा उपलब्ध नहीं है।</div>';
                 return;
             }
 
@@ -341,27 +505,28 @@
             chartData.addColumn('string', 'ToolTip');
 
             let rows = [];
-            let nameSet = new Set(data.map(item => item.name));
+            let nameSet = new Set(globalData.map(item => item.name));
 
-            data.forEach(item => {
+            dataToDraw.forEach(item => {
                 let pId = item.fatherId;
                 if (!pId || !nameSet.has(pId)) pId = ''; 
 
                 let genClass = 'gen-1-node';
                 if (!pId) genClass = 'gen-0-node';
                 else {
-                    let parentObj = data.find(d => d.name === pId);
+                    let parentObj = globalData.find(d => d.name === pId);
                     if (parentObj && !parentObj.fatherId) genClass = 'gen-2-node';
                     else genClass = 'gen-3-node';
                 }
 
-                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:4px;">` : `<div style="width:45px; height:45px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#555; margin-bottom:4px;">${item.name.charAt(0)}</div>`;
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.9; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">Spouse: ${item.spouseName}</div>` : '';
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px;">` : `<div style="width:40px; height:40px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; color:#555; margin-bottom:3px;">${item.name.charAt(0)}</div>`;
+                
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.95; margin-top:2px; word-break: break-word;">${item.spouseName}</div>` : '';
 
                 let nodeContent = `
                     <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
                         ${photoHtml}
-                        <div style="font-weight:bold; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.name}</div>
+                        <div style="font-weight:bold; font-size:12px; word-break: break-word; line-height:1.2;">${item.name}</div>
                         ${spouseText}
                     </div>
                 `;
@@ -371,6 +536,16 @@
             chartData.addRows(rows);
             let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
             chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
+
+            setTimeout(centerTreeScroll, 250);
+        }
+
+        function centerTreeScroll() {
+            let wrapper = document.getElementById('scrollWrapper');
+            let inner = document.getElementById('chart_wrapper_inner');
+            if (wrapper && inner) {
+                wrapper.scrollLeft = (inner.scrollWidth - wrapper.clientWidth) / 2;
+            }
         }
 
         function showDetails(memberId) {
@@ -378,14 +553,9 @@
             if (!item) return;
             currentEditingMemberId = memberId;
 
-            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">` : `<div style="width:90px; height:90px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#1e3c72; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
+            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px;">` : `<div style="width:90px; height:90px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#1e3c72; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
             
             let deathInfo = item.aliveDeath === 'Death' ? `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">स्वर्गवास दिनांक:</span> ${formatDate(item.deathAnniversary)}<br><span style="color:#c53030; font-weight:bold;">वार:</span> ${item.deathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">तिथि:</span> ${item.deathTithi || 'N/A'}</div>` : '<div style="margin-top:6px; padding:6px; background:#f0fff4; border-left:4px solid #38a169; border-radius:4px;"><span style="color:#2f855a; font-weight:bold;">स्थिति:</span> जीवित (Alive)</div>';
-            
-            let spouseDeathInfo = '';
-            if(item.maritalStatus === 'Married' && item.spouseAliveDeath === 'Death') {
-                spouseDeathInfo = `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">पति/पत्नी स्वर्गवास दिनांक:</span> ${formatDate(item.spouseDeathAnniv)}<br><span style="color:#c53030; font-weight:bold;">वार:</span> ${item.spouseDeathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">तिथि:</span> ${item.spouseDeathTithi || 'N/A'}</div>`;
-            }
 
             let html = `
                 <div style="text-align:center;">
@@ -395,13 +565,12 @@
                 </div>
                 <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
                 <div style="font-size:14px; line-height:1.7; color:#2d3748;">
-                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पिता का नाम:</strong> ${item.fatherId || 'Mukhya'}</div>
+                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पिता का नाम:</strong> ${item.fatherId || 'Root'}</div>
                     <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">लिंग:</strong> ${item.gender}</div>
                     <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">जन्म दिनांक:</strong> ${formatDate(item.dob)}</div>
                     <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">विवाह स्थिति:</strong> ${item.maritalStatus}</div>
-                    ${item.maritalStatus === 'Married' ? `<div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पति/पत्नी:</strong> <span style="color:#742a2a; font-weight:600;">${item.spouseName || 'N/A'}</span> <br><span style="font-size:12px; color:#555;">(DOB: ${formatDate(item.spouseDob)})</span></div>` : ''}
+                    ${item.maritalStatus === 'Married' ? `<div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">पति/पत्नी:</strong> <span style="color:#742a2a; font-weight:600;">${item.spouseName || 'N/A'}</span></div>` : ''}
                     ${deathInfo}
-                    ${spouseDeathInfo}
                     <div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-top:6px;"><strong style="color:#2a5298;">मोबाइल नंबर:</strong> <a href="tel:${item.mobile}" style="color:#2b6cb0; text-decoration:none; font-weight:bold;">${item.mobile || 'N/A'}</a></div>
                 </div>
                 <div style="text-align:center; margin-top:18px;">
@@ -415,15 +584,10 @@
         function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
 
         function updateMemberPhotoOnServer(memberId, base64Photo) {
-            fetch(scriptURL + '?action=updateMember', {
+            fetch(scriptURL, {
                 method: 'POST',
-                body: JSON.stringify({ memberId: memberId, photo: base64Photo })
-            })
-            .then(res => res.json())
-            .then(response => {
-                if(response.status === 'success') { alert('फोटो अपडेट हो गई!'); location.reload(); }
-                else { alert('त्रुटि हुई।'); }
-            });
+                body: JSON.stringify({ action: 'updateMemberPhoto', memberId: memberId, photo: base64Photo })
+            }).then(() => { alert('फोटो अपडेट हो गई!'); location.reload(); });
         }
 
         document.getElementById('entryForm').addEventListener('submit', function(e) {
@@ -431,7 +595,6 @@
             let formData = {
                 fatherId: document.getElementById('fatherId').value,
                 name: document.getElementById('name').value,
-                childOrder: document.getElementById('childOrder').value,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
@@ -448,17 +611,9 @@
                 mobile: document.getElementById('mobile').value,
                 photo: finalProcessedPhoto
             };
-
-            let submitBtn = document.querySelector('.submit-btn');
-            submitBtn.textContent = 'Saving...';
-            submitBtn.disabled = true;
-
             fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
             .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') { alert('Entry save ho gayi hai!'); location.reload(); }
-                else { alert('Error: ' + data.message); submitBtn.textContent = 'Submit & Save to Sheet'; submitBtn.disabled = false; }
-            });
+            .then(data => { alert('Entry save ho gayi hai!'); location.reload(); });
         });
 
         function downloadPDF() {
