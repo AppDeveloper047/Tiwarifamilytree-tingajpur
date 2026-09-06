@@ -33,9 +33,9 @@
         #chart_wrapper_inner { transform: scaleY(-1) scale(0.45); transform-origin: center center; transition: transform 0.25s ease; display: inline-block; min-width: 100%; }
         #chart_div { display: inline-block; min-width: 100%; }
         
-        /* Tree Box Leaf Shape Design */
-        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 125px; height: 125px; padding: 6px; box-sizing: border-box; text-align: center; }
-        .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 0px 50% 50% 50% !important; width: 125px !important; height: 125px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; padding: 0px !important; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        /* Proper Clean OrgChart Node Styling */
+        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 12px; box-sizing: border-box; text-align: center; }
+        .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 16px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; padding: 4px !important; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
         
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
         .gen-1-node { background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; }
@@ -355,13 +355,13 @@
                     else genClass = 'gen-3-node';
                 }
 
-                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1.5px solid #fff; margin-bottom:2px;">` : `<div style="width:36px; height:36px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:14px; font-weight:bold; color:#555; margin-bottom:2px;">${item.name.charAt(0)}</div>`;
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:9px; opacity:0.9; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">${item.spouseName}</div>` : '';
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px;">` : `<div style="width:40px; height:40px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:15px; font-weight:bold; color:#555; margin-bottom:3px;">${item.name.charAt(0)}</div>`;
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.95; margin-top:2px; white-space:nowrap;">${item.spouseName}</div>` : '';
 
                 let nodeContent = `
                     <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
                         ${photoHtml}
-                        <div style="font-weight:bold; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px; line-height:1.2;">${item.name}</div>
+                        <div style="font-weight:bold; font-size:12px; white-space:nowrap; line-height:1.2;">${item.name}</div>
                         ${spouseText}
                     </div>
                 `;
