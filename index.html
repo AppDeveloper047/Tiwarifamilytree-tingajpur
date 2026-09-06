@@ -24,41 +24,124 @@
         .feature-btn { background: #1e3c72; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; }
         .feature-btn:hover { background: #2a5298; }
 
-        /* Dropdown Content Boxes with Smooth Fade/Scale Animation */
-        .dropdown-panel { 
-            display: none; 
-            position: absolute; 
-            background: #fff; 
-            min-width: 320px; 
-            box-shadow: 0 12px 30px rgba(0,0,0,0.2); 
-            border-radius: 12px; 
-            z-index: 100; 
-            left: 0; 
-            top: 55px; 
-            padding: 15px; 
-            border-top: 4px solid #ff9800;
-            opacity: 0;
-            transform: translateY(-10px) scale(0.98);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .dropdown-panel.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        /* Dropdown Content Boxes */
+        .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* Slider & Tithi Section */
-        .event-slider-card { background: #fff; border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 25px; border-top: 5px solid #0083b0; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .event-header-title { font-size: 20px; font-weight: bold; color: #0083b0; margin-bottom: 15px; background: #e0f7fa; padding: 8px 20px; border-radius: 20px; }
-        .slider-content-box { display: flex; align-items: center; gap: 25px; flex-wrap: wrap; justify-content: center; width: 100%; }
-        .slider-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid #0083b0; box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
-        .slider-details { text-align: left; max-width: 500px; font-size: 14px; line-height: 1.6; }
+        /* --- STYLISH GRADIENT & ANIMATED SLIDER WIDGET --- */
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.96); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 10px 30px rgba(255, 152, 0, 0.2); }
+            50% { box-shadow: 0 15px 40px rgba(255, 152, 0, 0.4); }
+            100% { box-shadow: 0 10px 30px rgba(255, 152, 0, 0.2); }
+        }
+
+        .event-slider-card { 
+            background: linear-gradient(135deg, #ffffff 0%, #fdfcfb 100%); 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12); 
+            position: relative;
+            overflow: hidden;
+            animation: pulseGlow 4s infinite;
+        }
+        
+        .event-header-title { 
+            font-size: 18px; 
+            font-weight: 800; 
+            color: #fff; 
+            margin-bottom: 20px; 
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); 
+            padding: 10px 25px; 
+            border-radius: 30px; 
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .slider-content-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 30px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            width: 100%; 
+            animation: fadeInScale 0.6s ease-in-out;
+        }
+
+        .slider-img-wrapper {
+            position: relative;
+            padding: 4px;
+            background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            border-radius: 50%;
+            box-shadow: 0 8px 25px rgba(220, 39, 67, 0.3);
+        }
+
+        .slider-img { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 4px solid #fff; 
+            display: block;
+        }
+
+        .slider-details { 
+            text-align: left; 
+            max-width: 520px; 
+            font-size: 15px; 
+            line-height: 1.8; 
+            background: linear-gradient(135deg, #f8f9fa 0%, #edf2f7 100%);
+            padding: 20px 25px;
+            border-radius: 16px;
+            border-left: 6px solid #ff4b2b;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.03);
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .slider-name-id {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 8px;
+            border-bottom: 2px dashed #cbd5e0;
+            padding-bottom: 6px;
+        }
+
+        .slider-meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            color: #4a5568;
+        }
+
+        .edit-profile-btn { 
+            background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%); 
+            color: #744210; 
+            border: none; 
+            padding: 8px 18px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            box-shadow: 0 4px 12px rgba(255, 179, 71, 0.4);
+            transition: 0.2s;
+        }
+        .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 179, 71, 0.6); }
 
         /* Comment Box Section */
-        .comment-section { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 15px; margin-top: 20px; width: 100%; box-sizing: border-box; }
-        .comment-section textarea { width: 100%; height: 70px; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; }
-        .comment-submit-btn { background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; float: right; }
+        .comment-section { background: #fff; border: 2px solid #e2e8f0; border-radius: 14px; padding: 18px; margin-top: 25px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .comment-section textarea { width: 100%; height: 75px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+        .comment-submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; float: right; box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3); transition: 0.2s; }
+        .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(17, 153, 142, 0.5); }
 
         /* Form Card & Tree */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
@@ -74,7 +157,6 @@
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        /* 🌟 Premium Gradient Professional Scrollbar */
         .chart-scroll-wrapper { 
             width: 100%; 
             height: 600px; 
@@ -85,37 +167,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
         }
-
-        /* Webkit scrollbar design (Chrome, Edge, Safari) */
-        .chart-scroll-wrapper::-webkit-scrollbar {
-            width: 8px;  
-            height: 8px; 
-        }
-
-        .chart-scroll-wrapper::-webkit-scrollbar-track {
-            background: #edf2f7; 
-            border-radius: 10px;
-        }
-
-        .chart-scroll-wrapper::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #1e3c72 0%, #ff9800 100%); 
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .chart-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #ff416c 0%, #ff9800 100%);
-        }
-
-        /* Firefox scrollbar design */
-        .chart-scroll-wrapper {
-            scrollbar-width: thin;
-            scrollbar-color: #ff9800 #edf2f7;
-        }
-
         #chart_wrapper_inner { transform: scaleY(-1) scale(0.5); transform-origin: center center; transition: transform 0.25s ease; }
         #chart_div { display: flex; justify-content: center; }
         
@@ -129,7 +181,6 @@
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow-y: auto; }
         .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; border-top: 6px solid #11998e; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; }
-        .edit-profile-btn { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; margin-top: 12px; }
         
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
@@ -195,8 +246,8 @@
             </div>
         </div>
 
-        <!-- 7 Days Upcoming Events Slider Widget -->
-        <div class="event-slider-card" id="upcomingSliderWidget">
+        <!-- 7 Days Upcoming Events Slider Widget (Redesigned & Animated) -->
+        <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
             <div class="slider-content-box" id="sliderBodyContainer">
                 <p id="loadingText">डाटा लोड हो रहा है...</p>
@@ -204,9 +255,10 @@
             
             <!-- Comment Box Section Inside Widget -->
             <div class="comment-section">
-                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1e3c72; font-weight:bold;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
+                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1e3c72; font-weight:bold; display:block; margin-bottom:6px;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
                 <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
                 <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
+                <div style="clear: both;"></div>
             </div>
         </div>
 
@@ -376,7 +428,7 @@
                 cropTitle: "फोटो क्रॉप करें",
                 cropBtn: "Crop & Save",
                 editPhotoBtn: "📷 फोटो बदलें",
-                fatherLabel: "पिता: ",
+                fatherLabel: "पिता / अभिभावक: ",
                 genderLabel: "लिंग: ",
                 dobLabel: "जन्म दिनांक: ",
                 maritalLabel: "विवाह स्थिति: ",
@@ -451,32 +503,17 @@
             }
         };
 
-        // 🌟 Smooth Fade & Scale Dropdown Animation Toggle
         function toggleDropdown(id) {
             let panels = document.getElementsByClassName('dropdown-panel');
-            for(let p of panels) { 
-                if(p.id !== id) {
-                    p.classList.remove('show');
-                    setTimeout(() => { if(!p.classList.contains('show')) p.style.display = 'none'; }, 300);
-                }
-            }
+            for(let p of panels) { if(p.id !== id) p.style.display = 'none'; }
             let panel = document.getElementById(id);
-            if(panel.classList.contains('show')) {
-                panel.classList.remove('show');
-                setTimeout(() => { if(!panel.classList.contains('show')) panel.style.display = 'none'; }, 300);
-            } else {
-                panel.style.display = 'block';
-                setTimeout(() => panel.classList.add('show'), 10);
-            }
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
         window.onclick = function(event) {
             if (!event.target.matches('.feature-btn') && !event.target.closest('.dropdown-panel')) {
                 let panels = document.getElementsByClassName('dropdown-panel');
-                for(let p of panels) {
-                    p.classList.remove('show');
-                    setTimeout(() => { if(!p.classList.contains('show')) p.style.display = 'none'; }, 300);
-                }
+                for(let p of panels) p.style.display = 'none';
             }
         }
 
@@ -644,10 +681,9 @@
                     combinedNameLabel += ` & ${item.spouseName}`;
                 }
 
-                // 🌟 Name and ID Stacked Format using Unicode/Symbols for Clean Option Presentation
                 let opt1 = document.createElement('option');
                 opt1.value = item.memberId;
-                opt1.textContent = `${combinedNameLabel} ➔ [ ID: ${item.memberId} ]`;
+                opt1.textContent = `${combinedNameLabel} (ID: ${item.memberId})`;
                 tithiSelect.appendChild(opt1);
 
                 let opt2 = document.createElement('option');
@@ -657,7 +693,7 @@
 
                 let opt3 = document.createElement('option');
                 opt3.value = item.name; 
-                opt3.textContent = `${combinedNameLabel} ➔ [ ID: ${item.memberId} ]`;
+                opt3.textContent = `${combinedNameLabel} (ID: ${item.memberId})`;
                 fatherSelect.appendChild(opt3);
             });
         }
@@ -665,16 +701,11 @@
         function selectMemberFromTithi(memberId) {
             if(!memberId) return;
             showDetails(memberId);
-            let panel = document.getElementById('tithiPanel');
-            panel.classList.remove('show');
-            setTimeout(() => panel.style.display = 'none', 300);
+            document.getElementById('tithiPanel').style.display = 'none';
         }
 
         function filterNextGenTree(selectedParentName) {
-            let panel = document.getElementById('searchPanel');
-            panel.classList.remove('show');
-            setTimeout(() => panel.style.display = 'none', 300);
-
+            document.getElementById('searchPanel').style.display = 'none';
             if(!selectedParentName) {
                 drawChart(globalData);
                 return;
@@ -735,7 +766,7 @@
             } else {
                 let t = dictionary[currentLang];
                 document.getElementById('sliderHeaderTitle').innerText = t.noEventTitle;
-                document.getElementById('sliderBodyContainer').innerHTML = `<p>${t.noEventDesc}</p>`;
+                document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#718096; font-weight:600; padding:15px;">${t.noEventDesc}</p>`;
             }
         }
 
@@ -751,24 +782,31 @@
             return false;
         }
 
+        /* --- REDESIGNED SLIDER ITEM RENDERER --- */
         function renderSliderItem(index) {
             let ev = sliderEventsList[index];
             let item = ev.item;
             
             document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
             
-            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#ddd; font-size:40px; color:#555;">${item.name.charAt(0)}</div>`;
+            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:45px; color:#4a5568; font-weight:bold;">${item.name.charAt(0)}</div>`;
             
             let t = dictionary[currentLang];
             let detailsHtml = `
-                <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${item.name} (ID: ${item.memberId})</h3>
-                <div><strong>${t.fatherLabel}</strong> ${item.fatherId || 'Root'}</div>
-                <div><strong>Date:</strong> ${formatDate(ev.type.includes('पुण्य') || ev.type.includes('Death') ? item.deathAnniversary : item.dob)}</div>
-                <div><strong>${t.mobileLabel}</strong> ${item.mobile || 'N/A'}</div>
-                <button class="edit-profile-btn" style="margin-top:8px; padding:5px 12px; font-size:12px;" onclick="showDetails('${item.memberId}')">${currentLang === 'hi' ? 'पूरी जानकारी देखें' : 'View Full Details'}</button>
+                <div class="slider-name-id">
+                    ${item.name} 
+                    <span style="font-size: 13px; color: #e53e3e; background: #fff5f5; padding: 2px 8px; border-radius: 6px; border: 1px solid #fed7d7; float: right; font-weight: normal;">ID: ${item.memberId}</span>
+                </div>
+                <div class="slider-meta-row"><strong>${t.fatherLabel}</strong> <span>${item.fatherId || 'Root'}</span></div>
+                <div class="slider-meta-row"><strong>Date:</strong> <span>${formatDate(ev.type.includes('पुण्य') || ev.type.includes('Death') ? item.deathAnniversary : item.dob)}</span></div>
+                <div class="slider-meta-row"><strong>${t.mobileLabel}</strong> <span>${item.mobile || 'N/A'}</span></div>
+                <button class="edit-profile-btn" onclick="showDetails('${item.memberId}')">${currentLang === 'hi' ? '📂 पूरी जानकारी देखें' : '📂 View Full Details'}</button>
             `;
 
-            document.getElementById('sliderBodyContainer').innerHTML = `${photoHtml} <div class="slider-details">${detailsHtml}</div>`;
+            document.getElementById('sliderBodyContainer').innerHTML = `
+                <div class="slider-img-wrapper">${photoHtml}</div>
+                <div class="slider-details">${detailsHtml}</div>
+            `;
         }
 
         function postComment() {
@@ -882,7 +920,7 @@
                 fatherId: document.getElementById('fatherId').value,
                 name: document.getElementById('name').value,
                 gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
+                dob: document.getElementById('dob'].value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
                 deathDay: document.getElementById('deathDay').value,
