@@ -644,6 +644,21 @@
 function submitForm(event) {
             event.preventDefault();
             
+            let photoInput = document.getElementById('photoFile');
+            let file = photoInput.files[0];
+
+            if (file) {
+                let reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    sendDataToSheet(reader.result);
+                };
+            } else {
+                sendDataToSheet('');
+            }
+        }
+
+        function sendDataToSheet(base64Photo) {
             let formData = {
                 memberId: document.getElementById('memberIdField').value,
                 fatherId: document.getElementById('fatherId').value,
@@ -661,12 +676,10 @@ function submitForm(event) {
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 spouseDeathDay: document.getElementById('spouseDeathDay').value,
                 spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                childNumber: document.getElementById('childNumber').value,
+                childNumber: document.getElementById('childNumber').value, // चाइल्ड नंबर
                 mobile: document.getElementById('mobile').value,
-                photo: '' // अगर फोटो अपलोड हो रही है तो उसका बेस64 वेरिएबल यहाँ दें
+                photo: base64Photo // फोटो का बेस64 स्ट्रिंग
             };
-
-            console.log("Submitting to Google Sheet:", formData);
 
             fetch(scriptURL, {
                 method: 'POST',
@@ -674,12 +687,12 @@ function submitForm(event) {
             })
             .then(res => res.json())
             .then(data => {
-                alert('नया डेटा सफलतापूर्वक सेव हो गया है!');
+                alert('नया डेटा और फोटो सफलतापूर्वक सेव हो गए हैं!');
                 location.reload();
             })
             .catch(err => {
                 console.error("Save Error:", err);
-                alert('डेटा सेव करने में त्रुटि हुई! कंसोल चेक करें।');
+                alert('डेटा सेव करने में त्रुटि हुई!');
             });
         }
         
