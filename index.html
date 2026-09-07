@@ -140,7 +140,7 @@
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
-        /* --- GRAPH & SCROLL FIXES (Width & Left Alignment Issue Solved) --- */
+        /* --- GRAPH & SCROLL FIXES --- */
         .chart-scroll-wrapper { 
             width: 100%; 
             height: 650px; 
@@ -148,12 +148,12 @@
             background: #f8fafc; 
             border-radius: 12px; 
             padding: 40px; 
-            display: block; /* Flex ki jagah block taaki left-side nodes na katein */
+            display: block; 
             box-sizing: border-box;
         }
         #chart_wrapper_inner { 
             transform: scaleY(-1) scale(0.65); 
-            transform-origin: top center; /* Centering fix */
+            transform-origin: top center; 
             transition: transform 0.25s ease; 
             display: inline-block;
             min-width: 100%;
@@ -163,14 +163,13 @@
             justify-content: flex-start; 
         }
         
-        /* Node Box Size & Compact Styling */
         .node-content-box { 
             transform: scaleY(-1); 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            width: 120px !important; /* Fixed compact width taaki jyada na faile */
+            width: 120px !important; 
             max-width: 120px !important;
             padding: 6px 4px; 
             box-sizing: border-box; 
@@ -185,7 +184,7 @@
             border-radius: 12px !important; 
             padding: 2px !important; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
-            width: 130px !important; /* Fixed chart node width */
+            width: 130px !important; 
         }
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
         .gen-1-node { background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; }
@@ -419,6 +418,13 @@
     </div>
 
     <script>
+        // यहाँ अपना सही Google Apps Script Web App URL डालें
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec';
+        let globalData = [];
+        let currentScale = 0.5;
+        let sliderIndex = 0;
+        let sliderEventsList = [];
+
         function generateMemberId() {
             const uniqueId = 'MEM_' + Date.now();
             const idField = document.getElementById('memberIdField');
@@ -438,27 +444,162 @@
             }
         }
 
+        // Google Chart लोड करें और डेटा फैच करें
+        google.charts.load('current', {packages:['orgchart']});
+        google.charts.setOnLoadCallback(fetchFamilyData);
+
+        function fetchFamilyData() {
+            fetch(scriptURL + '?action=getData')
+                .then(res => res.json())
+                .then(data => {
+                    globalData = data;
+                    let loadingEl = document.getElementById('treeLoadingText');
+                    if(loadingEl) loadingEl.style.display = 'none';
+                    
+                    if(!data || data.length === 0) {
+                        document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#fff; padding:15px;">डेटा उपलब्ध नहीं है।</p>`;
+                        return;
+                    }
+
+                    populateDropdowns(data);
+                    processUpcomingEvents(data);
+                    drawChart(data);
+                })
+                .catch(err => {
+                    console.error("Error fetching data:", err);
+                    document.getElementById('treeLoadingText').innerText = "डेटा लोड करने में त्रुटि हुई!";
+                });
+        }
+
+        function populateDropdowns(data) {
+            let fatherSelect = document.getElementById('fatherId');
+            if(!fatherSelect) return;
+            fatherSelect.innerHTML = `<option value="">-- Select Parent --</option>`;
+            data.forEach(item => {
+                let opt = document.createElement('option');
+                opt.value = item.name;
+                opt.textContent = `${item.name} (ID: ${item.memberId})`;
+                fatherSelect.appendChild(opt);
+            });
+        }
+
+        function processUpcomingEvents(data) {
+            sliderEventsList = [];
+            let today = new Date();
+            
+            data.forEach(item => {
+                if(item.aliveDeath === 'Death' && item.deathAnniversary) {
+                    let dDate = new Date(item.deathAnniversary);
+                    if(isWithinNext7Days(today, dDate)) {
+                        sliderEventsList.push({ type: 'पुण्य तिथि (Death Anniversary)', item: item });
+                    }
+                }
+                if(item.dob) {
+                    let bDate = new Date(item.dob);
+                    if(isWithinNext7Days(today, bDate)) {
+                        sliderEventsList.push({ type: 'जन्मदिन (Birthday)', item: item });
+                    }
+                }
+            });
+
+            if(sliderEventsList.length > 0) {
+                renderSliderItem(0);
+                if(sliderEventsList.length > 1) {
+                    setInterval(() => {
+                        sliderIndex = (sliderIndex + 1) % sliderEventsList.length;
+                        renderSliderItem(sliderIndex);
+                    }, 5000);
+                }
+            } else {
+                document.getElementById('sliderHeaderTitle').innerText = "✨ आगामी 7 दिन - कोई विशेष तिथि नहीं";
+                document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#e2e8f0; font-weight:600; padding:15px;">आगामी 7 दिनों में परिवार में कोई जन्मदिन या पुण्य तिथि नहीं है।</p>`;
+            }
+        }
+
+        function isWithinNext7Days(today, targetDate) {
+            return (today.getMonth() === targetDate.getMonth() && targetDate.getDate() >= today.getDate() && targetDate.getDate() <= today.getDate() + 7);
+        }
+
+        function renderSliderItem(index) {
+            let ev = sliderEventsList[index];
+            let item = ev.item;
+            
+            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
+            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:45px; color:#4a5568; font-weight:bold;">${item.name.charAt(0)}</div>`;
+            
+            let detailsHtml = `
+                <div style="margin-bottom:8px; border-bottom:2px solid #e2e8f0; padding-bottom:6px;">
+                    <span style="font-size:20px; font-weight:800; color:#1d3557; display:block;">${item.name}</span>
+                    <span style="font-size:12px; font-weight:700; color:#e63946; background:#ffe5ec; padding:2px 8px; border-radius:6px; display:inline-block; margin-top:3px;">ID: ${item.memberId}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:14px;"><strong>पिता:</strong> <span>${item.fatherId || 'Root'}</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:14px;"><strong>मोबाइल:</strong> <span>${item.mobile || 'N/A'}</span></div>
+                <button class="edit-profile-btn" onclick="showMemberDetailsModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">📂 पूरी जानकारी देखें</button>
+            `;
+
+            document.getElementById('sliderBodyContainer').innerHTML = `
+                <div class="slider-img-wrapper">${photoHtml}</div>
+                <div class="slider-details">${detailsHtml}</div>
+            `;
+        }
+
+        function drawChart(dataToDraw) {
+            if (!dataToDraw || dataToDraw.length === 0) return;
+
+            let chartData = new google.visualization.DataTable();
+            chartData.addColumn('string', 'Entity');
+            chartData.addColumn('string', 'Parent');
+            chartData.addColumn('string', 'ToolTip');
+
+            let rows = [];
+            let nameSet = new Set(globalData.map(item => item.name));
+
+            dataToDraw.forEach(item => {
+                let pId = item.fatherId;
+                if (!pId || !nameSet.has(pId)) pId = ''; 
+
+                let genClass = 'gen-1-node';
+                if (!pId) genClass = 'gen-0-node';
+
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:2px;">` : `<div style="width:35px; height:35px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; color:#555; margin-bottom:2px;">${item.name.charAt(0)}</div>`;
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:9px; opacity:0.95; margin-top:1px;">${item.spouseName}</div>` : '';
+
+                let nodeContent = `
+                    <div class="node-content-box ${genClass}" onclick='showMemberDetailsModal(${JSON.stringify(item).replace(/"/g, '&quot;')})'>
+                        ${photoHtml}
+                        <div style="font-weight:bold; font-size:11px; line-height:1.1;">${item.name}</div>
+                        ${spouseText}
+                    </div>
+                `;
+                rows.push([{v: item.name, f: nodeContent}, pId, item.name]);
+            });
+
+            chartData.addRows(rows);
+            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
+        }
+
         function showMemberDetailsModal(member) {
             let spouseSection = '';
-            if (member.SpouseName) {
+            if (member.spouseName) {
                 spouseSection = `
-                    <div style="background: #f8f9fa; padding: 12px; margin-top: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                    <div style="background: #f8f9fa; padding: 10px; margin-top: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
                         <strong style="color: #1e3c72;">Spouse Details (पति/पत्नी विवरण):</strong>
-                        <div class="detail-row" style="margin-top:8px;"><strong>Spouse Name:</strong> ${member.SpouseName}</div>
-                        <div class="detail-row"><strong>Spouse DOB:</strong> ${member.SpouseDob || 'N/A'}</div>
-                        <div class="detail-row"><strong>Spouse Death Day:</strong> ${member.SpouseDeathDay || 'N/A'}</div>
-                        <div class="detail-row"><strong>Spouse Death Tithi:</strong> ${member.SpouseDeathTithi || 'N/A'}</div>
+                        <div style="margin-top:6px; font-size:13px;"><strong>Spouse Name:</strong> ${member.spouseName}</div>
+                        <div style="font-size:13px;"><strong>Spouse DOB:</strong> ${member.spouseDob || 'N/A'}</div>
+                        <div style="font-size:13px;"><strong>Spouse Death Day:</strong> ${member.spouseDeathDay || 'N/A'}</div>
+                        <div style="font-size:13px;"><strong>Spouse Death Tithi:</strong> ${member.spouseDeathTithi || 'N/A'}</div>
                     </div>
                 `;
             }
 
             let modalBody = document.getElementById('modalBodyContent');
             modalBody.innerHTML = `
-                <h3 style="color: #1e3c72; margin-top:0;">${member.MemberName || 'N/A'}</h3>
-                <div class="detail-row"><strong>Member ID:</strong> ${member.MemberId || 'N/A'}</div>
-                <div class="detail-row"><strong>Father Name:</strong> ${member.FatherName || 'N/A'}</div>
-                <div class="detail-row"><strong>Mobile:</strong> ${member.Mobile || 'N/A'}</div>
-                <div class="detail-row"><strong>Child Number (क्रम):</strong> ${member.ChildNumber || 'N/A'}</div>
+                <h3 style="color: #1e3c72; margin-top:0;">${member.name || 'N/A'}</h3>
+                <div style="margin-bottom:6px; font-size:13px;"><strong>Member ID:</strong> ${member.memberId || 'N/A'}</div>
+                <div style="margin-bottom:6px; font-size:13px;"><strong>Father Name:</strong> ${member.fatherId || 'N/A'}</div>
+                <div style="margin-bottom:6px; font-size:13px;"><strong>Mobile:</strong> ${member.mobile || 'N/A'}</div>
+                <div style="margin-bottom:6px; font-size:13px;"><strong>Child Number (क्रम):</strong> ${member.childNumber || 'N/A'}</div>
                 ${spouseSection}
             `;
             document.getElementById('memberModal').style.display = 'block';
@@ -509,9 +650,7 @@
                 MemberName: document.getElementById('name').value,
                 Mobile: document.getElementById('mobile').value,
                 SpouseName: document.getElementById('spouseName').value,
-                SpouseDob: document.getElementById('spouseDob').value,
-                SpouseDeathDay: document.getElementById('spouseDeathDay').value,
-                SpouseDeathTithi: document.getElementById('spouseDeathTithi').value
+                SpouseDob: document.getElementById('spouseDob').value
             };
             console.log("Form Data Ready:", formData);
             alert('फॉर्म डेटा सफलतापूर्वक तैयार है!');
