@@ -143,7 +143,7 @@
         /* --- GRAPH & SCROLL FIXES --- */
         .chart-scroll-wrapper { 
             width: 100%; 
-            height: 650px; 
+            height: 550px; 
             overflow: auto; 
             background: #f8fafc; 
             border-radius: 12px; 
@@ -641,20 +641,48 @@
         window.onload = function() {
             generateMemberId();
         };
-
-        function submitForm(event) {
+function submitForm(event) {
             event.preventDefault();
-            const formData = {
-                MemberId: document.getElementById('memberIdField').value,
-                ChildNumber: document.getElementById('childNumber').value,
-                MemberName: document.getElementById('name').value,
-                Mobile: document.getElementById('mobile').value,
-                SpouseName: document.getElementById('spouseName').value,
-                SpouseDob: document.getElementById('spouseDob').value
+            
+            let formData = {
+                memberId: document.getElementById('memberIdField').value,
+                fatherId: document.getElementById('fatherId').value,
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                deathDay: document.getElementById('deathDay').value,
+                deathTithi: document.getElementById('deathTithi').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveStatus').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                spouseDeathDay: document.getElementById('spouseDeathDay').value,
+                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+                childNumber: document.getElementById('childNumber').value,
+                mobile: document.getElementById('mobile').value,
+                photo: '' // अगर फोटो अपलोड हो रही है तो उसका बेस64 वेरिएबल यहाँ दें
             };
-            console.log("Form Data Ready:", formData);
-            alert('फॉर्म डेटा सफलतापूर्वक तैयार है!');
+
+            console.log("Submitting to Google Sheet:", formData);
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('नया डेटा सफलतापूर्वक सेव हो गया है!');
+                location.reload();
+            })
+            .catch(err => {
+                console.error("Save Error:", err);
+                alert('डेटा सेव करने में त्रुटि हुई! कंसोल चेक करें।');
+            });
         }
+        
     </script>
 </body>
 </html>
