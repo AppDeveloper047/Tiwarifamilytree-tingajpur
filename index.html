@@ -140,22 +140,53 @@
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
+        /* --- GRAPH & SCROLL FIXES (Width & Left Alignment Issue Solved) --- */
         .chart-scroll-wrapper { 
             width: 100%; 
-            height: 600px; 
+            height: 650px; 
             overflow: auto; 
             background: #f8fafc; 
             border-radius: 12px; 
-            padding: 30px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
+            padding: 40px; 
+            display: block; /* Flex ki jagah block taaki left-side nodes na katein */
+            box-sizing: border-box;
         }
-        #chart_wrapper_inner { transform: scaleY(-1) scale(0.5); transform-origin: center center; transition: transform 0.25s ease; }
-        #chart_div { display: flex; justify-content: center; }
+        #chart_wrapper_inner { 
+            transform: scaleY(-1) scale(0.65); 
+            transform-origin: top center; /* Centering fix */
+            transition: transform 0.25s ease; 
+            display: inline-block;
+            min-width: 100%;
+        }
+        #chart_div { 
+            display: flex; 
+            justify-content: flex-start; 
+        }
         
-        .node-content-box { transform: scaleY(-1); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 140px; padding: 8px 6px; box-sizing: border-box; text-align: center; word-wrap: break-word; overflow: hidden; }
-        .google-visualization-orgchart-node { cursor: pointer !important; color: #ffffff !important; border: 2px solid #ffffff !important; border-radius: 14px !important; padding: 4px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        /* Node Box Size & Compact Styling */
+        .node-content-box { 
+            transform: scaleY(-1); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            width: 120px !important; /* Fixed compact width taaki jyada na faile */
+            max-width: 120px !important;
+            padding: 6px 4px; 
+            box-sizing: border-box; 
+            text-align: center; 
+            word-wrap: break-word; 
+            overflow: hidden; 
+        }
+        .google-visualization-orgchart-node { 
+            cursor: pointer !important; 
+            color: #ffffff !important; 
+            border: 2px solid #ffffff !important; 
+            border-radius: 12px !important; 
+            padding: 2px !important; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
+            width: 130px !important; /* Fixed chart node width */
+        }
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
         .gen-1-node { background: linear-gradient(135deg, #1b365d 0%, #0f1f38 100%) !important; }
         .gen-2-node { background: linear-gradient(135deg, #0f5132 0%, #082c1b 100%) !important; }
@@ -185,7 +216,7 @@
         </div>
     </div>
 
-    <!-- सदस्य विवरण पॉपअप मॉडल (Issue 1 Resolved) -->
+    <!-- सदस्य विवरण पॉपअप मॉडल -->
     <div id="memberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -287,7 +318,6 @@
             <h2 id="formTitleText">Naye Member ki Entry Karein</h2>
             <form id="entryForm" onsubmit="submitForm(event)">
                
-                <!-- Issue 4 Resolved: ऑटो-जनरेटेड मेंबर आईडी फील्ड -->
                 <div class="form-group">
                     <label>Member ID (ऑटो-जनरेटेड):</label>
                     <input type="text" id="memberIdField" readonly style="background-color: #e9ecef; font-weight: bold; color: #d9534f;">
@@ -320,7 +350,6 @@
                     </select>
                 </div>
                
-                <!-- Issue 3 Resolved: मेंबर डेथ डेट डालते ही ऑटोमैटिक वार आने वाला सेक्शन -->
                 <div id="memberDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
                     <div class="form-group">
                         <label id="lblDeathDate">Death Date:</label>
@@ -355,7 +384,6 @@
                         </select>
                     </div>
                    
-                    <!-- Issue 3 Resolved: स्पॉउस डेथ डेट पर ऑटोमैटिक वार -->
                     <div id="spouseDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
                         <div class="form-group">
                             <label id="lblSpouseDeathDate">Spouse Death Date:</label>
@@ -369,7 +397,6 @@
                     </div>
                 </div>
 
-                <!-- Issue 2 Resolved: R कॉलम के लिए बच्चों का क्रम (Child Number) -->
                 <div class="form-group">
                     <label>बच्चा किस क्रम का है (Child Number):*</label>
                     <select id="childNumber" class="form-control" required>
@@ -392,7 +419,6 @@
     </div>
 
     <script>
-        // --- Issue 4: मेंबर आईडी ऑटो-जनरेट फंक्शन ---
         function generateMemberId() {
             const uniqueId = 'MEM_' + Date.now();
             const idField = document.getElementById('memberIdField');
@@ -401,7 +427,6 @@
             }
         }
 
-        // --- Issue 3: डेथ डेट से ऑटोमैटिक वार कैलकुलेट करने का फंक्शन ---
         function calculateDeathDay(dateString, targetFieldId) {
             if (!dateString) return;
             const days = ['रविवार (Sunday)', 'सोमवार (Monday)', 'मंगलवार (Tuesday)', 'बुधवार (Wednesday)', 'गुरुवार (Thursday)', 'शुक्रवार (Friday)', 'शनिवार (Saturday)'];
@@ -413,7 +438,6 @@
             }
         }
 
-        // --- Issue 1: पॉपअप में स्पॉउस की सभी डिटेल्स दिखाने का लॉजिक ---
         function showMemberDetailsModal(member) {
             let spouseSection = '';
             if (member.SpouseName) {
@@ -473,14 +497,12 @@
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
-        // पेज लोड होते ही मेंबर आईडी जनरेट करना
         window.onload = function() {
             generateMemberId();
         };
 
         function submitForm(event) {
             event.preventDefault();
-            // Issue 2: यहाँ childNumber सही तरीके से फेच किया जा रहा है
             const formData = {
                 MemberId: document.getElementById('memberIdField').value,
                 ChildNumber: document.getElementById('childNumber').value,
@@ -492,7 +514,7 @@
                 SpouseDeathTithi: document.getElementById('spouseDeathTithi').value
             };
             console.log("Form Data Ready:", formData);
-            alert('फॉर्म डेटा सफलताપૂર્વক तैयार है!');
+            alert('फॉर्म डेटा सफलतापूर्वक तैयार है!');
         }
     </script>
 </body>
