@@ -26,7 +26,7 @@
 
         /* Dropdown Content Boxes */
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
-        .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 12px; margin-top: 5px; }
+        .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
         /* --- PROFESSIONAL RICH BANNER WIDGET --- */
         @keyframes fadeInSlide {
@@ -43,7 +43,7 @@
             background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); 
             border-radius: 20px; 
             padding: 30px; 
-            margin-bottom: 20px; 
+            margin-bottom: 30px; 
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
             position: relative;
@@ -105,40 +105,6 @@
             min-width: 290px;
         }
 
-        .slider-name-box {
-            margin-bottom: 12px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 8px;
-        }
-
-        .slider-person-name {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1d3557;
-            display: block;
-            line-height: 1.3;
-        }
-
-        .slider-person-id {
-            font-size: 12px;
-            font-weight: 700;
-            color: #e63946;
-            background: #ffe5ec;
-            padding: 2px 10px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-top: 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .slider-meta-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            color: #495057;
-            font-size: 14px;
-        }
-
         .edit-profile-btn { 
             background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%); 
             color: #432818; 
@@ -154,40 +120,10 @@
         }
         .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 127, 0, 0.6); }
 
-        /* --- SEPARATE COMMENT BOX SECTION --- */
-        .external-comment-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 22px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-top: 5px solid #2a5298;
-        }
-        .external-comment-card textarea { 
-            width: 100%; 
-            height: 80px; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: 1px solid #cbd5e1; 
-            resize: none; 
-            box-sizing: border-box; 
-            font-family: inherit; 
-            font-size: 14px; 
-            margin-top: 8px;
-        }
-        .comment-submit-btn { 
-            background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); 
-            color: white; 
-            border: none; 
-            padding: 10px 22px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            margin-top: 12px; 
-            float: right; 
-            box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); 
-            transition: 0.2s; 
-        }
+        /* Comment Box Section Inside Widget */
+        .comment-section { background: rgba(255, 255, 255, 0.95); border-radius: 14px; padding: 18px; margin-top: 25px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .comment-section textarea { width: 100%; height: 75px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; }
+        .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
         .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(43, 147, 72, 0.5); }
 
         /* Form Card & Tree */
@@ -202,7 +138,7 @@
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
-        .zoom-btn { background: #2a5298; color: white; border: none; padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
         
         .chart-scroll-wrapper { 
             width: 100%; 
@@ -299,14 +235,14 @@
             <div class="slider-content-box" id="sliderBodyContainer">
                 <p id="loadingText" style="color: #fff;">डाटा लोड हो रहा है...</p>
             </div>
-        </div>
-
-        <!-- Separate External Comment Box Section -->
-        <div class="external-comment-card">
-            <label id="commentBoxLabel" style="font-size:14px; text-align:left; color:#1d3557; font-weight:bold; display:block;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
-            <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
-            <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
-            <div style="clear: both;"></div>
+            
+            <!-- Comment Box Section Inside Widget -->
+            <div class="comment-section">
+                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1d3557; font-weight:bold; display:block; margin-bottom:6px;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
+                <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
+                <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
+                <div style="clear: both;"></div>
+            </div>
         </div>
 
         <!-- Family Tree Section -->
@@ -394,10 +330,6 @@
                         <div class="form-group"><label id="lblSpouseDeathDate">Spouse Death Date:</label><input type="date" id="spouseDeathAnniv"></div>
                         <div class="form-group"><label id="lblSpouseDeathDay">Death Day:</label><input type="text" id="spouseDeathDay"></div>
                         <div class="form-group"><label id="lblSpouseDeathTithi">Death Tithi:</label><input type="text" id="spouseDeathTithi"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="childNumber">बच्चों की संख्या (Child Number):</label>
-                        <input type="number" id="childNumber" class="form-control" placeholder="बच्चों की संख्या दर्ज करें">
                     </div>
                 </div>
                 <div class="form-group"><label id="lblMobile">Mobile:</label><input type="tel" id="mobile"></div>
@@ -623,26 +555,32 @@
             document.getElementById('cropBtnText').innerText = t.cropBtn;
         }
 
-        function openTab(evt, tabName) {
-            let tabcontent = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-                tabcontent[i].classList.remove("active");
-            }
-            let tablinks = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
-            for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(tabName).style.display = "block";
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.className += " active";
+        function zoomTree(amount) {
+            currentScale += amount;
+            if (currentScale < 0.25) currentScale = 0.25; 
+            if (currentScale > 1.2) currentScale = 1.2; 
+            document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
         }
 
-        function toggleDeathFields(target) {
-            if (target === 'member') {
+        function resetZoom() {
+            currentScale = 0.5;
+            document.getElementById('chart_wrapper_inner').style.transform = `scaleY(-1) scale(${currentScale})`;
+            centerTreeScroll();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            let dPart = String(dateStr).split('T')[0];
+            let parts = dPart.split('-');
+            if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            return dPart;
+        }
+
+        function toggleDeathFields(type) {
+            if (type === 'member') {
                 let status = document.getElementById('aliveDeath').value;
                 document.getElementById('memberDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
-            } else if (target === 'spouse') {
+            } else if (type === 'spouse') {
                 let status = document.getElementById('spouseAliveDeath').value;
                 document.getElementById('spouseDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
             }
@@ -651,6 +589,327 @@
         function toggleSpouseFields() {
             let status = document.getElementById('maritalStatus').value;
             document.getElementById('spouseFieldsContainer').style.display = (status === 'Married') ? 'block' : 'none';
+        }
+
+        function handleFileSelect(input, type) {
+            activeUploadType = type;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageElement = document.getElementById('imageToCrop');
+                    imageElement.src = e.target.result;
+                    document.getElementById('cropperModal').style.display = 'block';
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(imageElement, { aspectRatio: 1, viewMode: 1, autoCropArea: 0.9 });
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function getCroppedImage() {
+            if (!cropper) return;
+            const canvas = cropper.getCroppedCanvas({ width: 250, height: 250 });
+            finalProcessedPhoto = canvas.toDataURL('image/jpeg', 0.8);
+            document.getElementById('cropperModal').style.display = 'none';
+            if (activeUploadType === 'popup' && currentEditingMemberId) {
+                updateMemberPhotoOnServer(currentEditingMemberId, finalProcessedPhoto);
+            }
+        }
+
+        function openTab(evt, tabName) {
+            let contents = document.getElementsByClassName("tab-content");
+            for (let c of contents) c.classList.remove("active");
+            let buttons = document.getElementsByClassName("navbar")[0].getElementsByTagName("button");
+            for (let b of buttons) b.classList.remove("active");
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        google.charts.load('current', {packages:['orgchart']});
+        google.charts.setOnLoadCallback(fetchFamilyData);
+
+        function fetchFamilyData() {
+            fetch(scriptURL + '?action=getData')
+                .then(res => res.json())
+                .then(data => {
+                    globalData = data;
+                    populateDropdowns(data);
+                    processUpcomingEvents(data);
+                    drawChart(data);
+                })
+                .catch(err => {
+                    console.error("Error loading data:", err);
+                    document.getElementById('chart_div').innerHTML = '<div style="color:red; text-align:center; padding:20px;">Data load karne mein samasya aayi.</div>';
+                });
+        }
+
+        function populateDropdowns(data) {
+            let select = document.getElementById('fatherId');
+            let tithiSelect = document.getElementById('tithiSelectDropdown');
+            let searchSelect = document.getElementById('memberSearchDropdown');
+
+            select.innerHTML = '<option value="">-- Mukhya (Root) Member --</option>';
+            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
+
+            data.forEach(item => {
+                let opt1 = document.createElement('option');
+                opt1.value = item.name; 
+                let spouseLabel = (item.maritalStatus === 'Married' && item.spouseName) ? ` एवं ${item.spouseName}` : '';
+                opt1.textContent = `${item.name}${spouseLabel} (ID: ${item.memberId})`;
+                select.appendChild(opt1);
+
+                let opt2 = document.createElement('option');
+                opt2.value = item.memberId;
+                opt2.textContent = item.name;
+                tithiSelect.appendChild(opt2.cloneNode(true));
+                searchSelect.appendChild(opt2);
+            });
+        }
+
+        function processUpcomingEvents(data) {
+            sliderEventsList = [];
+            data.forEach(item => {
+                if (item.dob) checkAndAddEvent(item, item.dob, currentLang === 'hi' ? 'जन्मदिन (Birthday)' : 'Birthday');
+                if (item.aliveDeath === 'Death' && item.deathAnniversary) {
+                    checkAndAddEvent(item, item.deathAnniversary, currentLang === 'hi' ? 'पुण्यतिथि (Death Anniversary)' : 'Death Anniversary');
+                }
+            });
+
+            if (sliderEventsList.length === 0) {
+                let t = dictionary[currentLang];
+                sliderEventsList.push({
+                    name: currentLang === 'hi' ? "श्री जगदिश चंद्र तिवारी" : "Shri Jagdish Chandra Tiwari",
+                    type: currentLang === 'hi' ? "विशेष संदेश" : "Special Message",
+                    date: currentLang === 'hi' ? "सदैव स्मरण" : "Always Remembered",
+                    photo: "",
+                    desc: currentLang === 'hi' ? "परिवार के सभी सदस्यों का हार्दिक स्वागत है।" : "Hearty welcome to all family members."
+                });
+            }
+            renderSliderCard();
+            setInterval(nextSliderEvent, 5000);
+        }
+
+        function checkAndAddEvent(item, dateStr, eventType) {
+            try {
+                let evDate = new Date(dateStr);
+                let today = new Date();
+                evDate.setFullYear(today.getFullYear());
+                let diffDays = Math.ceil((evDate - today) / (1000 * 60 * 60 * 24));
+                if (diffDays >= 0 && diffDays <= 7) {
+                    sliderEventsList.push({
+                        name: item.name,
+                        type: eventType,
+                        date: formatDate(dateStr),
+                        photo: item.photo,
+                        desc: `${item.name} ka ${eventType} aane wale 7 dinon mein (${formatDate(dateStr)}) ko hai.`
+                    });
+                }
+            } catch(e) {}
+        }
+
+        function renderSliderCard() {
+            if (sliderEventsList.length === 0) return;
+            let ev = sliderEventsList[sliderIndex];
+            let photoHtml = ev.photo ? `<img src="${ev.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#cbd5e1; font-size:36px; color:#fff; font-weight:bold;">${ev.name.charAt(0)}</div>`;
+            
+            let html = `
+                <div class="slider-img-wrapper">${photoHtml}</div>
+                <div class="slider-details">
+                    <div class="slider-name-box">
+                        <span class="slider-person-name">${ev.name}</span>
+                        <span class="slider-person-id">Event Alert</span>
+                    </div>
+                    <div class="slider-meta-row"><strong>📌 Type:</strong> ${ev.type}</div>
+                    <div class="slider-meta-row"><strong>📅 Date:</strong> ${ev.date}</div>
+                    <p style="margin:6px 0 0 0; color:#334155; font-size:14px;">${ev.desc}</p>
+                </div>
+            `;
+            document.getElementById('sliderBodyContainer').innerHTML = html;
+        }
+
+        function nextSliderEvent() {
+            if (sliderEventsList.length <= 1) return;
+            sliderIndex = (sliderIndex + 1) % sliderEventsList.length;
+            renderSliderCard();
+        }
+
+        function postComment() {
+            let text = document.getElementById('visitorComment').value.trim();
+            if(!text) { alert(currentLang === 'hi' ? 'कृपया संदेश लिखें।' : 'Please write a message.'); return; }
+            alert(currentLang === 'hi' ? 'आपका संदेश सफलतापूर्वक प्रेषित कर दिया गया है!' : 'Your message has been sent successfully!');
+            document.getElementById('visitorComment').value = '';
+        }
+
+        function selectMemberFromTithi(memberId) {
+            if(!memberId) return;
+            showDetails(memberId);
+        }
+
+        function filterNextGenTree(memberId) {
+            if(!memberId) {
+                drawChart(globalData);
+                return;
+            }
+            let rootItem = globalData.find(d => d.memberId === memberId);
+            if(!rootItem) return;
+            
+            let filtered = [rootItem];
+            let queue = [rootItem.name];
+            while(queue.length > 0) {
+                let currentName = queue.shift();
+                let children = globalData.filter(d => d.fatherId === currentName);
+                children.forEach(c => {
+                    filtered.push(c);
+                    queue.push(c.name);
+                });
+            }
+            drawChart(filtered);
+        }
+
+        function centerTreeScroll() {
+            let wrapper = document.getElementById('scrollWrapper');
+            wrapper.scrollLeft = (wrapper.scrollWidth - wrapper.clientWidth) / 2;
+        }
+
+        function drawChart(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('chart_div').innerHTML = '<div style="text-align:center; padding:30px;">Koi data uplabdh nahi hai.</div>';
+                return;
+            }
+
+            let chartData = new google.visualization.DataTable();
+            chartData.addColumn('string', 'Entity');
+            chartData.addColumn('string', 'Parent');
+            chartData.addColumn('string', 'ToolTip');
+
+            let rows = [];
+            let nameSet = new Set(data.map(item => item.name));
+
+            data.forEach(item => {
+                let pId = item.fatherId;
+                if (!pId || !nameSet.has(pId)) pId = ''; 
+
+                let genClass = 'gen-1-node';
+                if (!pId) genClass = 'gen-0-node';
+                else {
+                    let parentObj = data.find(d => d.name === pId);
+                    if (parentObj && !parentObj.fatherId) genClass = 'gen-2-node';
+                    else genClass = 'gen-3-node';
+                }
+
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:45px; height:45px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:4px;">` : `<div style="width:45px; height:45px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:16px; font-weight:bold; color:#555; margin-bottom:4px;">${item.name.charAt(0)}</div>`;
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:10px; opacity:0.9; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">Spouse: ${item.spouseName}</div>` : '';
+
+                let nodeContent = `
+                    <div class="node-content-box ${genClass}" onclick='showDetails("${item.memberId}")'>
+                        ${photoHtml}
+                        <div style="font-weight:bold; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.name}</div>
+                        ${spouseText}
+                    </div>
+                `;
+                rows.push([{v: item.name, f: nodeContent}, pId, item.name]);
+            });
+
+            chartData.addRows(rows);
+            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            chart.draw(chartData, {allowHtml: true, nodeClass: 'google-visualization-orgchart-node'});
+            setTimeout(centerTreeScroll, 300);
+        }
+
+        function showDetails(memberId) {
+            let item = globalData.find(d => d.memberId === memberId);
+            if (!item) return;
+            currentEditingMemberId = memberId;
+            let t = dictionary[currentLang];
+
+            let photoHtml = item.photo ? `<img src="${item.photo}" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:3px solid #2a5298; margin-bottom:10px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">` : `<div style="width:90px; height:90px; border-radius:50%; background:#e2e8f0; display:inline-flex; align-items:center; justify-content:center; font-size:32px; font-weight:bold; color:#1e3c72; margin-bottom:10px;">${item.name.charAt(0)}</div>`;
+            
+            let deathInfo = item.aliveDeath === 'Death' ? `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">${t.statusDeath}</span> ${formatDate(item.deathAnniversary)}<br><span style="color:#c53030; font-weight:bold;">${t.dayLabel}</span> ${item.deathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">${t.tithiLabel}</span> ${item.deathTithi || 'N/A'}</div>` : `<div style="margin-top:6px; padding:6px; background:#f0fff4; border-left:4px solid #38a169; border-radius:4px;"><span style="color:#2f855a; font-weight:bold;">Status:</span> ${t.statusAlive}</div>`;
+            
+            let spouseDeathInfo = '';
+            if(item.maritalStatus === 'Married' && item.spouseAliveDeath === 'Death') {
+                spouseDeathInfo = `<div style="margin-top:6px; padding:8px; background:#fff5f5; border-left:4px solid #e53e3e; border-radius:4px;"><span style="color:#c53030; font-weight:bold;">Spouse Death Date:</span> ${formatDate(item.spouseDeathAnniv)}<br><span style="color:#c53030; font-weight:bold;">Day:</span> ${item.spouseDeathDay || 'N/A'}<br><span style="color:#c53030; font-weight:bold;">Tithi:</span> ${item.spouseDeathTithi || 'N/A'}</div>`;
+            }
+
+            let html = `
+                <div style="text-align:center;">
+                    ${photoHtml}
+                    <h3 style="margin:5px 0; color:#1e3c72; font-size:20px; font-weight:bold;">${item.name}</h3>
+                    <div style="display:inline-block; background:#ebf8ff; color:#2b6cb0; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:bold;">ID: ${item.memberId}</div>
+                </div>
+                <hr style="border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
+                <div style="font-size:14px; line-height:1.7; color:#2d3748;">
+                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">${t.fatherLabel}</strong> ${item.fatherId || 'Mukhya'}</div>
+                    <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">${t.genderLabel}</strong> ${item.gender}</div>
+                    <div style="padding:4px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">${t.dobLabel}</strong> ${formatDate(item.dob)}</div>
+                    <div style="padding:4px 8px; background:#fff; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">${t.maritalLabel}</strong> ${item.maritalStatus}</div>
+                    ${item.maritalStatus === 'Married' ? `<div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-bottom:4px;"><strong style="color:#2a5298;">${t.spouseLabel}</strong> <span style="color:#742a2a; font-weight:600;">${item.spouseName || 'N/A'}</span> <br><span style="font-size:12px; color:#555;">(DOB: ${formatDate(item.spouseDob)})</span></div>` : ''}
+                    ${deathInfo}
+                    ${spouseDeathInfo}
+                    <div style="padding:6px 8px; background:#f7fafc; border-radius:6px; margin-top:6px;"><strong style="color:#2a5298;">${t.mobileLabel}</strong> <a href="tel:${item.mobile}" style="color:#2b6cb0; text-decoration:none; font-weight:bold;">${item.mobile || 'N/A'}</a></div>
+                </div>
+                <div style="text-align:center; margin-top:18px;">
+                    <button class="edit-profile-btn" onclick="document.getElementById('popupPhotoFile').click()">${t.editPhotoBtn}</button>
+                </div>
+            `;
+            document.getElementById('modalContent').innerHTML = html;
+            document.getElementById('detailsModal').style.display = 'block';
+        }
+
+        function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
+
+        function updateMemberPhotoOnServer(memberId, base64Photo) {
+            fetch(scriptURL + '?action=updateMember', {
+                method: 'POST',
+                body: JSON.stringify({ memberId: memberId, photo: base64Photo })
+            })
+            .then(res => res.json())
+            .then(response => {
+                if(response.status === 'success') { alert('Photo updated successfully!'); location.reload(); }
+                else { alert('Error updating photo.'); }
+            });
+        }
+
+        document.getElementById('entryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let formData = {
+                fatherId: document.getElementById('fatherId').value,
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                deathDay: document.getElementById('deathDay').value,
+                deathTithi: document.getElementById('deathTithi').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveDeath').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                spouseDeathDay: document.getElementById('spouseDeathDay').value,
+                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+                mobile: document.getElementById('mobile').value,
+                photo: finalProcessedPhoto
+            };
+
+            let submitBtn = document.querySelector('.submit-btn');
+            submitBtn.textContent = 'Saving...';
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, { method: 'POST', body: JSON.stringify(formData) })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') { alert('Entry saved successfully!'); location.reload(); }
+                else { alert('Error: ' + data.message); submitBtn.textContent = 'Submit & Save'; submitBtn.disabled = false; }
+            });
+        });
+
+        function downloadPDF() {
+            let element = document.getElementById('pdfContent');
+            let opt = { margin: 0.5, filename: 'Family_Tree.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' } };
+            document.getElementById('pdfTitle').style.display = 'block';
+            html2pdf().from(element).set(opt).save().then(() => { document.getElementById('pdfTitle').style.display = 'none'; });
         }
     </script>
 </body>
