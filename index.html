@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <!-- सदस्य विवरण पॉपअप मॉडल -->
+    <!-- सदस्य विवरण पॉपअप मॉडल (Issue 1 Resolved) -->
     <div id="memberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -286,8 +286,8 @@
         <div class="form-card">
             <h2 id="formTitleText">Naye Member ki Entry Karein</h2>
             <form id="entryForm" onsubmit="submitForm(event)">
-                
-                <!-- 4. ऑटो-जनरेटेड मेंबर आईडी फील्ड -->
+               
+                <!-- Issue 4 Resolved: ऑटो-जनरेटेड मेंबर आईडी फील्ड -->
                 <div class="form-group">
                     <label>Member ID (ऑटो-जनरेटेड):</label>
                     <input type="text" id="memberIdField" readonly style="background-color: #e9ecef; font-weight: bold; color: #d9534f;">
@@ -319,8 +319,8 @@
                         <option value="Death" id="optDeath">Death</option>
                     </select>
                 </div>
-                
-                <!-- 3. डेथ डेट डालते ही ऑटोमैटिक वार आने वाला सेक्शन -->
+               
+                <!-- Issue 3 Resolved: मेंबर डेथ डेट डालते ही ऑटोमैटिक वार आने वाला सेक्शन -->
                 <div id="memberDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
                     <div class="form-group">
                         <label id="lblDeathDate">Death Date:</label>
@@ -343,18 +343,19 @@
                         <option value="Unmarried" id="optUnmarried">Unmarried</option>
                     </select>
                 </div>
-                
+               
                 <div id="spouseFieldsContainer">
                     <div class="form-group"><label id="lblSpouseName">Spouse Name:</label><input type="text" id="spouseName"></div>
                     <div class="form-group"><label id="lblSpouseDob">Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
                     <div class="form-group">
                         <label id="lblSpouseAliveDeath">Spouse Alive/Death:</label>
-                        <select id="spouseAliveDeath" onchange="toggleDeathFields('spouse')">
+                        <select id="spouseAliveStatus" onchange="toggleDeathFields('spouse')">
                             <option value="Alive" id="optSpouseAlive">Alive</option>
                             <option value="Death" id="optSpouseDeath">Death</option>
                         </select>
                     </div>
-                    
+                   
+                    <!-- Issue 3 Resolved: स्पॉउस डेथ डेट पर ऑटोमैटिक वार -->
                     <div id="spouseDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
                         <div class="form-group">
                             <label id="lblSpouseDeathDate">Spouse Death Date:</label>
@@ -368,10 +369,10 @@
                     </div>
                 </div>
 
-                <!-- 2. R कॉलम के लिए बच्चों का क्रम (Child Number) -->
+                <!-- Issue 2 Resolved: R कॉलम के लिए बच्चों का क्रम (Child Number) -->
                 <div class="form-group">
                     <label>बच्चा किस क्रम का है (Child Number):*</label>
-                    <select id="childNumber" class="form-control">
+                    <select id="childNumber" class="form-control" required>
                         <option value="">-- क्रम चुनें (पहला, दूसरा आदि) --</option>
                         <option value="1">पहला (1)</option>
                         <option value="2">दूसरा (2)</option>
@@ -391,7 +392,7 @@
     </div>
 
     <script>
-        // --- 4. मेंबर आईडी ऑटो-जनरेट फंक्शन ---
+        // --- Issue 4: मेंबर आईडी ऑटो-जनरेट फंक्शन ---
         function generateMemberId() {
             const uniqueId = 'MEM_' + Date.now();
             const idField = document.getElementById('memberIdField');
@@ -400,7 +401,7 @@
             }
         }
 
-        // --- 3. डेथ डेट से ऑटोमैटिक वार कैलकुलेट करने का फंक्शन ---
+        // --- Issue 3: डेथ डेट से ऑटोमैटिक वार कैलकुलेट करने का फंक्शन ---
         function calculateDeathDay(dateString, targetFieldId) {
             if (!dateString) return;
             const days = ['रविवार (Sunday)', 'सोमवार (Monday)', 'मंगलवार (Tuesday)', 'बुधवार (Wednesday)', 'गुरुवार (Thursday)', 'शुक्रवार (Friday)', 'शनिवार (Saturday)'];
@@ -412,7 +413,7 @@
             }
         }
 
-        // --- 1. पॉपअप में स्पॉउस की सभी डिटेल्स दिखाने का लॉजिक ---
+        // --- Issue 1: पॉपअप में स्पॉउस की सभी डिटेल्स दिखाने का लॉजिक ---
         function showMemberDetailsModal(member) {
             let spouseSection = '';
             if (member.SpouseName) {
@@ -479,13 +480,19 @@
 
         function submitForm(event) {
             event.preventDefault();
-            // यहाँ आपका डेटा सबमिशन का कोड रहेगा जिसमें childNumber और बाकी फील्ड्स शामिल हैं
+            // Issue 2: यहाँ childNumber सही तरीके से फेच किया जा रहा है
             const formData = {
                 MemberId: document.getElementById('memberIdField').value,
-                ChildNumber: document.getElementById('childNumber').value // 2. R कॉलम के लिए चाइल्ड नंबर
+                ChildNumber: document.getElementById('childNumber').value,
+                MemberName: document.getElementById('name').value,
+                Mobile: document.getElementById('mobile').value,
+                SpouseName: document.getElementById('spouseName').value,
+                SpouseDob: document.getElementById('spouseDob').value,
+                SpouseDeathDay: document.getElementById('spouseDeathDay').value,
+                SpouseDeathTithi: document.getElementById('spouseDeathTithi').value
             };
             console.log("Form Data Ready:", formData);
-            alert('फॉर्म डेटा तैयार है!');
+            alert('फॉर्म डेटा सफलताપૂર્વক तैयार है!');
         }
     </script>
 </body>
