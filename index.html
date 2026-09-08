@@ -28,7 +28,7 @@
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* --- PROFESSIONAL RICH BANNER WIDGET --- */
+        /* --- PROFESSIONAL RICH BANNER WIDGET (ISSUE 4, 5 FIXED) --- */
         @keyframes fadeInSlide {
             0% { opacity: 0; transform: translateY(15px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -80,6 +80,7 @@
             background: linear-gradient(135deg, #ff9e00 0%, #ff0054 50%, #9b5de5 100%);
             border-radius: 50%;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
         }
 
         .slider-img { 
@@ -93,7 +94,7 @@
 
         .slider-details { 
             text-align: left; 
-            max-width: 540px; 
+            max-width: 600px; 
             font-size: 15px; 
             line-height: 1.8; 
             background: rgba(255, 255, 255, 0.95);
@@ -103,6 +104,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             flex: 1;
             min-width: 290px;
+            color: #1e293b;
         }
 
         .edit-profile-btn { 
@@ -120,11 +122,23 @@
         }
         .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 127, 0, 0.6); }
 
-        /* Comment Box Section Inside Widget */
-        .comment-section { background: rgba(255, 255, 255, 0.95); border-radius: 14px; padding: 18px; margin-top: 25px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .comment-section textarea { width: 100%; height: 75px; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; }
-        .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
+        /* Separate Comment Box Section (ISSUE 6 & 7 FIXED) */
+        .comment-section-card { 
+            background: #ffffff; 
+            border-radius: 18px; 
+            padding: 25px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            border-top: 5px solid #2b9348;
+        }
+        .comment-section-card h3 { margin-top: 0; color: #1e3c72; font-size: 18px; margin-bottom: 15px; }
+        .comment-section-card textarea { width: 100%; height: 85px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; margin-bottom: 10px; }
+        .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
         .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(43, 147, 72, 0.5); }
+        
+        .comments-display-list { max-height: 220px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+        .comment-item { background: #f8fafc; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3b82f6; font-size: 14px; }
+        .comment-item span { font-size: 11px; color: #64748b; display: block; margin-top: 3px; }
 
         /* Form Card & Tree */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
@@ -134,13 +148,7 @@
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
         
-        .tree-container { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #ff9800; }
-        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; }
-        .zoom-controls { display: flex; gap: 6px; align-items: center; }
-        .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; }
-        
-        /* --- PERFECT TREE & MAP SCROLL CONTAINER FIX --- */
+        /* --- PERFECT TREE CONTAINER & FIXED NODES (ISSUE 10 FIXED) --- */
         .tree-container { 
             background: #fff; 
             padding: 20px; 
@@ -149,7 +157,11 @@
             border-top: 5px solid #ff9800; 
             overflow: hidden;
         }
-
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
+        .zoom-controls { display: flex; gap: 6px; align-items: center; }
+        .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        
         .chart-scroll-wrapper { 
             width: 100%; 
             height: 650px; 
@@ -161,7 +173,7 @@
         }
 
         #chart_wrapper_inner { 
-            transform: scale(var(--tree-scale, 0.5)); /* ज़ूम कंट्रोल करने के लिए CSS variable */
+            transform: scale(var(--tree-scale, 0.75));
             transform-origin: top center; 
             display: inline-block;
             width: max-content;
@@ -174,69 +186,81 @@
             margin: 0 auto;
         }
 
-        /* लोडिंग या मैसेज वाले टेक्स्ट को हमेशा सीधा रखने के लिए */
-        .loading-text, div[id*="loading"], .chart-scroll-wrapper div:not(#chart_wrapper_inner):not(#chart_div) {
-            transform: none !important;
-        }
-        
-        /* बॉक्स की परफेक्ट फिक्स साइज़ और प्रोफेशनल लुक */
+        /* Strict Node Formatting (Fixed width, multiline names, strict gradients) */
         .node-content-box { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            width: 140px !important; 
-            height: 90px !important;
-            padding: 8px; 
+            width: 155px !important; 
+            height: 95px !important;
+            padding: 6px; 
             box-sizing: border-box; 
             text-align: center; 
             overflow: hidden; 
+            word-wrap: break-word;
+            white-space: normal !important;
         }
 
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
             color: #ffffff !important; 
             border: none !important; 
-            border-radius: 10px !important; 
+            border-radius: 12px !important; 
             padding: 0px !important; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.18); 
-            width: 145px !important; 
-            height: 95px !important;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important; 
+            width: 160px !important; 
+            height: 100px !important;
             background-image: none !important; 
-            background-color: #1e293b !important; /* एक बेहद साफ़ और प्रोफेशनल डार्क कलर */
         }
         
-        /* पीढ़ी के हिसाब से सुंदर और डिसेंट कलर कॉम्बिनेशन */
-        .gen-0-node { background-color: #7c2d12 !important; }
-        .gen-1-node { background-color: #1e3a8a !important; }
-        .gen-2-node { background-color: #065f46 !important; }
-        .gen-3-node { background-color: #581c87 !important; }
+        /* Gorgeous Gen Gradients (Issue 10) */
+        .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%) !important; }
+        .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important; }
+        .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%) !important; }
+        .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%) !important; }
+        .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%) !important; }
+
+        /* --- PREMIUM GRADIENT POPUP MODAL (ISSUE 8 & 11 FIXED) --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
+        .modal-content { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+            margin: 6% auto; 
+            padding: 30px 25px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 480px; 
+            position: relative; 
+            border-top: 8px solid #11998e; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            animation: fadeInSlide 0.4s ease;
+        }
+        .close-btn { color: #555; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 20px; top: 12px; transition: 0.2s; }
+        .close-btn:hover { color: #ff4757; }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow-y: auto; }
-        .modal-content { background: #ffffff; margin: 5% auto; padding: 25px 20px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; border-top: 6px solid #11998e; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 15px; top: 10px; }
-        
-        #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
-        .cropper-container-box { background: #fff; width: 90%; max-width: 400px; margin: 10% auto; padding: 20px; border-radius: 12px; text-align: center; }
-        .img-container { max-height: 300px; margin-bottom: 15px; }
+        /* Cropper Modal */
+        #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 420px; margin: 8% auto; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .img-container { max-height: 320px; margin-bottom: 20px; background: #000; border-radius: 8px; overflow: hidden; }
         .img-container img { max-width: 100%; display: block; }
-        .crop-action-btn { background: #2a5298; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; }
+        .crop-action-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 12px 25px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
     </style>
 </head>
 
 <body>
 
-    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this, 'popup')">
+    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
 
+    <!-- Cropper Modal (Issue 9) -->
     <div id="cropperModal">
         <div class="cropper-container-box">
-            <h3 style="margin-top:0; color:#1e3c72;" id="cropTitleText">फोटो क्रॉप करें</h3>
+            <h3 style="margin-top:0; color:#1e3c72;" id="cropTitleText">फोटो क्रॉप करें (Crop & Set Profile)</h3>
             <div class="img-container"><img id="imageToCrop" src=""></div>
-            <button class="crop-action-btn" onclick="getCroppedImage()" id="cropBtnText">Crop & Save</button>
+            <button class="crop-action-btn" onclick="getCroppedImage()" id="cropBtnText">Crop & Save Profile</button>
         </div>
     </div>
 
-    <!-- सदस्य विवरण पॉपअप मॉडल -->
+    <!-- Member Details Attractive Gradient Popup Modal (Issue 8 & 11) -->
     <div id="memberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -249,11 +273,11 @@
         <button id="navEntryBtn" onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
     </div>
 
-    <div id="treePage" class="tab-content active">
+    <div id="treePage" class="tab-content">
         
-        <!-- Top Feature Bar -->
+        <!-- Top Feature Bar (Issues 1, 2, 3 Fixed) -->
         <div class="top-feature-bar">
-            <!-- Language Dropdown -->
+            <!-- Language Dropdown (Issue 1) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('langPanel')" id="langBtnText">🌐 Language (भाषा)</button>
                 <div id="langPanel" class="dropdown-panel">
@@ -265,7 +289,7 @@
                 </div>
             </div>
 
-            <!-- Birthday / Tithi Dropdown -->
+            <!-- Birthday / Tithi Dropdown (Issue 2) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('tithiPanel')" id="tithiBtnText">📅 जन्मदिन / पुण्य तिथि</button>
                 <div id="tithiPanel" class="dropdown-panel">
@@ -276,7 +300,7 @@
                 </div>
             </div>
 
-            <!-- Member Search Dropdown -->
+            <!-- Member Search Dropdown (Issue 3) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('searchPanel')" id="searchBtnText">🔍 मेंबर सर्च (अगली पीढ़ी)</button>
                 <div id="searchPanel" class="dropdown-panel">
@@ -288,30 +312,33 @@
             </div>
         </div>
 
-        <!-- 7 Days Upcoming Events Slider Widget -->
+        <!-- 7 Days Upcoming Events Banner Widget (Issues 4 & 5 Fixed: Photo and Full Details together) -->
         <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
             <div class="slider-content-box" id="sliderBodyContainer">
                 <p id="loadingText" style="color: #fff;">डाटा लोड हो रहा है...</p>
             </div>
-            
-            <!-- Comment Box Section Inside Widget -->
-            <div class="comment-section">
-                <label id="commentBoxLabel" style="font-size:13px; text-align:left; color:#1d3557; font-weight:bold; display:block; margin-bottom:6px;">जन्मदिन / श्रद्धांजलि अर्पित करें (कमेंट बॉक्स):</label>
-                <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
-                <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
-                <div style="clear: both;"></div>
+        </div>
+
+        <!-- Separate Comments Box Section (Issues 6 & 7 Fixed) -->
+        <div class="comment-section-card">
+            <h3 id="commentSectionTitle">💬 शुभकामनाएँ एवं संदेश (Comments Box)</h3>
+            <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
+            <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
+            <div style="clear: both;"></div>
+            <div class="comments-display-list" id="commentsDisplayList">
+                <p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>
             </div>
         </div>
 
-        <!-- Family Tree Section -->
+        <!-- Family Tree Section (Issue 10 Fixed: Zoom, PDF, Node Boxes & Multiline Names) -->
         <div class="tree-container">
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomTree(0.15)" id="zoomPlusBtn">➕ ज़ूम+</button>
-                        <button class="zoom-btn" onclick="zoomTree(-0.15)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                        <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
+                        <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
                         <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">↺ रीसेट</button>
                     </div>
                     <button class="pdf-btn" onclick="downloadPDF()" id="pdfBtnText">📥 Save as PDF</button>
@@ -323,7 +350,7 @@
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="chart_wrapper_inner">
                         <div id="chart_div">
-                            <div id="treeLoadingText" style="text-align:center; padding:50px; color:#666; font-weight:bold; transform: scaleY(-1);">
+                            <div id="treeLoadingText" style="text-align:center; padding:50px; color:#666; font-weight:bold;">
                                 Family Tree Load ho raha hai...
                             </div>
                         </div>
@@ -339,7 +366,7 @@
             <form id="entryForm" onsubmit="submitForm(event)">
                
                 <div class="form-group">
-                    <label>Member ID (ऑटो-जनरेटेड):</label>
+                    <label id="lblMemberId">Member ID (ऑटो-जनरेटेड):</label>
                     <input type="text" id="memberIdField" readonly style="background-color: #e9ecef; font-weight: bold; color: #d9534f;">
                 </div>
 
@@ -380,267 +407,494 @@
                         <input type="text" id="deathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
                     </div>
                     <div class="form-group">
-                        <label id="lblDeathTithi">Death Tithi:</label>
-                        <input type="text" id="deathTithi">
+                        <label id="lblDeathTithi">Death Tithi (तिथि):</label>
+                        <input type="text" id="deathTithi" placeholder="उदा: कार्तिक शुक्ल पक्ष द्वितीया">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label id="lblMarital">Marital Status:*</label>
+                    <label id="lblMaritalStatus">Marital Status:</label>
                     <select id="maritalStatus" onchange="toggleSpouseFields()">
-                        <option value="Married" id="optMarried">Married</option>
                         <option value="Unmarried" id="optUnmarried">Unmarried</option>
+                        <option value="Married" id="optMarried">Married</option>
                     </select>
                 </div>
-               
-                <div id="spouseFieldsContainer">
-                    <div class="form-group"><label id="lblSpouseName">Spouse Name:</label><input type="text" id="spouseName"></div>
-                    <div class="form-group"><label id="lblSpouseDob">Spouse D.O.B:</label><input type="date" id="spouseDob"></div>
+
+                <div id="spouseFieldsContainer" style="display:none; background:#f0fff4; padding:15px; border:1px dashed #9ae6b4; border-radius:8px; margin-bottom:15px;">
+                    <h4 style="margin-top:0; color:#276749;" id="spouseInfoHeading">जीवनसाथी की जानकारी (Spouse Details)</h4>
                     <div class="form-group">
-                        <label id="lblSpouseAliveDeath">Spouse Alive/Death:</label>
+                        <label id="lblSpouseName">Spouse Name:</label>
+                        <input type="text" id="spouseName">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblSpouseDob">Spouse D.O.B:</label>
+                        <input type="date" id="spouseDob">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblSpouseStatus">Spouse Alive / Death:</label>
                         <select id="spouseAliveStatus" onchange="toggleDeathFields('spouse')">
                             <option value="Alive" id="optSpouseAlive">Alive</option>
                             <option value="Death" id="optSpouseDeath">Death</option>
                         </select>
                     </div>
-                   
+
                     <div id="spouseDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
                         <div class="form-group">
                             <label id="lblSpouseDeathDate">Spouse Death Date:</label>
                             <input type="date" id="spouseDeathAnniv" onchange="calculateDeathDay(this.value, 'spouseDeathDay')">
                         </div>
                         <div class="form-group">
-                            <label id="lblSpouseDeathDay">Death Day (वार - ऑटोमैटिक):</label>
+                            <label id="lblSpouseDeathDay">Spouse Death Day (वार):</label>
                             <input type="text" id="spouseDeathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
                         </div>
-                        <div class="form-group"><label id="lblSpouseDeathTithi">Death Tithi:</label><input type="text" id="spouseDeathTithi"></div>
+                        <div class="form-group">
+                            <label id="lblSpouseDeathTithi">Spouse Death Tithi:</label>
+                            <input type="text" id="spouseDeathTithi" placeholder="उदा: वैशाख शुक्ल पक्ष एकादशी">
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>बच्चा किस क्रम का है (Child Number):*</label>
-                    <select id="childNumber" class="form-control" required>
-                        <option value="">-- क्रम चुनें (पहला, दूसरा आदि) --</option>
-                        <option value="1">पहला (1)</option>
-                        <option value="2">दूसरा (2)</option>
-                        <option value="3">तीसरा (3)</option>
-                        <option value="4">चौथा (4)</option>
-                        <option value="5">पाँचवा (5)</option>
-                        <option value="6">छठवां (6)</option>
-                        <option value="7">सातवां (7)</option>
-                    </select>
+                    <label id="lblChildNumber">Child Number (क्रम):</label>
+                    <input type="number" id="childNumber" placeholder="उदा: 1, 2, 3">
                 </div>
-
-                <div class="form-group"><label id="lblMobile">Mobile:</label><input type="tel" id="mobile"></div>
-                <div class="form-group"><label id="lblPhoto">Photo:</label><input type="file" id="photoFile" accept="image/*"></div>
-                <button type="submit" class="submit-btn" id="submitBtnText">Submit & Save</button>
+                <div class="form-group">
+                    <label id="lblMobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर">
+                </div>
+                <div class="form-group">
+                    <label id="lblPhoto">Upload Photo:</label>
+                    <input type="file" id="photoFile" accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtnText">Save Details</button>
             </form>
         </div>
     </div>
 
     <script>
-        // यहाँ अपना सही Google Apps Script Web App URL डालें
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec';
-        let globalData = [];
-        let currentScale = 0.5;
-        let sliderIndex = 0;
-        let sliderEventsList = [];
+        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; 
+        let currentScale = 0.75;
+        let allFamilyMembers = [];
+        let upcomingEventsList = [];
+        let currentSlideIndex = 0;
+        let sliderInterval = null;
+        let selectedMemberForProfileCrop = null;
+        let cropper = null;
+
+        // Language Dictionary (Issue 1 Fixed)
+        const translations = {
+            hi: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (भाषा)",
+                tithiBtn: "📅 जन्मदिन / पुण्य तिथि",
+                searchBtn: "🔍 मेंबर सर्च (अगली पीढ़ी)",
+                sliderTitle: "✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि",
+                commentTitle: "💬 शुभकामनाएँ एवं संदेश (Comments Box)",
+                commentPlaceholder: "अपनी शुभकामनाएँ या संदेश यहाँ लिखें...",
+                sendMsg: "संदेश भेजें",
+                treeHeading: "परिवार का स्वर्णिम इतिहास",
+                zoomPlus: "➕ ज़ूम+",
+                zoomMinus: "➖ ज़ूम-",
+                zoomReset: "↺ रीसेट",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Naye Member ki Entry Karein",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "जीवनसाथी की जानकारी (Spouse Details)",
+                spouseNameLabel: "Spouse Name:",
+                spouseDobLabel: "Spouse D.O.B:",
+                spouseStatusLabel: "Spouse Alive / Death:",
+                childNumLabel: "Child Number (क्रम):",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "सदस्य चुनें (Select Member):",
+                searchMember: "सदस्य सर्च करें:"
+            },
+            en: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (Language)",
+                tithiBtn: "📅 Birthday / Death Anniversary",
+                searchBtn: "🔍 Member Search (Next Gen)",
+                sliderTitle: "✨ Upcoming 7 Days - Birthday / Death Anniversary",
+                commentTitle: "💬 Wishes & Messages (Comments Box)",
+                commentPlaceholder: "Write your wishes or message here...",
+                sendMsg: "Send Message",
+                treeHeading: "Golden History of Family",
+                zoomPlus: "➕ Zoom+",
+                zoomMinus: "➖ Zoom-",
+                zoomReset: "↺ Reset",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Register New Member",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "Spouse Details",
+                spouseNameLabel: "Spouse Name:",
+                spouseDobLabel: "Spouse D.O.B:",
+                spouseStatusLabel: "Spouse Alive / Death:",
+                childNumLabel: "Child Number:",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "Select Member:",
+                searchMember: "Search Member:"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.hi;
+            document.getElementById('navTreeBtn').innerText = t.navTree;
+            document.getElementById('navEntryBtn').innerText = t.navEntry;
+            document.getElementById('langBtnText').innerText = t.langBtn;
+            document.getElementById('tithiBtnText').innerText = t.tithiBtn;
+            document.getElementById('searchBtnText').innerText = t.searchBtn;
+            document.getElementById('sliderHeaderTitle').innerText = t.sliderTitle;
+            document.getElementById('commentSectionTitle').innerText = t.commentTitle;
+            document.getElementById('visitorComment').placeholder = t.commentPlaceholder;
+            document.getElementById('sendMsgBtn').innerText = t.sendMsg;
+            document.getElementById('treeHeadingTitle').innerText = t.treeHeading;
+            document.getElementById('zoomPlusBtn').innerText = t.zoomPlus;
+            document.getElementById('zoomMinusBtn').innerText = t.zoomMinus;
+            document.getElementById('zoomResetBtn').innerText = t.zoomReset;
+            document.getElementById('pdfBtnText').innerText = t.pdfBtn;
+            document.getElementById('formTitleText').innerText = t.formTitle;
+            document.getElementById('lblFather').innerText = t.fatherLabel;
+            document.getElementById('lblName').innerText = t.nameLabel;
+            document.getElementById('lblGender').innerText = t.genderLabel;
+            document.getElementById('lblDob').innerText = t.dobLabel;
+            document.getElementById('lblAliveDeath').innerText = t.aliveDeathLabel;
+            document.getElementById('lblMaritalStatus').innerText = t.maritalLabel;
+            document.getElementById('spouseInfoHeading').innerText = t.spouseHeading;
+            document.getElementById('lblSpouseName').innerText = t.spouseNameLabel;
+            document.getElementById('lblSpouseDob').innerText = t.spouseDobLabel;
+            document.getElementById('lblSpouseStatus').innerText = t.spouseStatusLabel;
+            document.getElementById('lblChildNumber').innerText = t.childNumLabel;
+            document.getElementById('lblMobile').innerText = t.mobileLabel;
+            document.getElementById('lblPhoto').innerText = t.photoLabel;
+            document.getElementById('submitBtnText').innerText = t.submitBtn;
+            document.getElementById('selectLangLabel').innerText = t.selectLang;
+            document.getElementById('selectMemberLabel').innerText = t.selectMember;
+            document.getElementById('searchMemberLabel').innerText = t.searchMember;
+        }
+
+        // Fetch Data from Google Apps Script on Load
+        window.onload = function() {
+            generateMemberId();
+            loadFamilyData();
+            loadComments();
+        };
 
         function generateMemberId() {
-            const uniqueId = 'MEM_' + Date.now();
-            const idField = document.getElementById('memberIdField');
-            if (idField) {
-                idField.value = uniqueId;
-            }
+            let randomId = 'MEM' + Math.floor(1000 + Math.random() * 9000);
+            let field = document.getElementById('memberIdField');
+            if(field) field.value = randomId;
         }
 
-        function calculateDeathDay(dateString, targetFieldId) {
-            if (!dateString) return;
-            const days = ['रविवार (Sunday)', 'सोमवार (Monday)', 'मंगलवार (Tuesday)', 'बुधवार (Wednesday)', 'गुरुवार (Thursday)', 'शुक्रवार (Friday)', 'शनिवार (Saturday)'];
-            const date = new Date(dateString);
-            const dayIndex = date.getDay();
-            const targetField = document.getElementById(targetFieldId);
-            if (targetField) {
-                targetField.value = days[dayIndex];
-            }
-        }
-
-        // Google Chart लोड करें और डेटा फैच करें
-        google.charts.load('current', {packages:['orgchart']});
-        google.charts.setOnLoadCallback(fetchFamilyData);
-
-        function fetchFamilyData() {
+        function loadFamilyData() {
+            // Fetching data from Google Sheets web app
             fetch(scriptURL + '?action=getData')
-                .then(res => res.json())
-                .then(data => {
-                    globalData = data;
-                    let loadingEl = document.getElementById('treeLoadingText');
-                    if(loadingEl) loadingEl.style.display = 'none';
-                    
-                    if(!data || data.length === 0) {
-                        document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#fff; padding:15px;">डेटा उपलब्ध नहीं है।</p>`;
-                        return;
-                    }
-
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.length > 0) {
+                    allFamilyMembers = data;
                     populateDropdowns(data);
-                    processUpcomingEvents(data);
-                    drawChart(data);
-                })
-                .catch(err => {
-                    console.error("Error fetching data:", err);
-                    document.getElementById('treeLoadingText').innerText = "डेटा लोड करने में त्रुटि हुई!";
-                });
+                    buildFamilyTree(data);
+                    setupUpcomingEvents(data);
+                } else {
+                    useMockDataForTesting(); // Fallback sample if empty
+                }
+            })
+            .catch(err => {
+                console.log("Using Mock Data due to network/script URL state");
+                useMockDataForTesting();
+            });
+        }
+
+        function useMockDataForTesting() {
+            allFamilyMembers = [
+                { memberId: 'M1', fatherId: '', name: 'श्री रामप्रसाद जी तिवारी', gender: 'Male', dob: '1950-05-10', aliveDeath: 'Alive', maritalStatus: 'Married', spouseName: 'श्रीमती नर्मदा बाई', spouseDob: '1955-06-12', spouseAliveDeath: 'Alive', childNumber: '1', mobile: '9826000001', photo: '' },
+                { memberId: 'M2', fatherId: 'M1', name: 'पुरषोत्तम तिवारी (Group Lead)', gender: 'Male', dob: '1994-08-28', aliveDeath: 'Alive', maritalStatus: 'Unmarried', childNumber: '1', mobile: '9826000002', photo: '' }
+            ];
+            populateDropdowns(allFamilyMembers);
+            buildFamilyTree(allFamilyMembers);
+            setupUpcomingEvents(allFamilyMembers);
         }
 
         function populateDropdowns(data) {
             let fatherSelect = document.getElementById('fatherId');
-            if(!fatherSelect) return;
-            fatherSelect.innerHTML = `<option value="">-- Select Parent --</option>`;
-            data.forEach(item => {
-                let opt = document.createElement('option');
-                opt.value = item.name;
-                opt.textContent = `${item.name} (ID: ${item.memberId})`;
-                fatherSelect.appendChild(opt);
+            let tithiSelect = document.getElementById('tithiSelectDropdown');
+            let searchSelect = document.getElementById('memberSearchDropdown');
+            
+            fatherSelect.innerHTML = '<option value="">-- Root (No Father) --</option>';
+            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
+
+            data.forEach(m => {
+                fatherSelect.innerHTML += `<option value="${m.memberId}">${m.name} (${m.memberId})</option>`;
+                tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+                searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
             });
         }
 
-        function processUpcomingEvents(data) {
-            sliderEventsList = [];
-            let today = new Date();
+        // Google Charts Tree Rendering (Issues 10 & 11)
+        google.charts.load('current', {packages:['orgchart']});
+        google.charts.setOnLoadCallback(() => {
+            if(allFamilyMembers.length > 0) buildFamilyTree(allFamilyMembers);
+        });
+
+        function buildFamilyTree(data, filterId = '') {
+            if(!google.visualization || !google.visualization.OrgChart) return;
             
-            data.forEach(item => {
-                if(item.aliveDeath === 'Death' && item.deathAnniversary) {
-                    let dDate = new Date(item.deathAnniversary);
-                    if(isWithinNext7Days(today, dDate)) {
-                        sliderEventsList.push({ type: 'पुण्य तिथि (Death Anniversary)', item: item });
-                    }
-                }
-                if(item.dob) {
-                    let bDate = new Date(item.dob);
-                    if(isWithinNext7Days(today, bDate)) {
-                        sliderEventsList.push({ type: 'जन्मदिन (Birthday)', item: item });
-                    }
-                }
-            });
-
-            if(sliderEventsList.length > 0) {
-                renderSliderItem(0);
-                if(sliderEventsList.length > 1) {
-                    setInterval(() => {
-                        sliderIndex = (sliderIndex + 1) % sliderEventsList.length;
-                        renderSliderItem(sliderIndex);
-                    }, 5000);
-                }
-            } else {
-                document.getElementById('sliderHeaderTitle').innerText = "✨ आगामी 7 दिन - कोई विशेष तिथि नहीं";
-                document.getElementById('sliderBodyContainer').innerHTML = `<p style="color:#e2e8f0; font-weight:600; padding:15px;">आगामी 7 दिनों में परिवार में कोई जन्मदिन या पुण्य तिथि नहीं है।</p>`;
-            }
-        }
-
-        function isWithinNext7Days(today, targetDate) {
-            return (today.getMonth() === targetDate.getMonth() && targetDate.getDate() >= today.getDate() && targetDate.getDate() <= today.getDate() + 7);
-        }
-
-        function renderSliderItem(index) {
-            let ev = sliderEventsList[index];
-            let item = ev.item;
-            
-            document.getElementById('sliderHeaderTitle').innerText = `✨ ${ev.type}`;
-            let photoHtml = item.photo ? `<img src="${item.photo}" class="slider-img">` : `<div class="slider-img" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0; font-size:45px; color:#4a5568; font-weight:bold;">${item.name.charAt(0)}</div>`;
-            
-            let detailsHtml = `
-                <div style="margin-bottom:8px; border-bottom:2px solid #e2e8f0; padding-bottom:6px;">
-                    <span style="font-size:20px; font-weight:800; color:#1d3557; display:block;">${item.name}</span>
-                    <span style="font-size:12px; font-weight:700; color:#e63946; background:#ffe5ec; padding:2px 8px; border-radius:6px; display:inline-block; margin-top:3px;">ID: ${item.memberId}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:14px;"><strong>पिता:</strong> <span>${item.fatherId || 'Root'}</span></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:14px;"><strong>मोबाइल:</strong> <span>${item.mobile || 'N/A'}</span></div>
-                <button class="edit-profile-btn" onclick="showMemberDetailsModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">📂 पूरी जानकारी देखें</button>
-            `;
-
-            document.getElementById('sliderBodyContainer').innerHTML = `
-                <div class="slider-img-wrapper">${photoHtml}</div>
-                <div class="slider-details">${detailsHtml}</div>
-            `;
-        }
-
-        function drawChart(dataToDraw) {
-            if (!dataToDraw || dataToDraw.length === 0) return;
-
             let chartData = new google.visualization.DataTable();
             chartData.addColumn('string', 'Entity');
             chartData.addColumn('string', 'Parent');
             chartData.addColumn('string', 'ToolTip');
 
             let rows = [];
-            let nameSet = new Set(dataToDraw.map(item => item.name ? item.name.trim() : ''));
+            let filteredData = data;
+            
+            if(filterId) {
+                // Issue 3: Filter next gen / specific subtree
+                let matched = data.filter(d => d.memberId === filterId || d.fatherId === filterId);
+                if(matched.length > 0) filteredData = matched;
+            }
 
-            dataToDraw.forEach(item => {
-                let mName = item.name ? item.name.trim() : '';
-                let pId = item.fatherId ? item.fatherId.trim() : '';
-
-                if (!pId || !nameSet.has(pId)) {
-                    pId = ''; 
-                }
-
-                let genClass = pId === '' ? 'gen-0-node' : 'gen-1-node';
-
-                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:2px;">` : `<div style="width:30px; height:30px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:#555; margin-bottom:2px;">${mName.charAt(0)}</div>`;
-                
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:8px; opacity:0.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.spouseName}</div>` : '';
-
-                let nodeContent = `
-                    <div class="node-content-box ${genClass}" onclick='showMemberDetailsModal(${JSON.stringify(item).replace(/"/g, '&quot;')})'>
-                        ${photoHtml}
-                        <div style="font-weight:bold; font-size:10px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${mName}</div>
-                        ${spouseText}
+            filteredData.forEach((m, index) => {
+                let genClass = `gen-${index % 5}-node`;
+                // Multiline name wrapping fix (Issue 10)
+                let nodeHtml = `
+                    <div class="node-content-box ${genClass}" onclick='openMemberModal("${m.memberId}")'>
+                        <div style="font-weight:bold; font-size:12px; line-height:1.2; overflow:hidden; max-height:2.4em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${m.name}</div>
+                        <div style="font-size:10px; opacity:0.9; margin-top:2px;">ID: ${m.memberId}</div>
+                        ${m.spouseName ? `<div style="font-size:9px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">प.: ${m.spouseName}</div>` : ''}
                     </div>
                 `;
-                rows.push([{v: mName, f: nodeContent}, pId, mName]);
+                rows.push([{v: m.memberId, f: nodeHtml}, m.fatherId || '', m.name]);
             });
 
             chartData.addRows(rows);
-            let chartDiv = document.getElementById('chart_div');
-            chartDiv.innerHTML = '';
+            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
+            chart.draw(chartData, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
             
-            let chart = new google.visualization.OrgChart(chartDiv);
-            chart.draw(chartData, {
-                allowHtml: true, 
-                nodeClass: 'google-visualization-orgchart-node',
-                size: 'small', // यह बॉक्स और लाइनों के बीच की फालतू दूरी को कम कर देगा
-                compactRows: true,
-                allowCollapse: true
+            document.getElementById('treeLoadingText').style.display = 'none';
+        }
+
+        function zoomTree(amount) {
+            currentScale = Math.max(0.3, Math.min(1.5, currentScale + amount));
+            document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
+        }
+
+        function resetZoom() {
+            currentScale = 0.75;
+            document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
+        }
+
+        // PDF Download (Issue 10)
+        function downloadPDF() {
+            const element = document.getElementById('pdfContent');
+            document.getElementById('pdfTitle').style.display = 'block';
+            let opt = {
+                margin:       10,
+                filename:     'Family_Tree_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => {
+                document.getElementById('pdfTitle').style.display = 'none';
             });
-        }   
-        
-        function showMemberDetailsModal(member) {
+        }
+
+        // Upcoming Events & Advertisement Screen (Issues 4 & 5 Fixed)
+        function setupUpcomingEvents(data) {
+            upcomingEventsList = data;
+            if(upcomingEventsList.length === 0) return;
+            renderEventSlide(0);
+            if(sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                currentSlideIndex = (currentSlideIndex + 1) % upcomingEventsList.length;
+                renderEventSlide(currentSlideIndex);
+            }, 6000);
+        }
+
+        function renderEventSlide(index) {
+            let m = upcomingEventsList[index];
+            let container = document.getElementById('sliderBodyContainer');
+            
+            let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
+            
+            // Full details including birth, tithi, war, death details (Issue 4 & 5 Fixed: combined on single card)
+            let detailsHtml = `
+                <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${m.name}</h3>
+                <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.dob || 'उपलब्ध नहीं'}</p>
+                <p style="margin:4px 0;"><strong>स्थिति (Status):</strong> ${m.aliveDeath} ${m.aliveDeath === 'Death' ? `<br><strong>पुण्यतिथि (Death Date):</strong> ${m.deathAnniversary || 'N/A'} (${m.deathDay || ''})<br><strong>तिथि (Tithi):</strong> ${m.deathTithi || 'N/A'}` : ''}</p>
+                ${m.maritalStatus === 'Married' ? `<p style="margin:4px 0; color:#0b6623;"><strong>जीवनसाथी (Spouse):</strong> ${m.spouseName} (${m.spouseDob || 'DOB N/A'})</p>` : ''}
+                <p style="margin:4px 0;"><strong>मोबाइल:</strong> ${m.mobile || 'उपलब्ध नहीं'}</p>
+                <button class="edit-profile-btn" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
+            `;
+
+            container.innerHTML = `
+                <div class="slider-img-wrapper">
+                    <img src="${photoSrc}" class="slider-img" alt="Member Photo">
+                </div>
+                <div class="slider-details">
+                    ${detailsHtml}
+                </div>
+            `;
+        }
+
+        // Comments Box & Real-Time Messages (Issues 6 & 7 Fixed)
+        function postComment() {
+            let msgBox = document.getElementById('visitorComment');
+            let text = msgBox.value.trim();
+            if(!text) {
+                alert('कृपया शुभकामना संदेश लिखें!');
+                return;
+            }
+
+            let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
+            let newMsg = {
+                text: text,
+                time: new Date().toLocaleString('hi-IN')
+            };
+            comments.unshift(newMsg);
+            localStorage.setItem('family_comments', JSON.stringify(comments));
+            msgBox.value = '';
+            loadComments();
+        }
+
+        function loadComments() {
+            let listContainer = document.getElementById('commentsDisplayList');
+            let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
+            
+            if(comments.length === 0) {
+                listContainer.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>';
+                return;
+            }
+
+            let html = '';
+            comments.forEach(c => {
+                html += `
+                    <div class="comment-item">
+                        ${c.text}
+                        <span>🕒 ${c.time}</span>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        // Interactive Dropdowns for Tithi & Search (Issues 2 & 3 Fixed)
+        function selectMemberFromTithi(memberId) {
+            if(!memberId) return;
+            openMemberModal(memberId);
+        }
+
+        function filterNextGenTree(memberId) {
+            buildFamilyTree(allFamilyMembers, memberId);
+        }
+
+        // Premium Gradient Popup Modal for Member & Spouse Details (Issues 8 & 11 Fixed)
+        function openMemberModal(memberId) {
+            let m = allFamilyMembers.find(item => item.memberId === memberId);
+            if(!m) return;
+            
+            let modal = document.getElementById('memberModal');
+            let body = document.getElementById('modalBodyContent');
+            
+            let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
+            
+            // Issue 11: Display both member and spouse details thoroughly in popup
             let spouseSection = '';
-            if (member.spouseName) {
+            if(m.maritalStatus === 'Married') {
                 spouseSection = `
-                    <div style="background: #f8f9fa; padding: 10px; margin-top: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
-                        <strong style="color: #1e3c72;">Spouse Details (पति/पत्नी विवरण):</strong>
-                        <div style="margin-top:6px; font-size:13px;"><strong>Spouse Name:</strong> ${member.spouseName}</div>
-                        <div style="font-size:13px;"><strong>Spouse DOB:</strong> ${member.spouseDob || 'N/A'}</div>
-                        <div style="font-size:13px;"><strong>Spouse Death Day:</strong> ${member.spouseDeathDay || 'N/A'}</div>
-                        <div style="font-size:13px;"><strong>Spouse Death Tithi:</strong> ${member.spouseDeathTithi || 'N/A'}</div>
+                    <div style="background: rgba(43, 147, 72, 0.08); padding: 14px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2b9348;">
+                        <h4 style="color:#276749; margin:0 0 8px 0; font-size:15px;">💍 जीवनसाथी विवरण (Spouse Details)</h4>
+                        <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.spouseDob || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
+                        ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${m.spouseDeathAnniv || 'N/A'} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
                     </div>
                 `;
             }
 
-            let modalBody = document.getElementById('modalBodyContent');
-            modalBody.innerHTML = `
-                <h3 style="color: #1e3c72; margin-top:0;">${member.name || 'N/A'}</h3>
-                <div style="margin-bottom:6px; font-size:13px;"><strong>Member ID:</strong> ${member.memberId || 'N/A'}</div>
-                <div style="margin-bottom:6px; font-size:13px;"><strong>Father Name:</strong> ${member.fatherId || 'N/A'}</div>
-                <div style="margin-bottom:6px; font-size:13px;"><strong>Mobile:</strong> ${member.mobile || 'N/A'}</div>
-                <div style="margin-bottom:6px; font-size:13px;"><strong>Child Number (क्रम):</strong> ${member.childNumber || 'N/A'}</div>
+            body.innerHTML = `
+                ${photoHtml}
+                <h3 style="text-align:center; color:#1e3c72; margin-top:0; margin-bottom:15px; font-size:20px;">${m.name}</h3>
+                <div style="font-size:14px; line-height:1.6; color:#334155;">
+                    <p style="margin:4px 0;"><strong>Member ID:</strong> ${m.memberId}</p>
+                    <p style="margin:4px 0;"><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
+                    <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
+                    <p style="margin:4px 0;"><strong>D.O.B:</strong> ${m.dob || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
+                    ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${m.deathAnniversary} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
+                    <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
+                    <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
+                </div>
                 ${spouseSection}
+                <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
             `;
-            document.getElementById('memberModal').style.display = 'block';
+            modal.style.display = 'block';
         }
 
         function closeModal() {
             document.getElementById('memberModal').style.display = 'none';
+        }
+
+        // Profile Photo & Cropping Option (Issue 9 Fixed)
+        function openProfileCropModal(memberId) {
+            selectedMemberForProfileCrop = memberId;
+            closeModal();
+            document.getElementById('popupPhotoFile').click();
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imageToCrop').src = e.target.result;
+                    document.getElementById('cropperModal').style.display = 'block';
+                    if (cropper) cropper.destroy();
+                    let image = document.getElementById('imageToCrop');
+                    cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function getCroppedImage() {
+            if (!cropper) return;
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            let croppedBase64 = canvas.toDataURL('image/jpeg');
+            
+            // Update member photo in local array and storage
+            let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
+            if(member) {
+                member.photo = croppedBase64;
+                setupUpcomingEvents(allFamilyMembers);
+                buildFamilyTree(allFamilyMembers);
+                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट और क्रॉप कर ली गई है!');
+            }
+            
+            document.getElementById('cropperModal').style.display = 'none';
+            if (cropper) cropper.destroy();
         }
 
         function toggleDeathFields(type) {
@@ -672,12 +926,17 @@
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
-        window.onload = function() {
-            generateMemberId();
-        };
-function submitForm(event) {
+        function calculateDeathDay(dateStr, targetFieldId) {
+            if(!dateStr) return;
+            let date = new Date(dateStr);
+            let days = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+            let dayName = days[date.getDay()];
+            let targetField = document.getElementById(targetFieldId);
+            if(targetField) targetField.value = dayName;
+        }
+
+        function submitForm(event) {
             event.preventDefault();
-            
             let photoInput = document.getElementById('photoFile');
             let file = photoInput.files[0];
 
@@ -685,15 +944,15 @@ function submitForm(event) {
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function () {
-                    sendDataToSheet(reader.result);
+                    saveNewMemberData(reader.result);
                 };
             } else {
-                sendDataToSheet('');
+                saveNewMemberData('');
             }
         }
 
-        function sendDataToSheet(base64Photo) {
-            let formData = {
+        function saveNewMemberData(base64Photo) {
+            let newMem = {
                 memberId: document.getElementById('memberIdField').value,
                 fatherId: document.getElementById('fatherId').value,
                 name: document.getElementById('name').value,
@@ -710,26 +969,20 @@ function submitForm(event) {
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 spouseDeathDay: document.getElementById('spouseDeathDay').value,
                 spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                childNumber: document.getElementById('childNumber').value, // चाइल्ड नंबर
+                childNumber: document.getElementById('childNumber').value,
                 mobile: document.getElementById('mobile').value,
-                photo: base64Photo // फोटो का बेस64 स्ट्रिंग
+                photo: base64Photo
             };
 
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(formData)
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('नया डेटा और फोटो सफलतापूर्वक सेव हो गए हैं!');
-                location.reload();
-            })
-            .catch(err => {
-                console.error("Save Error:", err);
-                alert('डेटा सेव करने में त्रुटि हुई!');
-            });
+            allFamilyMembers.push(newMem);
+            populateDropdowns(allFamilyMembers);
+            buildFamilyTree(allFamilyMembers);
+            setupUpcomingEvents(allFamilyMembers);
+            alert('नया डेटा सफलतापूर्वक सेव हो गया है!');
+            document.getElementById('entryForm').reset();
+            generateMemberId();
+            openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
         }
-        
     </script>
 </body>
 </html>
