@@ -153,28 +153,26 @@
         .chart-scroll-wrapper { 
             width: 100%; 
             height: 650px; 
-            overflow: auto; /* स्क्रॉल करने की सुविधा */
+            overflow: auto; 
             background: #f8fafc; 
             border-radius: 12px; 
             padding: 40px; 
             position: relative;
             display: flex;
-            justify-content: center; /* हमेशा सेंटर में रखेगा */
+            justify-content: center; 
             align-items: flex-start;
         }
-
         #chart_wrapper_inner { 
-            transform: scaleY(-1) scale(0.65); /* ज़ूम साइज */
+            transform: scaleY(-1) scale(0.65); 
             transform-origin: top center; 
             transition: transform 0.25s ease; 
             display: inline-block;
             margin: auto;
         }
-
         #chart_div { 
             display: flex; 
             justify-content: center;
-            width: max-content; /* सभी मेंबर्स को फैलने के लिए पर्याप्त जगह देगा, छिपने नहीं देगा */
+            width: max-content; 
         }
         
         /* सभी बॉक्स की फिक्स्ड साइज ताकि नाम बड़ा होने पर डिजाइन न बिगड़े */
@@ -191,7 +189,6 @@
             text-align: center; 
             overflow: hidden; 
         }
-
         .google-visualization-orgchart-node { 
             cursor: pointer !important; 
             color: #ffffff !important; 
@@ -201,7 +198,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15); 
             width: 135px !important; 
             height: 90px !important;
-            background-image: none !important; /* गूगल चार्ट के डिफ़ॉल्ट बैकग्राउंड ग्रेडिएंट को हटाने के लिए */
+            background-image: none !important; 
         }
         
         .gen-0-node { background: linear-gradient(135deg, #b5370e 0%, #851c07 100%) !important; }
