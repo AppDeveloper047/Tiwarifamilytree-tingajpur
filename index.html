@@ -161,16 +161,22 @@
         }
 
         #chart_wrapper_inner { 
-            transform: scale(0.3); /* ज़ूम-आउट की सीमा बढ़ा दी गई है ताकि पूरा ट्री आसानी से छोटा होकर दिख सके */
+            transform: scale(var(--tree-scale, 0.5)); /* ज़ूम कंट्रोल करने के लिए CSS variable */
             transform-origin: top center; 
             display: inline-block;
             width: max-content;
+            transition: transform 0.1s ease-out;
         }
 
         #chart_div { 
             display: inline-block;
             width: max-content !important;
             margin: 0 auto;
+        }
+
+        /* लोडिंग या मैसेज वाले टेक्स्ट को हमेशा सीधा रखने के लिए */
+        .loading-text, div[id*="loading"], .chart-scroll-wrapper div:not(#chart_wrapper_inner):not(#chart_div) {
+            transform: none !important;
         }
         
         /* बॉक्स की परफेक्ट फिक्स साइज़ और प्रोफेशनल लुक */
