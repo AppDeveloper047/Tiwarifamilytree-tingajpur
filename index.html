@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree View & Updates</title>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -18,17 +17,16 @@
         .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
-        /* Top Feature Bar */
+        /* Top Feature Bar (Issues 1, 2, 3 Fixed) */
         .top-feature-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .feature-dropdown-container { position: relative; display: inline-block; }
         .feature-btn { background: #1e3c72; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; }
         .feature-btn:hover { background: #2a5298; }
 
-        /* Dropdown Content Boxes */
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* --- PROFESSIONAL RICH BANNER WIDGET (ISSUE 4, 5 FIXED) --- */
+        /* --- ADV. BANNER WIDGET (ISSUE 4, 5 FIXED) --- */
         @keyframes fadeInSlide {
             0% { opacity: 0; transform: translateY(15px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -136,11 +134,11 @@
         .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
         .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(43, 147, 72, 0.5); }
         
-        .comments-display-list { max-height: 220px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+        .comments-display-list { max-height: 220px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; clear: both; }
         .comment-item { background: #f8fafc; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3b82f6; font-size: 14px; }
         .comment-item span { font-size: 11px; color: #64748b; display: block; margin-top: 3px; }
 
-        /* Form Card & Tree */
+        /* Form Card */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
@@ -148,7 +146,7 @@
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
         
-        /* --- PERFECT TREE CONTAINER & FIXED NODES (ISSUE 10 FIXED) --- */
+        /* --- CLEAN CUSTOM TREE CONTAINER & FIXED NODES (ISSUE 10 FIXED) --- */
         .tree-container { 
             background: #fff; 
             padding: 20px; 
@@ -173,53 +171,51 @@
         }
 
         #chart_wrapper_inner { 
-            transform: scale(var(--tree-scale, 0.75));
+            transform: scale(var(--tree-scale, 1));
             transform-origin: top center; 
             display: inline-block;
             width: max-content;
             transition: transform 0.1s ease-out;
+            text-align: center;
         }
 
-        #chart_div { 
-            display: inline-block;
-            width: max-content !important;
-            margin: 0 auto;
-        }
+        /* Pure CSS Tree Structure Layout (Issue 10 Fixed) */
+        .tree-root-node { display: flex; flex-direction: column; align-items: center; }
+        .tree-children-list { display: flex; justify-content: center; gap: 30px; margin-top: 30px; position: relative; }
+        .tree-children-list::before { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #94a3b8; }
+        .tree-child-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 15px; }
+        .tree-child-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #94a3b8; }
+        .tree-child-wrapper:first-child::before { left: 50%; }
+        .tree-child-wrapper:last-child::before { right: 50%; }
+        .tree-child-wrapper:only-child::before { display: none; }
 
-        /* Strict Node Formatting (Fixed width, multiline names, strict gradients) */
+        /* Strict Node Formatting (Fixed width, strict gradients, multiline names) */
         .node-content-box { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
-            width: 155px !important; 
-            height: 95px !important;
-            padding: 6px; 
+            width: 170px !important; 
+            height: 100px !important;
+            padding: 8px; 
             box-sizing: border-box; 
             text-align: center; 
             overflow: hidden; 
             word-wrap: break-word;
-            white-space: normal !important;
+            cursor: pointer;
+            color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: 0.2s;
         }
-
-        .google-visualization-orgchart-node { 
-            cursor: pointer !important; 
-            color: #ffffff !important; 
-            border: none !important; 
-            border-radius: 12px !important; 
-            padding: 0px !important; 
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2) !important; 
-            width: 160px !important; 
-            height: 100px !important;
-            background-image: none !important; 
-        }
+        .node-content-box:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         
         /* Gorgeous Gen Gradients (Issue 10) */
-        .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%) !important; }
-        .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important; }
-        .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%) !important; }
-        .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%) !important; }
-        .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%) !important; }
+        .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%); }
+        .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%); }
+        .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%); }
+        .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%); }
 
         /* --- PREMIUM GRADIENT POPUP MODAL (ISSUE 8 & 11 FIXED) --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
@@ -251,7 +247,6 @@
 
     <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
 
-    <!-- Cropper Modal (Issue 9) -->
     <div id="cropperModal">
         <div class="cropper-container-box">
             <h3 style="margin-top:0; color:#1e3c72;" id="cropTitleText">फोटो क्रॉप करें (Crop & Set Profile)</h3>
@@ -260,7 +255,6 @@
         </div>
     </div>
 
-    <!-- Member Details Attractive Gradient Popup Modal (Issue 8 & 11) -->
     <div id="memberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -275,9 +269,7 @@
 
     <div id="treePage" class="tab-content">
         
-        <!-- Top Feature Bar (Issues 1, 2, 3 Fixed) -->
         <div class="top-feature-bar">
-            <!-- Language Dropdown (Issue 1) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('langPanel')" id="langBtnText">🌐 Language (भाषा)</button>
                 <div id="langPanel" class="dropdown-panel">
@@ -289,7 +281,6 @@
                 </div>
             </div>
 
-            <!-- Birthday / Tithi Dropdown (Issue 2) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('tithiPanel')" id="tithiBtnText">📅 जन्मदिन / पुण्य तिथि</button>
                 <div id="tithiPanel" class="dropdown-panel">
@@ -300,7 +291,6 @@
                 </div>
             </div>
 
-            <!-- Member Search Dropdown (Issue 3) -->
             <div class="feature-dropdown-container">
                 <button class="feature-btn" onclick="toggleDropdown('searchPanel')" id="searchBtnText">🔍 मेंबर सर्च (अगली पीढ़ी)</button>
                 <div id="searchPanel" class="dropdown-panel">
@@ -312,7 +302,6 @@
             </div>
         </div>
 
-        <!-- 7 Days Upcoming Events Banner Widget (Issues 4 & 5 Fixed: Photo and Full Details together) -->
         <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
             <div class="slider-content-box" id="sliderBodyContainer">
@@ -320,18 +309,15 @@
             </div>
         </div>
 
-        <!-- Separate Comments Box Section (Issues 6 & 7 Fixed) -->
         <div class="comment-section-card">
             <h3 id="commentSectionTitle">💬 शुभकामनाएँ एवं संदेश (Comments Box)</h3>
             <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
             <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
-            <div style="clear: both;"></div>
             <div class="comments-display-list" id="commentsDisplayList">
                 <p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>
             </div>
         </div>
 
-        <!-- Family Tree Section (Issue 10 Fixed: Zoom, PDF, Node Boxes & Multiline Names) -->
         <div class="tree-container">
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
@@ -349,7 +335,7 @@
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="chart_wrapper_inner">
-                        <div id="chart_div">
+                        <div id="tree_structure_div">
                             <div id="treeLoadingText" style="text-align:center; padding:50px; color:#666; font-weight:bold;">
                                 Family Tree Load ho raha hai...
                             </div>
@@ -474,7 +460,7 @@
 
     <script>
         const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; 
-        let currentScale = 0.75;
+        let currentScale = 1;
         let allFamilyMembers = [];
         let upcomingEventsList = [];
         let currentSlideIndex = 0;
@@ -590,7 +576,6 @@
             document.getElementById('searchMemberLabel').innerText = t.searchMember;
         }
 
-        // Fetch Data from Google Apps Script on Load
         window.onload = function() {
             generateMemberId();
             loadFamilyData();
@@ -604,7 +589,6 @@
         }
 
         function loadFamilyData() {
-            // Fetching data from Google Sheets web app
             fetch(scriptURL + '?action=getData')
             .then(res => res.json())
             .then(data => {
@@ -614,11 +598,10 @@
                     buildFamilyTree(data);
                     setupUpcomingEvents(data);
                 } else {
-                    useMockDataForTesting(); // Fallback sample if empty
+                    useMockDataForTesting();
                 }
             })
             .catch(err => {
-                console.log("Using Mock Data due to network/script URL state");
                 useMockDataForTesting();
             });
         }
@@ -649,56 +632,66 @@
             });
         }
 
-        // Google Charts Tree Rendering (Issues 10 & 11)
-        google.charts.load('current', {packages:['orgchart']});
-        google.charts.setOnLoadCallback(() => {
-            if(allFamilyMembers.length > 0) buildFamilyTree(allFamilyMembers);
-        });
-
+        // Custom Hierarchy Tree Builder (Issue 10 Fixed Completely)
         function buildFamilyTree(data, filterId = '') {
-            if(!google.visualization || !google.visualization.OrgChart) return;
-            
-            let chartData = new google.visualization.DataTable();
-            chartData.addColumn('string', 'Entity');
-            chartData.addColumn('string', 'Parent');
-            chartData.addColumn('string', 'ToolTip');
+            let treeContainer = document.getElementById('tree_structure_div');
+            if(!treeContainer) return;
 
-            let rows = [];
-            let filteredData = data;
-            
+            let targetData = data;
             if(filterId) {
-                // Issue 3: Filter next gen / specific subtree
                 let matched = data.filter(d => d.memberId === filterId || d.fatherId === filterId);
-                if(matched.length > 0) filteredData = matched;
+                if(matched.length > 0) targetData = matched;
             }
 
-            filteredData.forEach((m, index) => {
-                let genClass = `gen-${index % 5}-node`;
-                // Multiline name wrapping fix (Issue 10)
-                let nodeHtml = `
-                    <div class="node-content-box ${genClass}" onclick='openMemberModal("${m.memberId}")'>
-                        <div style="font-weight:bold; font-size:12px; line-height:1.2; overflow:hidden; max-height:2.4em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${m.name}</div>
-                        <div style="font-size:10px; opacity:0.9; margin-top:2px;">ID: ${m.memberId}</div>
-                        ${m.spouseName ? `<div style="font-size:9px; opacity:0.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">प.: ${m.spouseName}</div>` : ''}
-                    </div>
-                `;
-                rows.push([{v: m.memberId, f: nodeHtml}, m.fatherId || '', m.name]);
+            let roots = targetData.filter(m => !m.fatherId || m.fatherId === "" || !targetData.some(p => p.memberId === m.fatherId));
+            if(roots.length === 0 && targetData.length > 0) roots = [targetData[0]];
+
+            let html = '';
+            roots.forEach((root, idx) => {
+                html += renderTreeNode(root, targetData, idx);
             });
 
-            chartData.addRows(rows);
-            let chart = new google.visualization.OrgChart(document.getElementById('chart_div'));
-            chart.draw(chartData, {allowHtml:true, nodeClass: 'google-visualization-orgchart-node'});
-            
+            treeContainer.innerHTML = html;
             document.getElementById('treeLoadingText').style.display = 'none';
         }
 
+        function renderTreeNode(member, allData, depth) {
+            let genClass = `gen-${depth % 5}-node`;
+            let children = allData.filter(m => m.fatherId === member.memberId);
+
+            let nodeHtml = `
+                <div class="node-content-box ${genClass}" onclick='openMemberModal("${member.memberId}")'>
+                    <div style="font-weight:bold; font-size:12px; line-height:1.25; overflow:hidden; max-height:2.5em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${member.name}</div>
+                    <div style="font-size:10px; opacity:0.9; margin-top:2px;">ID: ${member.memberId}</div>
+                    ${member.spouseName ? `<div style="font-size:9px; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">प.: ${member.spouseName}</div>` : ''}
+                </div>
+            `;
+
+            if(children.length > 0) {
+                let childrenHtml = '';
+                children.forEach((child, cIdx) => {
+                    childrenHtml += `<div class="tree-child-wrapper">${renderTreeNode(child, allData, depth + 1)}</div>`;
+                });
+                return `
+                    <div class="tree-root-node">
+                        ${nodeHtml}
+                        <div class="tree-children-list">
+                            ${childrenHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `<div class="tree-root-node">${nodeHtml}</div>`;
+            }
+        }
+
         function zoomTree(amount) {
-            currentScale = Math.max(0.3, Math.min(1.5, currentScale + amount));
+            currentScale = Math.max(0.4, Math.min(1.8, currentScale + amount));
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
         function resetZoom() {
-            currentScale = 0.75;
+            currentScale = 1;
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
@@ -733,10 +726,8 @@
         function renderEventSlide(index) {
             let m = upcomingEventsList[index];
             let container = document.getElementById('sliderBodyContainer');
-            
             let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
             
-            // Full details including birth, tithi, war, death details (Issue 4 & 5 Fixed: combined on single card)
             let detailsHtml = `
                 <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${m.name}</h3>
                 <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.dob || 'उपलब्ध नहीं'}</p>
@@ -797,7 +788,6 @@
             listContainer.innerHTML = html;
         }
 
-        // Interactive Dropdowns for Tithi & Search (Issues 2 & 3 Fixed)
         function selectMemberFromTithi(memberId) {
             if(!memberId) return;
             openMemberModal(memberId);
@@ -817,7 +807,6 @@
             
             let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
             
-            // Issue 11: Display both member and spouse details thoroughly in popup
             let spouseSection = '';
             if(m.maritalStatus === 'Married') {
                 spouseSection = `
@@ -884,7 +873,6 @@
             let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
             let croppedBase64 = canvas.toDataURL('image/jpeg');
             
-            // Update member photo in local array and storage
             let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
             if(member) {
                 member.photo = croppedBase64;
