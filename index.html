@@ -161,19 +161,15 @@
         }
 
         #chart_wrapper_inner { 
-            transform: scaleY(-1); /* स्केल ज़ूम हटा दिया ताकि ऊपर न दबे */
-            transform-origin: center center; 
-            display: block;
-            width: 100%;
-            min-height: 400px;
+            transform: scale(0.5); /* पूरे ट्री को छोटा और कॉम्पैक्ट रखेगा ताकि एक साथ दिखे */
+            transform-origin: top center; 
+            display: inline-block;
+            margin: 0 auto;
         }
 
         #chart_div { 
-            display: flex; 
-            justify-content: center;
-            align-items: center;
+            display: inline-block;
             min-width: max-content;
-            margin: auto;
         }
         
         /* बॉक्स की फिक्स्ड साइज और एलाइनमेंट */
@@ -603,6 +599,7 @@
             chart.draw(chartData, {
                 allowHtml: true, 
                 nodeClass: 'google-visualization-orgchart-node',
+                size: 'small', // यह बॉक्स और लाइनों के बीच की फालतू दूरी को कम कर देगा
                 compactRows: true,
                 allowCollapse: true
             });
