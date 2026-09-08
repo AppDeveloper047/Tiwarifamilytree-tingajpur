@@ -161,20 +161,19 @@
         }
 
         #chart_wrapper_inner { 
-            transform: scale(0.5); /* पूरे ट्री को छोटा और कॉम्पैक्ट रखेगा ताकि एक साथ दिखे */
-            transform-origin: top center; 
+            transform: none !important; /* उल्टापन पूरी तरह हटाने के लिए */
             display: inline-block;
-            margin: 0 auto;
+            width: auto;
         }
 
         #chart_div { 
             display: inline-block;
-            min-width: max-content;
+            width: auto !important;
+            margin: 0 auto;
         }
         
-        /* बॉक्स की फिक्स्ड साइज और एलाइनमेंट */
+        /* बॉक्स की फिक्स्ड साइज (अब उल्टा करने की जरूरत नहीं, इसलिए transform हटा दिया) */
         .node-content-box { 
-            transform: scaleY(-1); 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
