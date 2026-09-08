@@ -567,31 +567,35 @@
             chartData.addColumn('string', 'ToolTip');
 
             let rows = [];
-            let nameSet = new Set(globalData.map(item => item.name));
+            let nameSet = new Set(dataToDraw.map(item => item.name ? item.name.trim() : ''));
 
             dataToDraw.forEach(item => {
-                let pId = item.fatherId;
-                if (!pId || !nameSet.has(pId)) pId = ''; 
+                let mName = item.name ? item.name.trim() : '';
+                let pId = item.fatherId ? item.fatherId.trim() : '';
 
-                let genClass = 'gen-1-node';
-                if (!pId) genClass = 'gen-0-node';
+                if (!pId || !nameSet.has(pId)) {
+                    pId = ''; 
+                }
 
-                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:35px; height:35px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:2px;">` : `<div style="width:35px; height:35px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:bold; color:#555; margin-bottom:2px;">${item.name.charAt(0)}</div>`;
-                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:9px; opacity:0.95; margin-top:1px;">${item.spouseName}</div>` : '';
+                let genClass = pId === '' ? 'gen-0-node' : 'gen-1-node';
+
+                let photoHtml = item.photo ? `<img src="${item.photo}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:2px;">` : `<div style="width:30px; height:30px; border-radius:50%; background:#ddd; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:#555; margin-bottom:2px;">${mName.charAt(0)}</div>`;
+                
+                let spouseText = (item.maritalStatus === 'Married' && item.spouseName) ? `<div style="font-size:8px; opacity:0.95; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px;">${item.spouseName}</div>` : '';
 
                 let nodeContent = `
                     <div class="node-content-box ${genClass}" onclick='showMemberDetailsModal(${JSON.stringify(item).replace(/"/g, '&quot;')})'>
                         ${photoHtml}
-                        <div style="font-weight:bold; font-size:11px; line-height:1.1;">${item.name}</div>
+                        <div style="font-weight:bold; font-size:10px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${mName}</div>
                         ${spouseText}
                     </div>
                 `;
-                rows.push([{v: item.name, f: nodeContent}, pId, item.name]);
+                rows.push([{v: mName, f: nodeContent}, pId, mName]);
             });
 
             chartData.addRows(rows);
             let chartDiv = document.getElementById('chart_div');
-            chartDiv.innerHTML = ''; // पुराना चार्ट साफ़ करें ताकि डुप्लीकेट न बने
+            chartDiv.innerHTML = '';
             
             let chart = new google.visualization.OrgChart(chartDiv);
             chart.draw(chartData, {
@@ -600,8 +604,8 @@
                 compactRows: true,
                 allowCollapse: true
             });
-            
-
+        }   
+        
         function showMemberDetailsModal(member) {
             let spouseSection = '';
             if (member.spouseName) {
