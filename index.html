@@ -690,7 +690,7 @@
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
-        function downloadPDF() {
+                function downloadPDF() {
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
             let opt = {
@@ -703,6 +703,11 @@
             html2pdf().from(element).set(opt).save().then(() => {
                 document.getElementById('pdfTitle').style.display = 'none';
             });
+        }
+
+        function postComment() {
+            let msgBox = document.getElementById('visitorComment');
+
         }
 
         function setupUpcomingEvents
