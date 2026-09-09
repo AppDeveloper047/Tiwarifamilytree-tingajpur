@@ -449,8 +449,8 @@
     </div>
 
     <script>
-        // YAHAN APNA GOOGLE APPS SCRIPT KA DEPLOYED WEB APP URL DAALEIN
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec
+        // Google Apps Script Web App URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec'; 
 
         let currentScale = 1;
         let allFamilyMembers = [];
@@ -595,7 +595,7 @@
             })
             .catch(err => {
                 console.error("Error loading data:", err);
-                document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #ff6b6b;">Data load karne me samasya aayi. URL check karein.</p>';
+                document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #ff6b6b;">Data load karne me samasya aayi.</p>';
             });
         }
 
@@ -957,7 +957,6 @@
                 submitBtn.innerText = "Save Details";
                 submitBtn.disabled = false;
                 
-                // Data refresh karein
                 loadFamilyData();
                 openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
             })
