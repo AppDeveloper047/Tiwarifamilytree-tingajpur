@@ -9,6 +9,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
+
+        .gradient-highlight-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 50%, #4361ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            line-height: 1.3;
+        }
+
+        
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
         .navbar { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; }
@@ -693,40 +705,7 @@
             });
         }
 
-        function setupUpcomingEvents(data) {
-            upcomingEventsList = data;
-            if(upcomingEventsList.length === 0) return;
-            renderEventSlide(0);
-            if(sliderInterval) clearInterval(sliderInterval);
-            sliderInterval = setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % upcomingEventsList.length;
-                renderEventSlide(currentSlideIndex);
-            }, 6000);
-        }
-
-        function renderEventSlide(index) {
-            let m = upcomingEventsList[index];
-            let container = document.getElementById('sliderBodyContainer');
-            let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
-            
-            let detailsHtml = `
-                <h3 style="margin:0 0 8px 0; color:#1e3c72; font-size:18px;">${m.name}</h3>
-                <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.dob || 'उपलब्ध नहीं'}</p>
-                <p style="margin:4px 0;"><strong>स्थिति (Status):</strong> ${m.aliveDeath} ${m.aliveDeath === 'Death' ? `<br><strong>पुण्यतिथि (Death Date):</strong> ${m.deathAnniversary || 'N/A'} (${m.deathDay || ''})<br><strong>तिथि (Tithi):</strong> ${m.deathTithi || 'N/A'}` : ''}</p>
-                ${m.maritalStatus === 'Married' ? `<p style="margin:4px 0; color:#0b6623;"><strong>जीवनसाथी (Spouse):</strong> ${m.spouseName} (${m.spouseDob || 'DOB N/A'})</p>` : ''}
-                <p style="margin:4px 0;"><strong>मोबाइल:</strong> ${m.mobile || 'उपलब्ध नहीं'}</p>
-                <button class="edit-profile-btn" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
-            `;
-
-            container.innerHTML = `
-                <div class="slider-img-wrapper">
-                    <img src="${photoSrc}" class="slider-img" alt="Member Photo">
-                </div>
-                <div class="slider-details">
-                    ${detailsHtml}
-                </div>
-            `;
-        }
+        function setupUpcomingEvents
 
         function postComment() {
             let msgBox = document.getElementById('visitorComment');
