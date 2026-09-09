@@ -17,7 +17,6 @@
         .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
         .tab-content.active { display: block; }
 
-        /* Top Feature Bar (Issues 1, 2, 3 Fixed) */
         .top-feature-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
         .feature-dropdown-container { position: relative; display: inline-block; }
         .feature-btn { background: #1e3c72; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; }
@@ -26,7 +25,6 @@
         .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
         .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
 
-        /* --- ADV. BANNER WIDGET (ISSUE 4, 5 FIXED) --- */
         @keyframes fadeInSlide {
             0% { opacity: 0; transform: translateY(15px); }
             100% { opacity: 1; transform: translateY(0); }
@@ -120,7 +118,6 @@
         }
         .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 127, 0, 0.6); }
 
-        /* Separate Comment Box Section (ISSUE 6 & 7 FIXED) */
         .comment-section-card { 
             background: #ffffff; 
             border-radius: 18px; 
@@ -138,7 +135,6 @@
         .comment-item { background: #f8fafc; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3b82f6; font-size: 14px; }
         .comment-item span { font-size: 11px; color: #64748b; display: block; margin-top: 3px; }
 
-        /* Form Card */
         .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
         .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
         .form-group { margin-bottom: 20px; }
@@ -146,7 +142,6 @@
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; }
         .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
         
-        /* --- CLEAN CUSTOM TREE CONTAINER & FIXED NODES (ISSUE 10 FIXED) --- */
         .tree-container { 
             background: #fff; 
             padding: 20px; 
@@ -179,7 +174,6 @@
             text-align: center;
         }
 
-        /* Pure CSS Tree Structure Layout (Issue 10 Fixed) */
         .tree-root-node { display: flex; flex-direction: column; align-items: center; }
         .tree-children-list { display: flex; justify-content: center; gap: 30px; margin-top: 30px; position: relative; }
         .tree-children-list::before { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #94a3b8; }
@@ -189,7 +183,6 @@
         .tree-child-wrapper:last-child::before { right: 50%; }
         .tree-child-wrapper:only-child::before { display: none; }
 
-        /* Strict Node Formatting (Fixed width, strict gradients, multiline names) */
         .node-content-box { 
             display: flex; 
             flex-direction: column; 
@@ -210,14 +203,12 @@
         }
         .node-content-box:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         
-        /* Gorgeous Gen Gradients (Issue 10) */
         .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%); }
         .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
         .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%); }
         .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%); }
         .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%); }
 
-        /* --- PREMIUM GRADIENT POPUP MODAL (ISSUE 8 & 11 FIXED) --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
         .modal-content { 
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
@@ -234,7 +225,6 @@
         .close-btn { color: #555; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 20px; top: 12px; transition: 0.2s; }
         .close-btn:hover { color: #ff4757; }
         
-        /* Cropper Modal */
         #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
         .cropper-container-box { background: #fff; width: 90%; max-width: 420px; margin: 8% auto; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
         .img-container { max-height: 320px; margin-bottom: 20px; background: #000; border-radius: 8px; overflow: hidden; }
@@ -358,7 +348,7 @@
 
                 <div class="form-group">
                     <label id="lblFather">Father / Parent:*</label>
-                    <select id="fatherId" required><option value="">-- Select --</option></select>
+                    <select id="fatherId" required><option value="">-- Root (No Father) --</option></select>
                 </div>
                 <div class="form-group">
                     <label id="lblName">Member Name:*</label>
@@ -442,7 +432,7 @@
 
                 <div class="form-group">
                     <label id="lblChildNumber">Child Number (क्रम):</label>
-                    <input type="number" id="childNumber" placeholder="उदा: 1, 2, 3">
+                    <input type="text" id="childNumber" placeholder="उदा: 1, 2, 3">
                 </div>
                 <div class="form-group">
                     <label id="lblMobile">Mobile Number:</label>
@@ -459,7 +449,9 @@
     </div>
 
     <script>
-        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; 
+        // YAHAN APNA GOOGLE APPS SCRIPT KA DEPLOYED WEB APP URL DAALEIN
+        const scriptURL = 'YAHAN_APNA_URL_DAALEIN'; 
+
         let currentScale = 1;
         let allFamilyMembers = [];
         let upcomingEventsList = [];
@@ -468,7 +460,6 @@
         let selectedMemberForProfileCrop = null;
         let cropper = null;
 
-        // Language Dictionary (Issue 1 Fixed)
         const translations = {
             hi: {
                 navTree: "🌳 Family Tree & Updates",
@@ -589,7 +580,7 @@
         }
 
         function loadFamilyData() {
-            fetch(scriptURL + '?action=getData')
+            fetch(scriptURL)
             .then(res => res.json())
             .then(data => {
                 if(data && data.length > 0) {
@@ -598,22 +589,14 @@
                     buildFamilyTree(data);
                     setupUpcomingEvents(data);
                 } else {
-                    useMockDataForTesting();
+                    document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #fff;">Google Sheet me koi data nahi mila. Pehli entry karein!</p>';
+                    document.getElementById('treeLoadingText').innerText = 'Family Tree me dikhane ke liye koi data nahi hai.';
                 }
             })
             .catch(err => {
-                useMockDataForTesting();
+                console.error("Error loading data:", err);
+                document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #ff6b6b;">Data load karne me samasya aayi. URL check karein.</p>';
             });
-        }
-
-        function useMockDataForTesting() {
-            allFamilyMembers = [
-                { memberId: 'M1', fatherId: '', name: 'श्री रामप्रसाद जी तिवारी', gender: 'Male', dob: '1950-05-10', aliveDeath: 'Alive', maritalStatus: 'Married', spouseName: 'श्रीमती नर्मदा बाई', spouseDob: '1955-06-12', spouseAliveDeath: 'Alive', childNumber: '1', mobile: '9826000001', photo: '' },
-                { memberId: 'M2', fatherId: 'M1', name: 'पुरषोत्तम तिवारी (Group Lead)', gender: 'Male', dob: '1994-08-28', aliveDeath: 'Alive', maritalStatus: 'Unmarried', childNumber: '1', mobile: '9826000002', photo: '' }
-            ];
-            populateDropdowns(allFamilyMembers);
-            buildFamilyTree(allFamilyMembers);
-            setupUpcomingEvents(allFamilyMembers);
         }
 
         function populateDropdowns(data) {
@@ -632,7 +615,6 @@
             });
         }
 
-        // Custom Hierarchy Tree Builder (Issue 10 Fixed Completely)
         function buildFamilyTree(data, filterId = '') {
             let treeContainer = document.getElementById('tree_structure_div');
             if(!treeContainer) return;
@@ -652,7 +634,8 @@
             });
 
             treeContainer.innerHTML = html;
-            document.getElementById('treeLoadingText').style.display = 'none';
+            let loadingDiv = document.getElementById('treeLoadingText');
+            if(loadingDiv) loadingDiv.style.display = 'none';
         }
 
         function renderTreeNode(member, allData, depth) {
@@ -669,7 +652,7 @@
 
             if(children.length > 0) {
                 let childrenHtml = '';
-                children.forEach((child, cIdx) => {
+                children.forEach((child) => {
                     childrenHtml += `<div class="tree-child-wrapper">${renderTreeNode(child, allData, depth + 1)}</div>`;
                 });
                 return `
@@ -695,7 +678,6 @@
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
-        // PDF Download (Issue 10)
         function downloadPDF() {
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
@@ -711,7 +693,6 @@
             });
         }
 
-        // Upcoming Events & Advertisement Screen (Issues 4 & 5 Fixed)
         function setupUpcomingEvents(data) {
             upcomingEventsList = data;
             if(upcomingEventsList.length === 0) return;
@@ -747,7 +728,6 @@
             `;
         }
 
-        // Comments Box & Real-Time Messages (Issues 6 & 7 Fixed)
         function postComment() {
             let msgBox = document.getElementById('visitorComment');
             let text = msgBox.value.trim();
@@ -797,7 +777,6 @@
             buildFamilyTree(allFamilyMembers, memberId);
         }
 
-        // Premium Gradient Popup Modal for Member & Spouse Details (Issues 8 & 11 Fixed)
         function openMemberModal(memberId) {
             let m = allFamilyMembers.find(item => item.memberId === memberId);
             if(!m) return;
@@ -844,7 +823,6 @@
             document.getElementById('memberModal').style.display = 'none';
         }
 
-        // Profile Photo & Cropping Option (Issue 9 Fixed)
         function openProfileCropModal(memberId) {
             selectedMemberForProfileCrop = memberId;
             closeModal();
@@ -878,7 +856,7 @@
                 member.photo = croppedBase64;
                 setupUpcomingEvents(allFamilyMembers);
                 buildFamilyTree(allFamilyMembers);
-                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट और क्रॉप कर ली गई है!');
+                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट कर ली गई है!');
             }
             
             document.getElementById('cropperModal').style.display = 'none';
@@ -932,19 +910,18 @@
                 let reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = function () {
-                    saveNewMemberData(reader.result);
+                    sendDataToGoogleSheet(reader.result);
                 };
             } else {
-                saveNewMemberData('');
+                sendDataToGoogleSheet('');
             }
         }
 
-        function saveNewMemberData(base64Photo) {
+        function sendDataToGoogleSheet(base64Photo) {
             let newMem = {
-                memberId: document.getElementById('memberIdField').value,
                 fatherId: document.getElementById('fatherId').value,
+                memberId: document.getElementById('memberIdField').value,
                 name: document.getElementById('name').value,
-                gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
@@ -957,19 +934,39 @@
                 spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
                 spouseDeathDay: document.getElementById('spouseDeathDay').value,
                 spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                childNumber: document.getElementById('childNumber').value,
+                gender: document.getElementById('gender').value,
                 mobile: document.getElementById('mobile').value,
+                childNumber: document.getElementById('childNumber').value,
                 photo: base64Photo
             };
 
-            allFamilyMembers.push(newMem);
-            populateDropdowns(allFamilyMembers);
-            buildFamilyTree(allFamilyMembers);
-            setupUpcomingEvents(allFamilyMembers);
-            alert('नया डेटा सफलतापूर्वक सेव हो गया है!');
-            document.getElementById('entryForm').reset();
-            generateMemberId();
-            openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
+            let submitBtn = document.getElementById('submitBtnText');
+            submitBtn.innerText = "Saving to Google Sheet...";
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newMem)
+            })
+            .then(() => {
+                alert('नया डेटा सफलतापूर्वक Google Sheet में सेव हो गया है!');
+                document.getElementById('entryForm').reset();
+                generateMemberId();
+                submitBtn.innerText = "Save Details";
+                submitBtn.disabled = false;
+                
+                // Data refresh karein
+                loadFamilyData();
+                openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('डेटा सेव करने में त्रुटि हुई!');
+                submitBtn.innerText = "Save Details";
+                submitBtn.disabled = false;
+            });
         }
     </script>
 </body>
