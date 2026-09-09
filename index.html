@@ -9,6 +9,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
+        .gradient-highlight-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 50%, #4361ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            line-height: 1.3;
+        }
+
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
         .navbar { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; }
@@ -678,7 +688,7 @@
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
-                function downloadPDF() {
+        function downloadPDF() {
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
             let opt = {
@@ -693,12 +703,124 @@
             });
         }
 
-        function postComment() {
-            let msgBox = document.getElementById('visitorComment');
+        // Helper function to check if a date (MM-DD) falls within the next 7 days
+        function isWithinNext7Days(dateStr) {
+            if (!dateStr) return false;
+            let today = new Date();
+            today.setHours(0,0,0,0);
 
+            let parts = dateStr.split('-');
+            if (parts.length < 2) return false;
+            let month = parseInt(parts[parts.length - 2], 10) - 1;
+            let day = parseInt(parts[parts.length - 1], 10);
+
+            let eventThisYear = new Date(today.getFullYear(), month, day);
+            eventThisYear.setHours(0,0,0,0);
+
+            if (eventThisYear < today) {
+                eventThisYear.setFullYear(today.getFullYear() + 1);
+            }
+
+            let diffTime = eventThisYear - today;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            return (diffDays >= 0 && diffDays <= 7);
         }
 
-        function setupUpcomingEvents
+        function setupUpcomingEvents(data) {
+            upcomingEventsList = [];
+            
+            data.forEach(m => {
+                let memberEventFound = false;
+                if (m.aliveDeath === 'Death' && isWithinNext7Days(m.deathAnniversary)) {
+                    upcomingEventsList.push({
+                        member: m,
+                        targetName: m.name,
+                        eventType: 'पुण्यतिथि (Death Anniversary)',
+                        dateVal: m.deathAnniversary,
+                        dayVal: m.deathDay || '',
+                        tithiVal: m.deathTithi || ''
+                    });
+                    memberEventFound = true;
+                }
+                if (!memberEventFound && isWithinNext7Days(m.dob)) {
+                    upcomingEventsList.push({
+                        member: m,
+                        targetName: m.name,
+                        eventType: 'जन्मदिन (Birthday)',
+                        dateVal: m.dob,
+                        dayVal: '',
+                        tithiVal: ''
+                    });
+                }
+
+                if (m.maritalStatus === 'Married') {
+                    let spouseEventFound = false;
+                    if (m.spouseAliveDeath === 'Death' && isWithinNext7Days(m.spouseDeathAnniv)) {
+                        upcomingEventsList.push({
+                            member: m,
+                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
+                            eventType: 'पुण्यतिथि (Spouse Death Anniversary)',
+                            dateVal: m.spouseDeathAnniv,
+                            dayVal: m.spouseDeathDay || '',
+                            tithiVal: m.spouseDeathTithi || ''
+                        });
+                        spouseEventFound = true;
+                    }
+                    if (!spouseEventFound && isWithinNext7Days(m.spouseDob)) {
+                        upcomingEventsList.push({
+                            member: m,
+                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
+                            eventType: 'जन्मदिन (Spouse Birthday)',
+                            dateVal: m.spouseDob,
+                            dayVal: '',
+                            tithiVal: ''
+                        });
+                    }
+                }
+            });
+
+            let container = document.getElementById('sliderBodyContainer');
+            if(upcomingEventsList.length === 0) {
+                container.innerHTML = '<p style="color: #fff; font-size: 15px; padding: 20px;">आगामी 7 दिनों में कोई जन्मदिन या पुण्यतिथि नहीं है।</p>';
+                if(sliderInterval) clearInterval(sliderInterval);
+                return;
+            }
+
+            currentSlideIndex = 0;
+            renderEventSlide(currentSlideIndex);
+            if(sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                currentSlideIndex = (currentSlideIndex + 1) % upcomingEventsList.length;
+                renderEventSlide(currentSlideIndex);
+            }, 6000);
+        }
+
+        function renderEventSlide(index) {
+            let ev = upcomingEventsList[index];
+            let m = ev.member;
+            let container = document.getElementById('sliderBodyContainer');
+            let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
+            
+            let detailsHtml = `
+                <span class="gradient-highlight-text">✨ ${ev.eventType} ✨</span>
+                <h3 style="margin:4px 0 10px 0; font-size:22px; font-weight:800;" class="gradient-highlight-text">नाम: ${ev.targetName}</h3>
+                <p style="margin:4px 0; font-size:15px;"><strong>दिनांक:</strong> ${ev.dateVal || 'उपलब्ध नहीं'}</p>
+                ${ev.dayVal ? `<p style="margin:4px 0; font-size:15px;"><strong>वार:</strong> ${ev.dayVal}</p>` : ''}
+                ${ev.tithiVal ? `<p style="margin:4px 0; font-size:15px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : ''}
+                <p style="margin:4px 0; font-size:14px; opacity:0.85;">मुख्य सदस्य: ${m.name} (ID: ${m.memberId})</p>
+                <button class="edit-profile-btn" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
+            `;
+
+            container.innerHTML = `
+                <div class="slider-img-wrapper">
+                    <img src="${photoSrc}" class="slider-img" alt="Member Photo">
+                </div>
+                <div class="slider-details">
+                    ${detailsHtml}
+                </div>
+            `;
+        }
 
         function postComment() {
             let msgBox = document.getElementById('visitorComment');
