@@ -9,6 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
+        :root {
+            --tree-scale: 1;
+        }
+
         .gradient-highlight-text {
             font-size: 22px;
             font-weight: 800;
@@ -353,19 +357,227 @@
                     <label id="lblMemberId">Member ID (ऑटो-जनरेटेड):</label>
                     <input type="text" id="memberIdField" readonly style="background-color: #e9ecef; font-weight: bold; color: #d9534f;">
                 </div>
-                <!-- बाकी फॉर्म फील्ड्स यहाँ आपके ओरिजिनल कोड के अनुसार रहेंगे -->
+                <div class="form-group">
+                    <label id="lblFather">Father / Parent:*</label>
+                    <select id="fatherId" required><option value="">-- Root (No Father) --</option></select>
+                </div>
+                <div class="form-group">
+                    <label id="lblName">Member Name:*</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label id="lblGender">Gender:</label>
+                    <select id="gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="lblDob">D.O.B:</label>
+                    <input type="date" id="dob">
+                </div>
+                <div class="form-group">
+                    <label id="lblAliveDeath">Alive / Death:</label>
+                    <select id="aliveDeath" onchange="toggleDeathFields('member')">
+                        <option value="Alive">Alive</option>
+                        <option value="Death">Death</option>
+                    </select>
+                </div>
+                
+                <div id="memberDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
+                    <div class="form-group">
+                        <label>Death Date:</label>
+                        <input type="date" id="deathAnniversary" onchange="calculateDeathDay(this.value, 'deathDay')">
+                    </div>
+                    <div class="form-group">
+                        <label>Death Day (वार - ऑटोमैटिक):</label>
+                        <input type="text" id="deathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
+                    </div>
+                    <div class="form-group">
+                        <label>Death Tithi (तिथि):</label>
+                        <input type="text" id="deathTithi" placeholder="उदा: कार्तिक शुक्ल पक्ष द्वितीया">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblMaritalStatus">Marital Status:</label>
+                    <select id="maritalStatus" onchange="toggleSpouseFields()">
+                        <option value="Unmarried">Unmarried</option>
+                        <option value="Married">Married</option>
+                    </select>
+                </div>
+
+                <div id="spouseFieldsContainer" style="display:none; background:#f0fff4; padding:15px; border:1px dashed #9ae6b4; border-radius:8px; margin-bottom:15px;">
+                    <h4 style="margin-top:0; color:#276749;" id="spouseInfoHeading">जीवनसाथी की जानकारी (Spouse Details)</h4>
+                    <div class="form-group">
+                        <label>Spouse Name:</label>
+                        <input type="text" id="spouseName">
+                    </div>
+                    <div class="form-group">
+                        <label>Spouse D.O.B:</label>
+                        <input type="date" id="spouseDob">
+                    </div>
+                    <div class="form-group">
+                        <label>Spouse Alive / Death:</label>
+                        <select id="spouseAliveStatus" onchange="toggleDeathFields('spouse')">
+                            <option value="Alive">Alive</option>
+                            <option value="Death">Death</option>
+                        </select>
+                    </div>
+
+                    <div id="spouseDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
+                        <div class="form-group">
+                            <label>Spouse Death Date:</label>
+                            <input type="date" id="spouseDeathAnniv" onchange="calculateDeathDay(this.value, 'spouseDeathDay')">
+                        </div>
+                        <div class="form-group">
+                            <label>Spouse Death Day (वार):</label>
+                            <input type="text" id="spouseDeathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
+                        </div>
+                        <div class="form-group">
+                            <label>Spouse Death Tithi:</label>
+                            <input type="text" id="spouseDeathTithi" placeholder="उदा: वैशाख शुक्ल पक्ष एकादशी">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblChildNumber">Child Number (क्रम):</label>
+                    <input type="text" id="childNumber" placeholder="उदा: 1, 2, 3">
+                </div>
+                <div class="form-group">
+                    <label id="lblMobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर">
+                </div>
+                <div class="form-group">
+                    <label id="lblPhoto">Upload Photo:</label>
+                    <input type="file" id="photoFile" accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtnText">Save Details</button>
             </form>
         </div>
     </div>
 
     <script>
-        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // यहाँ अपनी सही Google Apps Script URL डालें
+        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; 
         let allFamilyMembers = [];
+        let upcomingEventsList = [];
+        let currentSlideIndex = 0;
+        let sliderInterval = null;
         let currentScale = 1;
+        let selectedMemberForProfileCrop = null;
+        let cropper = null;
+
+        const translations = {
+            hi: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (भाषा)",
+                tithiBtn: "📅 जन्मदिन / पुण्य तिथि",
+                searchBtn: "🔍 मेंबर सर्च (अगली पीढ़ी)",
+                sliderTitle: "✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि",
+                commentTitle: "💬 शुभकामनाएँ एवं संदेश (Comments Box)",
+                commentPlaceholder: "अपनी शुभकामनाएँ या संदेश यहाँ लिखें...",
+                sendMsg: "संदेश भेजें",
+                treeHeading: "परिवार का स्वर्णिम इतिहास",
+                zoomPlus: "➕ ज़ूम+",
+                zoomMinus: "➖ ज़ूम-",
+                zoomReset: "↺ रीसेट",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Naye Member ki Entry Karein",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "जीवनसाथी की जानकारी (Spouse Details)",
+                childNumLabel: "Child Number (क्रम):",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "सदस्य चुनें (Select Member):",
+                searchMember: "सदस्य सर्च करें:"
+            },
+            en: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (Language)",
+                tithiBtn: "📅 Birthday / Death Anniversary",
+                searchBtn: "🔍 Member Search (Next Gen)",
+                sliderTitle: "✨ Upcoming 7 Days - Birthday / Death Anniversary",
+                commentTitle: "💬 Wishes & Messages (Comments Box)",
+                commentPlaceholder: "Write your wishes or message here...",
+                sendMsg: "Send Message",
+                treeHeading: "Golden History of Family",
+                zoomPlus: "➕ Zoom+",
+                zoomMinus: "➖ Zoom-",
+                zoomReset: "↺ Reset",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Register New Member",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "Spouse Details",
+                childNumLabel: "Child Number:",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "Select Member:",
+                searchMember: "Search Member:"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.hi;
+            document.getElementById('navTreeBtn').innerText = t.navTree;
+            document.getElementById('navEntryBtn').innerText = t.navEntry;
+            document.getElementById('langBtnText').innerText = t.langBtn;
+            document.getElementById('tithiBtnText').innerText = t.tithiBtn;
+            document.getElementById('searchBtnText').innerText = t.searchBtn;
+            document.getElementById('sliderHeaderTitle').innerText = t.sliderTitle;
+            document.getElementById('commentSectionTitle').innerText = t.commentTitle;
+            document.getElementById('visitorComment').placeholder = t.commentPlaceholder;
+            document.getElementById('sendMsgBtn').innerText = t.sendMsg;
+            document.getElementById('treeHeadingTitle').innerText = t.treeHeading;
+            document.getElementById('zoomPlusBtn').innerText = t.zoomPlus;
+            document.getElementById('zoomMinusBtn').innerText = t.zoomMinus;
+            document.getElementById('zoomResetBtn').innerText = t.zoomReset;
+            document.getElementById('pdfBtnText').innerText = t.pdfBtn;
+            document.getElementById('formTitleText').innerText = t.formTitle;
+            document.getElementById('lblFather').innerText = t.fatherLabel;
+            document.getElementById('lblName').innerText = t.nameLabel;
+            document.getElementById('lblGender').innerText = t.genderLabel;
+            document.getElementById('lblDob').innerText = t.dobLabel;
+            document.getElementById('lblAliveDeath').innerText = t.aliveDeathLabel;
+            document.getElementById('lblMaritalStatus').innerText = t.maritalLabel;
+            document.getElementById('spouseInfoHeading').innerText = t.spouseHeading;
+            document.getElementById('lblChildNumber').innerText = t.childNumLabel;
+            document.getElementById('lblMobile').innerText = t.mobileLabel;
+            document.getElementById('lblPhoto').innerText = t.photoLabel;
+            document.getElementById('submitBtnText').innerText = t.submitBtn;
+            document.getElementById('selectLangLabel').innerText = t.selectLang;
+            document.getElementById('selectMemberLabel').innerText = t.selectMember;
+            document.getElementById('searchMemberLabel').innerText = t.searchMember;
+        }
 
         window.onload = function() {
+            generateMemberId();
             loadFamilyData();
+            loadComments();
         };
+
+        function generateMemberId() {
+            let randomId = 'MEM' + Math.floor(1000 + Math.random() * 9000);
+            let field = document.getElementById('memberIdField');
+            if(field) field.value = randomId;
+        }
 
         function loadFamilyData() {
             fetch(scriptURL)
@@ -373,18 +585,36 @@
             .then(data => {
                 if(data && data.length > 0) {
                     allFamilyMembers = data;
+                    populateDropdowns(data);
                     buildFamilyTree(data);
+                    setupUpcomingEvents(data);
                 } else {
+                    document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #fff;">Google Sheet me koi data nahi mila. Pehli entry karein!</p>';
                     document.getElementById('treeLoadingText').innerText = 'Family Tree me dikhane ke liye koi data nahi hai.';
                 }
             })
             .catch(err => {
                 console.error("Error loading data:", err);
-                document.getElementById('treeLoadingText').innerText = 'Data load karne me samasya aayi.';
+                document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #ff6b6b;">Data load karne me samasya aayi.</p>';
             });
         }
 
-        // ट्री स्ट्रक्चर को वापस सही से रेंडर करने वाला फ़ंक्शन
+        function populateDropdowns(data) {
+            let fatherSelect = document.getElementById('fatherId');
+            let tithiSelect = document.getElementById('tithiSelectDropdown');
+            let searchSelect = document.getElementById('memberSearchDropdown');
+            
+            fatherSelect.innerHTML = '<option value="">-- Root (No Father) --</option>';
+            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
+
+            data.forEach(m => {
+                fatherSelect.innerHTML += `<option value="${m.memberId}">${m.name} (${m.memberId})</option>`;
+                tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+                searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+            });
+        }
+
         function buildFamilyTree(data, filterId = '') {
             let treeContainer = document.getElementById('tree_structure_div');
             if(!treeContainer) return;
@@ -398,51 +628,335 @@
             let roots = targetData.filter(m => !m.fatherId || m.fatherId === "" || !targetData.some(p => p.memberId === m.fatherId));
             if(roots.length === 0 && targetData.length > 0) roots = [targetData[0]];
 
-            let html = '<div class="tree-root-node">';
+            let html = '';
             roots.forEach(root => {
                 html += renderTreeNode(root, targetData, 0);
             });
-            html += '</div>';
 
             treeContainer.innerHTML = html;
+            let loadingDiv = document.getElementById('treeLoadingText');
+            if(loadingDiv) loadingDiv.style.display = 'none';
         }
 
-        function renderTreeNode(node, data, genLevel) {
-            let children = data.filter(m => m.fatherId === node.memberId);
-            let genClass = `gen-${Math.min(genLevel, 4)}-node`;
-            
-            let photoTag = node.photo ? `<img src="${node.photo}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; margin-bottom:6px; border:2px solid #fff;">` : `<div style="width:50px; height:50px; border-radius:50%; background:#fff; color:#333; display:flex; align-items:center; justify-content:center; font-weight:bold; margin:0 auto 6px auto;">${node.name.charAt(0)}</div>`;
+        function renderTreeNode(member, allData, depth) {
+            let genClass = `gen-${depth % 5}-node`;
+            let children = allData.filter(m => m.fatherId === member.memberId);
+            let photoSrc = member.photo ? member.photo : 'https://via.placeholder.com/60/ffffff/1e3c72?text=User';
+            let generationNum = depth + 1;
 
-            let html = `
-                <div class="tree-root-node">
-                    <div class="node-content-box ${genClass}" onclick="openMemberModal('${node.memberId}')">
-                        ${photoTag}
-                        <strong style="font-size:13px; display:block; margin-bottom:3px; word-break:break-word;">${node.name}</strong>
-                        <span style="font-size:10px; opacity:0.8;">ID: ${node.memberId}</span>
-                    </div>`;
+            let nodeHtml = `
+                <div class="node-content-box ${genClass}" onclick='openMemberModal("${member.memberId}")'>
+                    <img src="${photoSrc}" style="width:50px; height:50px; border-radius:50%; object-fit:cover; border:3px solid #fff; margin-bottom:6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                    <div style="font-weight:bold; font-size:12px; line-height:1.2; width:100%; word-break: break-word; margin-bottom:3px;">${member.name}</div>
+                    <div style="font-size:9px; background:rgba(0,0,0,0.25); padding:2px 6px; border-radius:10px; margin-bottom:4px; font-weight:600;">पीढ़ी ${generationNum}</div>
+                    ${member.spouseName ? `<div style="font-size:9px; opacity:0.9; width:100%; border-top:1px solid rgba(255,255,255,0.2); padding-top:3px; margin-top:auto;">w/o ${member.spouseName}</div>` : ''}
+                </div>
+            `;
 
             if(children.length > 0) {
-                html += '<div class="tree-children-list">';
+                let childrenHtml = '';
                 children.forEach(child => {
-                    html += `<div class="tree-child-wrapper">`;
-                    html += renderTreeNode(child, data, genLevel + 1);
-                    html += `</div>`;
+                    childrenHtml += `<div class="tree-child-wrapper">${renderTreeNode(child, allData, depth + 1)}</div>`;
                 });
-                html += '</div>';
+                return `
+                    <div class="tree-root-node">
+                        ${nodeHtml}
+                        <div class="tree-children-list">
+                            ${childrenHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `<div class="tree-root-node">${nodeHtml}</div>`;
             }
-
-            html += `</div>`;
-            return html;
         }
 
         function zoomTree(amount) {
-            currentScale = Math.max(0.4, Math.min(1.8, currentScale + amount));
+            currentScale = Math.max(0.3, Math.min(2.0, currentScale + amount));
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
         function resetZoom() {
             currentScale = 1;
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('pdfContent');
+            document.getElementById('pdfTitle').style.display = 'block';
+            let opt = {
+                margin:       10,
+                filename:     'Family_Tree_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            };
+            html2pdf().from(element).set(opt).save().then(() => {
+                document.getElementById('pdfTitle').style.display = 'none';
+            });
+        }
+
+        function isWithinNext7Days(dateStr) {
+            if (!dateStr) return false;
+            let today = new Date();
+            today.setHours(0,0,0,0);
+            let parts = dateStr.split('-');
+            if (parts.length < 2) return false;
+            let month = parseInt(parts[parts.length - 2], 10) - 1;
+            let day = parseInt(parts[parts.length - 1], 10);
+            let eventThisYear = new Date(today.getFullYear(), month, day);
+            eventThisYear.setHours(0,0,0,0);
+            if (eventThisYear < today) {
+                eventThisYear.setFullYear(today.getFullYear() + 1);
+            }
+            let diffTime = eventThisYear - today;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return (diffDays >= 0 && diffDays <= 7);
+        }
+
+        function setupUpcomingEvents(data) {
+            upcomingEventsList = [];
+            data.forEach(m => {
+                let memberEventFound = false;
+                if (m.aliveDeath === 'Death' && isWithinNext7Days(m.deathAnniversary)) {
+                    upcomingEventsList.push({
+                        member: m,
+                        targetName: m.name,
+                        eventType: 'पुण्यतिथि (Death Anniversary)',
+                        dateVal: m.deathAnniversary,
+                        dayVal: m.deathDay || '',
+                        tithiVal: m.deathTithi || ''
+                    });
+                    memberEventFound = true;
+                }
+                if (!memberEventFound && isWithinNext7Days(m.dob)) {
+                    upcomingEventsList.push({
+                        member: m,
+                        targetName: m.name,
+                        eventType: 'जन्मदिन (Birthday)',
+                        dateVal: m.dob,
+                        dayVal: '',
+                        tithiVal: ''
+                    });
+                }
+                if (m.maritalStatus === 'Married') {
+                    let spouseEventFound = false;
+                    if (m.spouseAliveDeath === 'Death' && isWithinNext7Days(m.spouseDeathAnniv)) {
+                        upcomingEventsList.push({
+                            member: m,
+                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
+                            eventType: 'पुण्यतिथि (Spouse Death Anniversary)',
+                            dateVal: m.spouseDeathAnniv,
+                            dayVal: m.spouseDeathDay || '',
+                            tithiVal: m.spouseDeathTithi || ''
+                        });
+                        spouseEventFound = true;
+                    }
+                    if (!spouseEventFound && isWithinNext7Days(m.spouseDob)) {
+                        upcomingEventsList.push({
+                            member: m,
+                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
+                            eventType: 'जन्मदिन (Spouse Birthday)',
+                            dateVal: m.spouseDob,
+                            dayVal: '',
+                            tithiVal: ''
+                        });
+                    }
+                }
+            });
+
+            let container = document.getElementById('sliderBodyContainer');
+            if(upcomingEventsList.length === 0) {
+                container.innerHTML = '<p style="color: #fff; font-size: 15px; padding: 20px;">आगामी 7 दिनों में कोई जन्मदिन या पुण्यतिथि नहीं है।</p>';
+                if(sliderInterval) clearInterval(sliderInterval);
+                return;
+            }
+
+            currentSlideIndex = 0;
+            renderEventSlide(currentSlideIndex);
+            if(sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(() => {
+                currentSlideIndex = (currentSlideIndex + 1) % upcomingEventsList.length;
+                renderEventSlide(currentSlideIndex);
+            }, 6000);
+        }
+
+        function renderEventSlide(index) {
+            let ev = upcomingEventsList[index];
+            let m = ev.member;
+            let container = document.getElementById('sliderBodyContainer');
+            let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
+            
+            let detailsHtml = `
+                <span class="gradient-highlight-text">✨ ${ev.eventType} ✨</span>
+                <h3 style="margin:4px 0 10px 0; font-size:22px; font-weight:800;" class="gradient-highlight-text">नाम: ${ev.targetName}</h3>
+                <p style="margin:4px 0; font-size:15px;"><strong>दिनांक:</strong> ${ev.dateVal || 'उपलब्ध नहीं'}</p>
+                ${ev.dayVal ? `<p style="margin:4px 0; font-size:15px;"><strong>वार:</strong> ${ev.dayVal}</p>` : ''}
+                ${ev.tithiVal ? `<p style="margin:4px 0; font-size:15px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : ''}
+                <p style="margin:4px 0; font-size:14px; opacity:0.85;">मुख्य सदस्य: ${m.name} (ID: ${m.memberId})</p>
+                <button class="edit-profile-btn" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
+            `;
+
+            container.innerHTML = `
+                <div class="slider-img-wrapper">
+                    <img src="${photoSrc}" class="slider-img" alt="Member Photo">
+                </div>
+                <div class="slider-details">
+                    ${detailsHtml}
+                </div>
+            `;
+        }
+
+        function postComment() {
+            let msgBox = document.getElementById('visitorComment');
+            let text = msgBox.value.trim();
+            if(!text) {
+                alert('कृपया शुभकामना संदेश लिखें!');
+                return;
+            }
+            let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
+            let newMsg = {
+                text: text,
+                time: new Date().toLocaleString('hi-IN'),
+                timestamp: new Date().getTime()
+            };
+            comments.unshift(newMsg);
+            localStorage.setItem('family_comments', JSON.stringify(comments));
+            msgBox.value = '';
+            loadComments();
+        }
+
+        function loadComments() {
+            let listContainer = document.getElementById('commentsDisplayList');
+            let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
+            let now = new Date().getTime();
+            let sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000;
+
+            comments = comments.filter(c => {
+                if (!c.timestamp) return true;
+                return (now - c.timestamp) < sevenDaysInMillis;
+            });
+
+            localStorage.setItem('family_comments', JSON.stringify(comments));
+
+            if(comments.length === 0) {
+                listContainer.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>';
+                return;
+            }
+
+            let html = '';
+            comments.forEach(c => {
+                html += `
+                    <div class="comment-item">
+                        ${c.text}
+                        <span>🕒 ${c.time}</span>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function selectMemberFromTithi(memberId) {
+            if(!memberId) return;
+            openMemberModal(memberId);
+        }
+
+        function filterNextGenTree(memberId) {
+            buildFamilyTree(allFamilyMembers, memberId);
+        }
+
+        function openMemberModal(memberId) {
+            let m = allFamilyMembers.find(item => item.memberId === memberId);
+            if(!m) return;
+            let modal = document.getElementById('memberModal');
+            let body = document.getElementById('modalBodyContent');
+            let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
+            
+            let spouseSection = '';
+            if(m.maritalStatus === 'Married') {
+                spouseSection = `
+                    <div style="background: rgba(43, 147, 72, 0.08); padding: 14px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2b9348;">
+                        <h4 style="color:#276749; margin:0 0 8px 0; font-size:15px;">💍 जीवनसाथी विवरण (Spouse Details)</h4>
+                        <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.spouseDob || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
+                        ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${m.spouseDeathAnniv || 'N/A'} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            body.innerHTML = `
+                ${photoHtml}
+                <h3 style="text-align:center; color:#1e3c72; margin-top:0; margin-bottom:15px; font-size:20px;">${m.name}</h3>
+                <div style="font-size:14px; line-height:1.6; color:#334155;">
+                    <p style="margin:4px 0;"><strong>Member ID:</strong> ${m.memberId}</p>
+                    <p style="margin:4px 0;"><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
+                    <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
+                    <p style="margin:4px 0;"><strong>D.O.B:</strong> ${m.dob || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
+                    ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${m.deathAnniversary} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
+                    <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
+                    <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
+                </div>
+                ${spouseSection}
+                <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
+            `;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('memberModal').style.display = 'none';
+        }
+
+        function openProfileCropModal(memberId) {
+            selectedMemberForProfileCrop = memberId;
+            closeModal();
+            document.getElementById('popupPhotoFile').click();
+        }
+
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imageToCrop').src = e.target.result;
+                    document.getElementById('cropperModal').style.display = 'block';
+                    if (cropper) cropper.destroy();
+                    let image = document.getElementById('imageToCrop');
+                    cropper = new Cropper(image, { aspectRatio: 1, viewMode: 1 });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function getCroppedImage() {
+            if (!cropper) return;
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            let croppedBase64 = canvas.toDataURL('image/jpeg');
+            let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
+            if(member) {
+                member.photo = croppedBase64;
+                setupUpcomingEvents(allFamilyMembers);
+                buildFamilyTree(allFamilyMembers);
+                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट कर ली गई है!');
+            }
+            document.getElementById('cropperModal').style.display = 'none';
+            if (cropper) cropper.destroy();
+        }
+
+        function toggleDeathFields(type) {
+            if (type === 'member') {
+                const status = document.getElementById('aliveDeath').value;
+                document.getElementById('memberDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
+            } else if (type === 'spouse') {
+                const status = document.getElementById('spouseAliveStatus').value;
+                document.getElementById('spouseDeathContainer').style.display = (status === 'Death') ? 'block' : 'none';
+            }
+        }
+
+        function toggleSpouseFields() {
+            const status = document.getElementById('maritalStatus').value;
+            document.getElementById('spouseFieldsContainer').style.display = (status === 'Married') ? 'block' : 'none';
         }
 
         function openTab(evt, tabName) {
@@ -455,8 +969,82 @@
         }
 
         function toggleDropdown(panelId) {
-            let panel = document.getElementById(panelId);
+            const panel = document.getElementById(panelId);
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function calculateDeathDay(dateStr, targetFieldId) {
+            if(!dateStr) return;
+            let date = new Date(dateStr);
+            let days = ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+            let dayName = days[date.getDay()];
+            let targetField = document.getElementById(targetFieldId);
+            if(targetField) targetField.value = dayName;
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            let photoInput = document.getElementById('photoFile');
+            let file = photoInput.files[0];
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function () {
+                    sendDataToGoogleSheet(reader.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                sendDataToGoogleSheet('');
+            }
+        }
+
+        function sendDataToGoogleSheet(base64Photo) {
+            let newMem = {
+                fatherId: document.getElementById('fatherId').value,
+                memberId: document.getElementById('memberIdField').value,
+                name: document.getElementById('name').value,
+                dob: document.getElementById('dob').value,
+                aliveDeath: document.getElementById('aliveDeath').value,
+                deathAnniversary: document.getElementById('deathAnniversary').value,
+                deathDay: document.getElementById('deathDay').value,
+                deathTithi: document.getElementById('deathTithi').value,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                spouseName: document.getElementById('spouseName').value,
+                spouseDob: document.getElementById('spouseDob').value,
+                spouseAliveDeath: document.getElementById('spouseAliveStatus').value,
+                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+                spouseDeathDay: document.getElementById('spouseDeathDay').value,
+                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+                gender: document.getElementById('gender').value,
+                mobile: document.getElementById('mobile').value,
+                childNumber: document.getElementById('childNumber').value,
+                photo: base64Photo
+            };
+
+            let submitBtn = document.getElementById('submitBtnText');
+            submitBtn.innerText = "Saving to Google Sheet...";
+            submitBtn.disabled = true;
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newMem)
+            })
+            .then(() => {
+                alert('नया डेटा सफलतापूर्वक Google Sheet में सेव हो गया है!');
+                document.getElementById('entryForm').reset();
+                generateMemberId();
+                submitBtn.innerText = "Save Details";
+                submitBtn.disabled = false;
+                loadFamilyData();
+                openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('डेटा सेव करने में त्रुटि हुई!');
+                submitBtn.innerText = "Save Details";
+                submitBtn.disabled = false;
+            });
         }
     </script>
 </body>
