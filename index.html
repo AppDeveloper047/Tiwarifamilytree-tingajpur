@@ -3,291 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree Application</title>
-    <!-- Cropper.js & html2pdf CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <title>Family Tree View & Updates</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <style>
-        :root {
-            --tree-scale: 1;
+        .gradient-highlight-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 50%, #4361ee 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            line-height: 1.3;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0f172a;
-            color: #f8fafc;
-            margin: 0;
-            padding: 0;
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; min-height: 100vh; }
+        .navbar { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); overflow: hidden; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .navbar button { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 16px 30px; font-size: 16px; color: white; transition: 0.3s; font-weight: bold; }
+        .navbar button:hover { background-color: rgba(255,255,255,0.1); }
+        .navbar button.active { background-color: #ff9800; color: white; }
+        .tab-content { display: none; padding: 20px; max-width: 1400px; margin: auto; }
+        .tab-content.active { display: block; }
+
+        .top-feature-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .feature-dropdown-container { position: relative; display: inline-block; }
+        .feature-btn { background: #1e3c72; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.2s; }
+        .feature-btn:hover { background: #2a5298; }
+
+        .dropdown-panel { display: none; position: absolute; background: #fff; min-width: 320px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); border-radius: 10px; z-index: 100; left: 0; top: 50px; padding: 15px; border-top: 4px solid #ff9800; }
+        .dropdown-panel select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; margin-top: 5px; }
+
+        @keyframes fadeInSlide {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
-        .navbar {
-            display: flex;
-            background: #1e293b;
-            padding: 10px;
-            justify-content: center;
-            gap: 10px;
+        @keyframes premiumGlow {
+            0% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
+            50% { box-shadow: 0 20px 45px rgba(24, 119, 242, 0.35); }
+            100% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
         }
-        .navbar button {
-            background: #334155;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 14px;
+
+        .event-slider-card { 
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
+            position: relative;
+            overflow: hidden;
+            animation: premiumGlow 5s infinite;
         }
-        .navbar button.active, .navbar button:hover {
-            background: #10b981;
+        
+        .event-header-title { 
+            font-size: 17px; 
+            font-weight: 800; 
+            color: #fff; 
+            margin-bottom: 22px; 
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%); 
+            padding: 8px 24px; 
+            border-radius: 30px; 
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(114, 9, 183, 0.4);
+            letter-spacing: 0.5px;
         }
-        .tab-content {
-            display: none;
-            padding: 20px;
+
+        .slider-content-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 30px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            width: 100%; 
+            animation: fadeInSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .tab-content.active {
+
+        .slider-img-wrapper {
+            position: relative;
+            padding: 5px;
+            background: linear-gradient(135deg, #ff9e00 0%, #ff0054 50%, #9b5de5 100%);
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .slider-img { 
+            width: 150px; 
+            height: 150px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 4px solid #fff; 
             display: block;
         }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
+
+        .slider-details { 
+            text-align: left; 
+            max-width: 600px; 
+            font-size: 15px; 
+            line-height: 1.8; 
+            background: rgba(255, 255, 255, 0.95);
+            padding: 22px 28px;
+            border-radius: 16px;
+            border-left: 6px solid #4361ee;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            flex: 1;
+            min-width: 290px;
+            color: #1e293b;
         }
-        .modal-content {
-            background: #ffffff;
-            color: #0f172a;
-            margin: 10% auto;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
+
+        .edit-profile-btn { 
+            background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%); 
+            color: #432818; 
+            border: none; 
+            padding: 9px 20px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: bold; 
+            margin-top: 12px; 
+            box-shadow: 0 4px 12px rgba(247, 127, 0, 0.4);
+            transition: 0.2s;
+        }
+        .edit-profile-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 127, 0, 0.6); }
+
+        .comment-section-card { 
+            background: #ffffff; 
+            border-radius: 18px; 
+            padding: 25px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            border-top: 5px solid #2b9348;
+        }
+        .comment-section-card h3 { margin-top: 0; color: #1e3c72; font-size: 18px; margin-bottom: 15px; }
+        .comment-section-card textarea { width: 100%; height: 85px; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; resize: none; box-sizing: border-box; font-family: inherit; font-size: 14px; margin-bottom: 10px; }
+        .comment-submit-btn { background: linear-gradient(135deg, #2b9348 0%, #55a630 100%); color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; float: right; box-shadow: 0 4px 12px rgba(43, 147, 72, 0.3); transition: 0.2s; }
+        .comment-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(43, 147, 72, 0.5); }
+        
+        .comments-display-list { max-height: 220px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; clear: both; }
+        .comment-item { background: #f8fafc; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3b82f6; font-size: 14px; }
+        .comment-item span { font-size: 11px; color: #64748b; display: block; margin-top: 3px; }
+
+        .form-card { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid #2a5298; max-width: 800px; margin: auto; }
+        .form-card h2 { margin-top: 0; color: #1e3c72; border-bottom: 2px solid #ff9800; padding-bottom: 12px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; background: #fdfdfd; }
+        .submit-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 14px; border: none; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        
+        .tree-container { 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            border-top: 5px solid #ff9800; 
+            overflow: hidden;
+        }
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
+        .zoom-controls { display: flex; gap: 6px; align-items: center; }
+        .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        
+        .chart-scroll-wrapper { 
+            width: 100%; 
+            height: 650px; 
+            overflow: auto; 
+            background: #f1f5f9; 
+            border-radius: 12px; 
+            padding: 30px; 
+            position: relative;
+        }
+
+        #chart_wrapper_inner { 
+            transform: scale(var(--tree-scale, 1));
+            transform-origin: top center; 
+            display: inline-block;
+            width: max-content;
+            transition: transform 0.1s ease-out;
+            text-align: center;
+        }
+
+        .tree-root-node { display: flex; flex-direction: column; align-items: center; }
+        .tree-children-list { display: flex; justify-content: center; gap: 30px; margin-top: 30px; position: relative; }
+        .tree-children-list::before { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #94a3b8; }
+        .tree-child-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 15px; }
+        .tree-child-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #94a3b8; }
+        .tree-child-wrapper:first-child::before { left: 50%; }
+        .tree-child-wrapper:last-child::before { right: 50%; }
+        .tree-child-wrapper:only-child::before { display: none; }
+
+        .node-content-box { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            width: 170px !important; 
+            height: 100px !important;
+            padding: 8px; 
+            box-sizing: border-box; 
+            text-align: center; 
+            overflow: hidden; 
+            word-wrap: break-word;
+            cursor: pointer;
+            color: #ffffff;
             border-radius: 12px;
-            position: relative;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: 0.2s;
         }
-        .close-btn {
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 24px;
-            cursor: pointer;
+        .node-content-box:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%); }
+        .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+        .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%); }
+        .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%); }
+        .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%); }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
+        .modal-content { 
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
+            margin: 6% auto; 
+            padding: 30px 25px; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 480px; 
+            position: relative; 
+            border-top: 8px solid #11998e; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            animation: fadeInSlide 0.4s ease;
         }
-        .edit-profile-btn {
-            background: #10b981;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .comment-item {
-            background: #1e293b;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .comment-item span {
-            display: block;
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-        /* Tree container styling */
-        #chart_wrapper_inner {
-            transform: scale(var(--tree-scale));
-            transform-origin: top center;
-            transition: transform 0.2s ease;
-        }
-        .tree ul {
-            padding-top: 20px; position: relative;
-            transition: all 0.5s;
-            display: flex;
-            justify-content: center;
-        }
-        .tree li {
-            float: left; text-align: center;
-            list-style-type: none;
-            position: relative;
-            padding: 20px 5px 0 5px;
-            transition: all 0.5s;
-        }
-        .tree li::before, .tree li::after {
-            content: '';
-            position: absolute; top: 0; right: 50%;
-            border-top: 2px solid #cbd5e1;
-            width: 50%; height: 20px;
-        }
-        .tree li::after {
-            right: auto; left: 50%;
-            border-left: 2px solid #cbd5e1;
-        }
-        .tree li:only-child::after, .tree li:only-child::before {
-            display: none;
-        }
-        .tree li:only-child { padding-top: 0; }
-        .tree li:first-child::before, .tree li:last-child::after {
-            border: 0;
-        }
-        .tree li:last-child::before {
-            border-right: 2px solid #cbd5e1;
-            border-radius: 0 5px 0 0;
-        }
-        .tree li:first-child::after {
-            border-radius: 5px 0 0 0;
-        }
-        .tree ul ul::before {
-            content: ''; position: absolute; top: 0; left: 50%;
-            border-left: 2px solid #cbd5e1;
-            width: 0; height: 20px;
-        }
-        .tree li a {
-            border: 2px solid #cbd5e1;
-            padding: 10px; display: inline-block;
-            border-radius: 10px;
-            background: #1e293b;
-            color: #fff;
-            text-decoration: none;
-            min-width: 120px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .tree li a:hover {
-            background: #334155;
-            border-color: #10b981;
-        }
+        .close-btn { color: #555; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 20px; top: 12px; transition: 0.2s; }
+        .close-btn:hover { color: #ff4757; }
+        
+        #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 420px; margin: 8% auto; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .img-container { max-height: 320px; margin-bottom: 20px; background: #000; border-radius: 8px; overflow: hidden; }
+        .img-container img { max-width: 100%; display: block; }
+        .crop-action-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 12px 25px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
     </style>
 </head>
+
 <body>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <button onclick="openTab(event, 'treePage')" id="navTreeBtn" class="active">Family Tree</button>
-        <button onclick="openTab(event, 'formPage')">Add Member</button>
-        <button onclick="openTab(event, 'eventsPage')">Events & Comments</button>
-    </div>
+    <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
 
-    <!-- Tab 1: Family Tree -->
-    <div id="treePage" class="tab-content active">
-        <div style="text-align: center; margin-bottom: 15px;">
-            <button onclick="zoomTree(0.2)">Zoom In (+)</button>
-            <button onclick="zoomTree(-0.2)">Zoom Out (-)</button>
-            <button onclick="resetZoom()">Reset</button>
-            <button onclick="downloadPDF()">Download PDF</button>
-        </div>
-        <div id="pdfContent" style="overflow: auto; padding: 20px;">
-            <h2 id="pdfTitle" style="display:none; text-align:center; color:#0f172a;">Family Tree Report</h2>
-            <div id="chart_wrapper_inner">
-                <p id="treeLoadingText" style="text-align: center;">Loading Family Tree...</p>
-                <div class="tree" id="tree_structure_div"></div>
-            </div>
+    <div id="cropperModal">
+        <div class="cropper-container-box">
+            <h3 style="margin-top:0; color:#1e3c72;" id="cropTitleText">फोटो क्रॉप करें (Crop & Set Profile)</h3>
+            <div class="img-container"><img id="imageToCrop" src=""></div>
+            <button class="crop-action-btn" onclick="getCroppedImage()" id="cropBtnText">Crop & Save Profile</button>
         </div>
     </div>
 
-    <!-- Tab 2: Add Member Form -->
-    <div id="formPage" class="tab-content">
-        <h2>Add Family Member</h2>
-        <form id="entryForm" onsubmit="submitForm(event)">
-            <div>
-                <label id="selectLangLabel">Language</label>
-            </div>
-            <div>
-                <label id="selectMemberLabel">Select Parent</label>
-                <select id="fatherId" style="width: 100%; padding: 8px; margin-bottom: 10px;"></select>
-            </div>
-            <div>
-                <label id="searchMemberLabel">Member ID</label>
-                <input type="text" id="memberIdField" readonly style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Name</label>
-                <input type="text" id="name" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Date of Birth</label>
-                <input type="date" id="dob" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Status (Alive/Death)</label>
-                <select id="aliveDeath" onchange="toggleDeathFields('member')" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="Alive">Alive</option>
-                    <option value="Death">Death</option>
-                </select>
-            </div>
-            <div id="memberDeathContainer" style="display:none;">
-                <label>Death Anniversary Date</label>
-                <input type="date" id="deathAnniversary" onchange="calculateDeathDay(this.value, 'deathDay')" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                <label>Death Day</label>
-                <input type="text" id="deathDay" style="width: 100%; padding: 8px; margin-bottom: 10px;" readonly>
-                <label>Death Tithi</label>
-                <input type="text" id="deathTithi" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Marital Status</label>
-                <select id="maritalStatus" onchange="toggleSpouseFields()" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="Unmarried">Unmarried</option>
-                    <option value="Married">Married</option>
-                </select>
-            </div>
-            <div id="spouseFieldsContainer" style="display:none;">
-                <label>Spouse Name</label>
-                <input type="text" id="spouseName" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                <label>Spouse DOB</label>
-                <input type="date" id="spouseDob" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                <label>Spouse Status</label>
-                <select id="spouseAliveStatus" onchange="toggleDeathFields('spouse')" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="Alive">Alive</option>
-                    <option value="Death">Death</option>
-                </select>
-                <div id="spouseDeathContainer" style="display:none;">
-                    <label>Spouse Death Date</label>
-                    <input type="date" id="spouseDeathAnniv" onchange="calculateDeathDay(this.value, 'spouseDeathDay')" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <label>Spouse Death Day</label>
-                    <input type="text" id="spouseDeathDay" style="width: 100%; padding: 8px; margin-bottom: 10px;" readonly>
-                    <label>Spouse Death Tithi</label>
-                    <input type="text" id="spouseDeathTithi" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                </div>
-            </div>
-            <div>
-                <label>Gender</label>
-                <select id="gender" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-            <div>
-                <label>Mobile</label>
-                <input type="text" id="mobile" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Child Number (क्रम)</label>
-                <input type="number" id="childNumber" style="width: 100%; padding: 8px; margin-bottom: 10px;">
-            </div>
-            <div>
-                <label>Photo</label>
-                <input type="file" id="photoFile" accept="image/*" style="width: 100%; padding: 8px; margin-bottom: 15px;">
-            </div>
-            <button type="submit" id="submitBtnText" class="edit-profile-btn" style="width: 100%; padding: 10px;">Save Details</button>
-        </form>
-    </div>
-
-    <!-- Tab 3: Events & Comments -->
-    <div id="eventsPage" class="tab-content">
-        <h2>Upcoming Events & Visitor Comments</h2>
-        <div id="sliderBodyContainer" style="background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <!-- Slider dynamically loaded -->
-        </div>
-        <div>
-            <h3>Leave a Wish / Comment</h3>
-            <textarea id="visitorComment" placeholder="Write your message here..." style="width: 100%; height: 80px; padding: 8px; border-radius: 6px; background: #1e293b; color: white; border: 1px solid #334155;"></textarea>
-            <button onclick="postComment()" class="edit-profile-btn" style="margin-top: 10px;">Post Comment</button>
-        </div>
-        <div style="margin-top: 20px;">
-            <h3>Recent Comments</h3>
-            <div id="commentsDisplayList"></div>
-        </div>
-    </div>
-
-    <!-- Member Details Modal -->
     <div id="memberModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -295,29 +262,320 @@
         </div>
     </div>
 
-    <!-- Hidden file input for cropping -->
-    <input type="file" id="popupPhotoFile" accept="image/*" style="display:none;" onchange="handleFileSelect(this)">
+    <div class="navbar">
+        <button id="navTreeBtn" class="active" onclick="openTab(event, 'treePage')">🌳 Family Tree & Updates</button>
+        <button id="navEntryBtn" onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
+    </div>
 
-    <!-- Cropper Modal -->
-    <div id="cropperModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <h3>Crop Photo</h3>
-            <div style="max-height: 350px; overflow: hidden;">
-                <img id="imageToCrop" style="max-width: 100%;">
+    <div id="treePage" class="tab-content">
+        
+        <div class="top-feature-bar">
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('langPanel')" id="langBtnText">🌐 Language (भाषा)</button>
+                <div id="langPanel" class="dropdown-panel">
+                    <label id="selectLangLabel">Select Language:</label>
+                    <select id="langSelector" onchange="changeLanguage(this.value)">
+                        <option value="hi">हिंदी (Hindi)</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
             </div>
-            <button onclick="getCroppedImage()" class="edit-profile-btn" style="margin-top: 15px; width: 100%;">Crop & Save</button>
+
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('tithiPanel')" id="tithiBtnText">📅 जन्मदिन / पुण्य तिथि</button>
+                <div id="tithiPanel" class="dropdown-panel">
+                    <label id="selectMemberLabel">सदस्य चुनें (Select Member):</label>
+                    <select id="tithiSelectDropdown" onchange="selectMemberFromTithi(this.value)">
+                        <option value="">-- लोड हो रहा है --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="toggleDropdown('searchPanel')" id="searchBtnText">🔍 मेंबर सर्च (अगली पीढ़ी)</button>
+                <div id="searchPanel" class="dropdown-panel">
+                    <label id="searchMemberLabel">सदस्य सर्च करें:</label>
+                    <select id="memberSearchDropdown" onchange="filterNextGenTree(this.value)">
+                        <option value="">-- पूरा ट्री देखें --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
+            <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
+            <div class="slider-content-box" id="sliderBodyContainer">
+                <p id="loadingText" style="color: #fff;">डाटा लोड हो रहा है...</p>
+            </div>
+        </div>
+
+        <div class="comment-section-card">
+            <h3 id="commentSectionTitle">💬 शुभकामनाएँ एवं संदेश (Comments Box)</h3>
+            <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
+            <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
+            <div class="comments-display-list" id="commentsDisplayList">
+                <p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>
+            </div>
+        </div>
+
+        <div class="tree-container">
+            <div class="action-bar">
+                <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
+                        <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                        <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">↺ रीसेट</button>
+                    </div>
+                    <button class="pdf-btn" onclick="downloadPDF()" id="pdfBtnText">📥 Save as PDF</button>
+                </div>
+            </div>
+            
+            <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
+                <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
+                <div class="chart-scroll-wrapper" id="scrollWrapper">
+                    <div id="chart_wrapper_inner">
+                        <div id="tree_structure_div">
+                            <div id="treeLoadingText" style="text-align:center; padding:50px; color:#666; font-weight:bold;">
+                                Family Tree Load ho raha hai...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="entryPage" class="tab-content">
+        <div class="form-card">
+            <h2 id="formTitleText">Naye Member ki Entry Karein</h2>
+            <form id="entryForm" onsubmit="submitForm(event)">
+               
+                <div class="form-group">
+                    <label id="lblMemberId">Member ID (ऑटो-जनरेटेड):</label>
+                    <input type="text" id="memberIdField" readonly style="background-color: #e9ecef; font-weight: bold; color: #d9534f;">
+                </div>
+
+                <div class="form-group">
+                    <label id="lblFather">Father / Parent:*</label>
+                    <select id="fatherId" required><option value="">-- Root (No Father) --</option></select>
+                </div>
+                <div class="form-group">
+                    <label id="lblName">Member Name:*</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label id="lblGender">Gender:</label>
+                    <select id="gender">
+                        <option value="Male" id="optMale">Male</option>
+                        <option value="Female" id="optFemale">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label id="lblDob">D.O.B:</label>
+                    <input type="date" id="dob">
+                </div>
+                <div class="form-group">
+                    <label id="lblAliveDeath">Alive / Death:</label>
+                    <select id="aliveDeath" onchange="toggleDeathFields('member')">
+                        <option value="Alive" id="optAlive">Alive</option>
+                        <option value="Death" id="optDeath">Death</option>
+                    </select>
+                </div>
+               
+                <div id="memberDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
+                    <div class="form-group">
+                        <label id="lblDeathDate">Death Date:</label>
+                        <input type="date" id="deathAnniversary" onchange="calculateDeathDay(this.value, 'deathDay')">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblDeathDay">Death Day (वार - ऑटोमैटिक):</label>
+                        <input type="text" id="deathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblDeathTithi">Death Tithi (तिथि):</label>
+                        <input type="text" id="deathTithi" placeholder="उदा: कार्तिक शुक्ल पक्ष द्वितीया">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblMaritalStatus">Marital Status:</label>
+                    <select id="maritalStatus" onchange="toggleSpouseFields()">
+                        <option value="Unmarried" id="optUnmarried">Unmarried</option>
+                        <option value="Married" id="optMarried">Married</option>
+                    </select>
+                </div>
+
+                <div id="spouseFieldsContainer" style="display:none; background:#f0fff4; padding:15px; border:1px dashed #9ae6b4; border-radius:8px; margin-bottom:15px;">
+                    <h4 style="margin-top:0; color:#276749;" id="spouseInfoHeading">जीवनसाथी की जानकारी (Spouse Details)</h4>
+                    <div class="form-group">
+                        <label id="lblSpouseName">Spouse Name:</label>
+                        <input type="text" id="spouseName">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblSpouseDob">Spouse D.O.B:</label>
+                        <input type="date" id="spouseDob">
+                    </div>
+                    <div class="form-group">
+                        <label id="lblSpouseStatus">Spouse Alive / Death:</label>
+                        <select id="spouseAliveStatus" onchange="toggleDeathFields('spouse')">
+                            <option value="Alive" id="optSpouseAlive">Alive</option>
+                            <option value="Death" id="optSpouseDeath">Death</option>
+                        </select>
+                    </div>
+
+                    <div id="spouseDeathContainer" style="display:none; background:#fff5f5; padding:10px; border:1px dashed #feb2b2; border-radius:6px; margin-bottom:15px;">
+                        <div class="form-group">
+                            <label id="lblSpouseDeathDate">Spouse Death Date:</label>
+                            <input type="date" id="spouseDeathAnniv" onchange="calculateDeathDay(this.value, 'spouseDeathDay')">
+                        </div>
+                        <div class="form-group">
+                            <label id="lblSpouseDeathDay">Spouse Death Day (वार):</label>
+                            <input type="text" id="spouseDeathDay" readonly placeholder="वार ऑटोमैटिक आएगा">
+                        </div>
+                        <div class="form-group">
+                            <label id="lblSpouseDeathTithi">Spouse Death Tithi:</label>
+                            <input type="text" id="spouseDeathTithi" placeholder="उदा: वैशाख शुक्ल पक्ष एकादशी">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label id="lblChildNumber">Child Number (क्रम):</label>
+                    <input type="text" id="childNumber" placeholder="उदा: 1, 2, 3">
+                </div>
+                <div class="form-group">
+                    <label id="lblMobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर">
+                </div>
+                <div class="form-group">
+                    <label id="lblPhoto">Upload Photo:</label>
+                    <input type="file" id="photoFile" accept="image/*">
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtnText">Save Details</button>
+            </form>
         </div>
     </div>
 
     <script>
-        const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'; // यहाँ अपनी सही गूगल स्क्रिप्ट URL डालें
+        // Google Apps Script Web App URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec'; 
+
+        let currentScale = 1;
         let allFamilyMembers = [];
         let upcomingEventsList = [];
         let currentSlideIndex = 0;
         let sliderInterval = null;
-        let currentScale = 1;
+        let selectedMemberForProfileCrop = null;
         let cropper = null;
-        let selectedMemberForProfileCrop = '';
+
+        const translations = {
+            hi: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (भाषा)",
+                tithiBtn: "📅 जन्मदिन / पुण्य तिथि",
+                searchBtn: "🔍 मेंबर सर्च (अगली पीढ़ी)",
+                sliderTitle: "✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि",
+                commentTitle: "💬 शुभकामनाएँ एवं संदेश (Comments Box)",
+                commentPlaceholder: "अपनी शुभकामनाएँ या संदेश यहाँ लिखें...",
+                sendMsg: "संदेश भेजें",
+                treeHeading: "परिवार का स्वर्णिम इतिहास",
+                zoomPlus: "➕ ज़ूम+",
+                zoomMinus: "➖ ज़ूम-",
+                zoomReset: "↺ रीसेट",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Naye Member ki Entry Karein",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "जीवनसाथी की जानकारी (Spouse Details)",
+                spouseNameLabel: "Spouse Name:",
+                spouseDobLabel: "Spouse D.O.B:",
+                spouseStatusLabel: "Spouse Alive / Death:",
+                childNumLabel: "Child Number (क्रम):",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "सदस्य चुनें (Select Member):",
+                searchMember: "सदस्य सर्च करें:"
+            },
+            en: {
+                navTree: "🌳 Family Tree & Updates",
+                navEntry: "➕ New Data Entry",
+                langBtn: "🌐 Language (Language)",
+                tithiBtn: "📅 Birthday / Death Anniversary",
+                searchBtn: "🔍 Member Search (Next Gen)",
+                sliderTitle: "✨ Upcoming 7 Days - Birthday / Death Anniversary",
+                commentTitle: "💬 Wishes & Messages (Comments Box)",
+                commentPlaceholder: "Write your wishes or message here...",
+                sendMsg: "Send Message",
+                treeHeading: "Golden History of Family",
+                zoomPlus: "➕ Zoom+",
+                zoomMinus: "➖ Zoom-",
+                zoomReset: "↺ Reset",
+                pdfBtn: "📥 Save as PDF",
+                formTitle: "Register New Member",
+                fatherLabel: "Father / Parent:*",
+                nameLabel: "Member Name:*",
+                genderLabel: "Gender:",
+                dobLabel: "D.O.B:",
+                aliveDeathLabel: "Alive / Death:",
+                maritalLabel: "Marital Status:",
+                spouseHeading: "Spouse Details",
+                spouseNameLabel: "Spouse Name:",
+                spouseDobLabel: "Spouse D.O.B:",
+                spouseStatusLabel: "Spouse Alive / Death:",
+                childNumLabel: "Child Number:",
+                mobileLabel: "Mobile Number:",
+                photoLabel: "Upload Photo:",
+                submitBtn: "Save Details",
+                selectLang: "Select Language:",
+                selectMember: "Select Member:",
+                searchMember: "Search Member:"
+            }
+        };
+
+        function changeLanguage(lang) {
+            const t = translations[lang] || translations.hi;
+            document.getElementById('navTreeBtn').innerText = t.navTree;
+            document.getElementById('navEntryBtn').innerText = t.navEntry;
+            document.getElementById('langBtnText').innerText = t.langBtn;
+            document.getElementById('tithiBtnText').innerText = t.tithiBtn;
+            document.getElementById('searchBtnText').innerText = t.searchBtn;
+            document.getElementById('sliderHeaderTitle').innerText = t.sliderTitle;
+            document.getElementById('commentSectionTitle').innerText = t.commentTitle;
+            document.getElementById('visitorComment').placeholder = t.commentPlaceholder;
+            document.getElementById('sendMsgBtn').innerText = t.sendMsg;
+            document.getElementById('treeHeadingTitle').innerText = t.treeHeading;
+            document.getElementById('zoomPlusBtn').innerText = t.zoomPlus;
+            document.getElementById('zoomMinusBtn').innerText = t.zoomMinus;
+            document.getElementById('zoomResetBtn').innerText = t.zoomReset;
+            document.getElementById('pdfBtnText').innerText = t.pdfBtn;
+            document.getElementById('formTitleText').innerText = t.formTitle;
+            document.getElementById('lblFather').innerText = t.fatherLabel;
+            document.getElementById('lblName').innerText = t.nameLabel;
+            document.getElementById('lblGender').innerText = t.genderLabel;
+            document.getElementById('lblDob').innerText = t.dobLabel;
+            document.getElementById('lblAliveDeath').innerText = t.aliveDeathLabel;
+            document.getElementById('lblMaritalStatus').innerText = t.maritalLabel;
+            document.getElementById('spouseInfoHeading').innerText = t.spouseHeading;
+            document.getElementById('lblSpouseName').innerText = t.spouseNameLabel;
+            document.getElementById('lblSpouseDob').innerText = t.spouseDobLabel;
+            document.getElementById('lblSpouseStatus').innerText = t.spouseStatusLabel;
+            document.getElementById('lblChildNumber').innerText = t.childNumLabel;
+            document.getElementById('lblMobile').innerText = t.mobileLabel;
+            document.getElementById('lblPhoto').innerText = t.photoLabel;
+            document.getElementById('submitBtnText').innerText = t.submitBtn;
+            document.getElementById('selectLangLabel').innerText = t.selectLang;
+            document.getElementById('selectMemberLabel').innerText = t.selectMember;
+            document.getElementById('searchMemberLabel').innerText = t.searchMember;
+        }
 
         window.onload = function() {
             generateMemberId();
@@ -353,10 +611,17 @@
 
         function populateDropdowns(data) {
             let fatherSelect = document.getElementById('fatherId');
+            let tithiSelect = document.getElementById('tithiSelectDropdown');
+            let searchSelect = document.getElementById('memberSearchDropdown');
+            
             fatherSelect.innerHTML = '<option value="">-- Root (No Father) --</option>';
+            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
 
             data.forEach(m => {
                 fatherSelect.innerHTML += `<option value="${m.memberId}">${m.name} (${m.memberId})</option>`;
+                tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+                searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
             });
         }
 
@@ -373,40 +638,44 @@
             let roots = targetData.filter(m => !m.fatherId || m.fatherId === "" || !targetData.some(p => p.memberId === m.fatherId));
             if(roots.length === 0 && targetData.length > 0) roots = [targetData[0]];
 
-            let html = '<ul>';
-            roots.forEach(root => {
-                html += renderTreeNode(root, targetData);
+            let html = '';
+            roots.forEach((root, idx) => {
+                html += renderTreeNode(root, targetData, idx);
             });
-            html += '</ul>';
 
             treeContainer.innerHTML = html;
             let loadingDiv = document.getElementById('treeLoadingText');
             if(loadingDiv) loadingDiv.style.display = 'none';
         }
 
-        // ट्री नोड को रिकर्सिव रूप से रेंडर करने वाला मुख्य फ़ंक्शन (जो मिसिंग था)
-        function renderTreeNode(node, data) {
-            let children = data.filter(m => m.fatherId === node.memberId);
-            
-            let photoTag = node.photo ? `<img src="${node.photo}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-bottom:5px; display:block; margin-left:auto; margin-right:auto;">` : '';
-            
-            let html = `<li>
-                <a href="javascript:void(0)" onclick="openMemberModal('${node.memberId}')">
-                    ${photoTag}
-                    <strong>${node.name}</strong><br>
-                    <span style="font-size:11px; color:#94a3b8;">ID: ${node.memberId}</span>
-                </a>`;
+        function renderTreeNode(member, allData, depth) {
+            let genClass = `gen-${depth % 5}-node`;
+            let children = allData.filter(m => m.fatherId === member.memberId);
+
+            let nodeHtml = `
+                <div class="node-content-box ${genClass}" onclick='openMemberModal("${member.memberId}")'>
+                    <div style="font-weight:bold; font-size:12px; line-height:1.25; overflow:hidden; max-height:2.5em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${member.name}</div>
+                    <div style="font-size:10px; opacity:0.9; margin-top:2px;">ID: ${member.memberId}</div>
+                    ${member.spouseName ? `<div style="font-size:9px; opacity:0.85; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">प.: ${member.spouseName}</div>` : ''}
+                </div>
+            `;
 
             if(children.length > 0) {
-                html += '<ul>';
-                children.forEach(child => {
-                    html += renderTreeNode(child, data);
+                let childrenHtml = '';
+                children.forEach((child) => {
+                    childrenHtml += `<div class="tree-child-wrapper">${renderTreeNode(child, allData, depth + 1)}</div>`;
                 });
-                html += '</ul>';
+                return `
+                    <div class="tree-root-node">
+                        ${nodeHtml}
+                        <div class="tree-children-list">
+                            ${childrenHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `<div class="tree-root-node">${nodeHtml}</div>`;
             }
-
-            html += '</li>';
-            return html;
         }
 
         function zoomTree(amount) {
@@ -423,17 +692,18 @@
             const element = document.getElementById('pdfContent');
             document.getElementById('pdfTitle').style.display = 'block';
             let opt = {
-                margin: 10,
-                filename: 'Family_Tree_Report.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                margin:       10,
+                filename:     'Family_Tree_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
             html2pdf().from(element).set(opt).save().then(() => {
                 document.getElementById('pdfTitle').style.display = 'none';
             });
         }
 
+        // Helper function to check if a date (MM-DD) falls within the next 7 days
         function isWithinNext7Days(dateStr) {
             if (!dateStr) return false;
             let today = new Date();
@@ -483,6 +753,7 @@
                         tithiVal: ''
                     });
                 }
+
                 if (m.maritalStatus === 'Married') {
                     let spouseEventFound = false;
                     if (m.spouseAliveDeath === 'Death' && isWithinNext7Days(m.spouseDeathAnniv)) {
@@ -531,13 +802,22 @@
             let container = document.getElementById('sliderBodyContainer');
             let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
             
+            let detailsHtml = `
+                <span class="gradient-highlight-text">✨ ${ev.eventType} ✨</span>
+                <h3 style="margin:4px 0 10px 0; font-size:22px; font-weight:800;" class="gradient-highlight-text">नाम: ${ev.targetName}</h3>
+                <p style="margin:4px 0; font-size:15px;"><strong>दिनांक:</strong> ${ev.dateVal || 'उपलब्ध नहीं'}</p>
+                ${ev.dayVal ? `<p style="margin:4px 0; font-size:15px;"><strong>वार:</strong> ${ev.dayVal}</p>` : ''}
+                ${ev.tithiVal ? `<p style="margin:4px 0; font-size:15px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : ''}
+                <p style="margin:4px 0; font-size:14px; opacity:0.85;">मुख्य सदस्य: ${m.name} (ID: ${m.memberId})</p>
+                <button class="edit-profile-btn" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
+            `;
+
             container.innerHTML = `
-                <div>
-                    <img src="${photoSrc}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; float:left; margin-right:15px;">
-                    <h3 style="margin:0 0 5px 0; font-size:18px;">${ev.eventType}</h3>
-                    <p style="margin:2px 0;"><strong>नाम:</strong> ${ev.targetName}</p>
-                    <p style="margin:2px 0;"><strong>दिनांक:</strong> ${ev.dateVal || 'N/A'}</p>
-                    <button class="edit-profile-btn" style="margin-top:8px;" onclick="openMemberModal('${m.memberId}')">पूरी जानकारी देखें</button>
+                <div class="slider-img-wrapper">
+                    <img src="${photoSrc}" class="slider-img" alt="Member Photo">
+                </div>
+                <div class="slider-details">
+                    ${detailsHtml}
                 </div>
             `;
         }
@@ -553,8 +833,7 @@
             let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
             let newMsg = {
                 text: text,
-                time: new Date().toLocaleString('hi-IN'),
-                timestamp: new Date().getTime()
+                time: new Date().toLocaleString('hi-IN')
             };
             comments.unshift(newMsg);
             localStorage.setItem('family_comments', JSON.stringify(comments));
@@ -566,18 +845,8 @@
             let listContainer = document.getElementById('commentsDisplayList');
             let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
             
-            let now = new Date().getTime();
-            let sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000;
-
-            comments = comments.filter(c => {
-                if (!c.timestamp) return true;
-                return (now - c.timestamp) < sevenDaysInMillis;
-            });
-
-            localStorage.setItem('family_comments', JSON.stringify(comments));
-
             if(comments.length === 0) {
-                listContainer.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center;">कोई संदेश नहीं है।</p>';
+                listContainer.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>';
                 return;
             }
 
@@ -593,6 +862,15 @@
             listContainer.innerHTML = html;
         }
 
+        function selectMemberFromTithi(memberId) {
+            if(!memberId) return;
+            openMemberModal(memberId);
+        }
+
+        function filterNextGenTree(memberId) {
+            buildFamilyTree(allFamilyMembers, memberId);
+        }
+
         function openMemberModal(memberId) {
             let m = allFamilyMembers.find(item => item.memberId === memberId);
             if(!m) return;
@@ -600,19 +878,37 @@
             let modal = document.getElementById('memberModal');
             let body = document.getElementById('modalBodyContent');
             
-            let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #10b981; margin:0 auto 15px auto; display:block;">` : '';
+            let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
+            
+            let spouseSection = '';
+            if(m.maritalStatus === 'Married') {
+                spouseSection = `
+                    <div style="background: rgba(43, 147, 72, 0.08); padding: 14px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2b9348;">
+                        <h4 style="color:#276749; margin:0 0 8px 0; font-size:15px;">💍 जीवनसाथी विवरण (Spouse Details)</h4>
+                        <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.spouseDob || 'N/A'}</p>
+                        <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
+                        ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${m.spouseDeathAnniv || 'N/A'} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
+                    </div>
+                `;
+            }
 
             body.innerHTML = `
                 ${photoHtml}
-                <h3 style="text-align:center; color:#0f172a; margin-top:0;">${m.name}</h3>
-                <p><strong>Member ID:</strong> ${m.memberId}</p>
-                <p><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
-                <p><strong>Gender:</strong> ${m.gender}</p>
-                <p><strong>D.O.B:</strong> ${m.dob || 'N/A'}</p>
-                <p><strong>Status:</strong> ${m.aliveDeath}</p>
-                <p><strong>Marital Status:</strong> ${m.maritalStatus}</p>
-                <p><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
-                <button class="edit-profile-btn" style="width:100%; margin-top:15px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
+                <h3 style="text-align:center; color:#1e3c72; margin-top:0; margin-bottom:15px; font-size:20px;">${m.name}</h3>
+                <div style="font-size:14px; line-height:1.6; color:#334155;">
+                    <p style="margin:4px 0;"><strong>Member ID:</strong> ${m.memberId}</p>
+                    <p style="margin:4px 0;"><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
+                    <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
+                    <p style="margin:4px 0;"><strong>D.O.B:</strong> ${m.dob || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
+                    ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${m.deathAnniversary} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
+                    <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
+                    <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
+                    <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
+                </div>
+                ${spouseSection}
+                <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
             `;
             modal.style.display = 'block';
         }
@@ -635,7 +931,10 @@
                     document.getElementById('cropperModal').style.display = 'block';
                     if (cropper) cropper.destroy();
                     let image = document.getElementById('imageToCrop');
-                    cropper = new Cropper(image, { aspectRatio: 1, viewMode: 1 });
+                    cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                    });
                 };
                 reader.readAsDataURL(input.files[0]);
             }
@@ -682,6 +981,11 @@
             evt.currentTarget.classList.add('active');
         }
 
+        function toggleDropdown(panelId) {
+            const panel = document.getElementById(panelId);
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        }
+
         function calculateDeathDay(dateStr, targetFieldId) {
             if(!dateStr) return;
             let date = new Date(dateStr);
@@ -698,10 +1002,10 @@
 
             if (file) {
                 let reader = new FileReader();
+                reader.readAsDataURL(file);
                 reader.onload = function () {
                     sendDataToGoogleSheet(reader.result);
                 };
-                reader.readAsDataURL(file);
             } else {
                 sendDataToGoogleSheet('');
             }
