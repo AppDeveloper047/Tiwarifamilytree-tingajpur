@@ -193,43 +193,44 @@
         .tree-child-wrapper:last-child::before { right: 50%; }
         .tree-child-wrapper:only-child::before { display: none; }
 
+        
+        
         .node-content-box { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center; 
-            width: 140px !important; 
-            height: 110px !important;
-            padding: 6px; 
+            justify-content: flex-start; 
+            width: 120px !important; 
+            min-height: 180px !important;
+            padding: 12px 8px; 
             box-sizing: border-box; 
             text-align: center; 
-            overflow: hidden; 
             cursor: pointer;
             color: #ffffff;
-            /* पेंटागन या सुंदर मॉडर्न शेप के लिए क्लिप-पथ या बॉर्डर-रेडियस */
-            clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 50% 100%, 0% 80%);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
             transition: 0.2s;
-            margin-bottom: 0px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
         }
-        .node-content-box:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .node-content-box:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0,0,0,0.35); }
         
-        .gen-0-node { background: linear-gradient(135deg, #990000 0%, #cc3300 100%); }
-        .gen-1-node { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
-        .gen-2-node { background: linear-gradient(135deg, #0b6623 0%, #2e8b57 100%); }
-        .gen-3-node { background: linear-gradient(135deg, #4a154b 0%, #7b1fa2 100%); }
-        .gen-4-node { background: linear-gradient(135deg, #b7791f 0%, #d69e2e 100%); }
+        /* पूरी तरह से शानदार कलरफुल ग्रेडिएंट स्टाइल्स */
+        .gen-0-node { background: linear-gradient(135deg, #7209b7 0%, #3a0ca3 100%); }
+        .gen-1-node { background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); }
+        .gen-2-node { background: linear-gradient(135deg, #f72585 0%, #b5179e 100%); }
+        .gen-3-node { background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%); }
+        .gen-4-node { background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%); }
 
-        /* ट्री की लाइन्स को सीधे बॉक्स से टच रखने के लिए मार्जिन और पैडिंग सेटिंग्स */
+        /* लाइन्स सीधे बॉक्स से टच होने के लिए स्ट्रक्चर */
         .tree-root-node { display: flex; flex-direction: column; align-items: center; position: relative; }
-        .tree-children-list { display: flex; justify-content: center; gap: 25px; margin-top: 0px; position: relative; }
-        .tree-children-list::before { content: ''; position: absolute; top: 0px; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: #64748b; }
-        .tree-child-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 12px; }
-        .tree-child-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #64748b; }
+        .tree-children-list { display: flex; justify-content: center; gap: 20px; margin-top: 0px; position: relative; }
+        .tree-children-list::before { content: ''; position: absolute; top: 0px; left: 50%; transform: translateX(-50%); width: 2px; height: 15px; background: #2a5298; }
+        .tree-child-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 15px; }
+        .tree-child-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #2a5298; }
         .tree-child-wrapper:first-child::before { left: 50%; }
         .tree-child-wrapper:last-child::before { right: 50%; }
         .tree-child-wrapper:only-child::before { display: none; }
-
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
         .modal-content { 
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
@@ -659,39 +660,7 @@
             if(loadingDiv) loadingDiv.style.display = 'none';
         }
 
-        function renderTreeNode(member, allData, depth) {
-            let genClass = `gen-${depth % 5}-node`;
-            let children = allData.filter(m => m.fatherId === member.memberId);
-
-            // मेंबर की फोटो या डिफ़ॉल्ट आइकॉन
-            let photoSrc = member.photo ? member.photo : 'https://via.placeholder.com/40/ffffff/1e3c72?text=User';
-
-            let nodeHtml = `
-                <div class="node-content-box ${genClass}" onclick='openMemberModal("${member.memberId}")'>
-                    <img src="${photoSrc}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid #fff; margin-bottom:3px; background:#fff;">
-                    <div style="font-weight:bold; font-size:11px; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">${member.name}</div>
-                    ${member.spouseName ? `<div style="font-size:9px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;">प.: ${member.spouseName}</div>` : `<div style="font-size:9px; opacity:0.7;">ID: ${member.memberId}</div>`}
-                </div>
-            `;
-
-            if(children.length > 0) {
-                let childrenHtml = '';
-                children.forEach((child) => {
-                    childrenHtml += `<div class="tree-child-wrapper">${renderTreeNode(child, allData, depth + 1)}</div>`;
-                });
-                return `
-                    <div class="tree-root-node">
-                        ${nodeHtml}
-                        <div class="tree-children-list">
-                            ${childrenHtml}
-                        </div>
-                    </div>
-                `;
-            } else {
-                return `<div class="tree-root-node">${nodeHtml}</div>`;
-            }
-        }
-
+        function renderTreeNode
         function zoomTree(amount) {
             currentScale = Math.max(0.4, Math.min(1.8, currentScale + amount));
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
