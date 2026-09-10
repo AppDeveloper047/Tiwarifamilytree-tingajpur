@@ -833,7 +833,8 @@
             let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
             let newMsg = {
                 text: text,
-                time: new Date().toLocaleString('hi-IN')
+                time: new Date().toLocaleString('hi-IN'),
+                timestamp: new Date().getTime() // 7 दिन कैलकुलेट करने के लिए जरूरी है
             };
             comments.unshift(newMsg);
             localStorage.setItem('family_comments', JSON.stringify(comments));
@@ -845,6 +846,19 @@
             let listContainer = document.getElementById('commentsDisplayList');
             let comments = JSON.parse(localStorage.getItem('family_comments') || '[]');
             
+            // वर्तमान समय (आज की तारीख)
+            let now = new Date().getTime();
+            let sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000; // 7 दिन मिलीसेकंड में
+
+            // केवल वही संदेश रखें जिनकी उम्र 7 दिन से कम है
+            comments = comments.filter(c => {
+                if (!c.timestamp) return true; // अगर पुराना डेटा है जिसमें टाइमस्टैम्प नहीं है
+                return (now - c.timestamp) < sevenDaysInMillis;
+            });
+
+            // अपडेटेड लिस्ट को वापस सेव करें
+            localStorage.setItem('family_comments', JSON.stringify(comments));
+
             if(comments.length === 0) {
                 listContainer.innerHTML = '<p style="color:#64748b; font-size:13px; text-align:center; margin:10px 0;">कोई संदेश नहीं है। पहला संदेश आप भेजें!</p>';
                 return;
@@ -861,7 +875,7 @@
             });
             listContainer.innerHTML = html;
         }
-
+        
         function selectMemberFromTithi(memberId) {
             if(!memberId) return;
             openMemberModal(memberId);
