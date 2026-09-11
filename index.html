@@ -459,8 +459,8 @@
                     <input type="tel" id="mobile" placeholder="10 अंकों का मोबाइल नंबर">
                 </div>
                 <div class="form-group">
-                    <label id="lblPhoto">Upload Photo:</label>
-                    <input type="file" id="photoFile" accept="image/*">
+                     <label id="lblPhoto">Upload Photo:</label>
+                     <input type="file" id="photoFile" accept="image/*" onchange="handleRegistrationFileSelect(this)">
                 </div>
                 
                 <button type="submit" class="submit-btn" id="submitBtnText">Save Details</button>
@@ -479,6 +479,7 @@
         let sliderInterval = null;
         let selectedMemberForProfileCrop = null;
         let cropper = null;
+        let croppedRegistrationPhotoBase64 = ""; // रजिस्ट्रेशन के लिए क्रॉप की गई फोटो यहाँ स्टोर होगी
 
         const translations = {
             hi: {
@@ -963,22 +964,48 @@
             }
         }
 
-        function getCroppedImage() {
-            if (!cropper) return;
-            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
-            let croppedBase64 = canvas.toDataURL('image/jpeg');
-            
-            let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
-            if(member) {
-                member.photo = croppedBase64;
-                setupUpcomingEvents(allFamilyMembers);
-                buildFamilyTree(allFamilyMembers);
-                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट कर ली गई है!');
-            }
-            
-            document.getElementById('cropperModal').style.display = 'none';
-            if (cropper) cropper.destroy();
+        // पुराना वाला हटाकर पूरा यह वाला डाल दे
+function getCroppedImage() {
+    if (!cropper) return;
+    let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+    let croppedBase64 = canvas.toDataURL('image/jpeg');
+    
+    if (selectedMemberForProfileCrop === "REGISTRATION_NEW") {
+        croppedRegistrationPhotoBase64 = croppedBase64;
+        alert('फोटो सफलतापूर्वक क्रॉप कर ली गई है! अब आप फॉर्म सेव कर सकते हैं।');
+    } else {
+        let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
+        if(member) {
+            member.photo = croppedBase64;
+            setupUpcomingEvents(allFamilyMembers);
+            buildFamilyTree(allFamilyMembers);
+            alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट कर ली गई है!');
         }
+    }
+    
+    document.getElementById('cropperModal').style.display = 'none';
+    if (cropper) cropper.destroy();
+}
+        
+
+        // यह रहा नया वाला फंक्शन - इसे handleFileSelect के ठीक नीचे डाल दे
+function handleRegistrationFileSelect(input) {
+    if (input.files && input.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('imageToCrop').src = e.target.result;
+            document.getElementById('cropperModal').style.display = 'block';
+            if (cropper) cropper.destroy();
+            let image = document.getElementById('imageToCrop');
+            cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+            });
+            selectedMemberForProfileCrop = "REGISTRATION_NEW"; // पहचान के लिए
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
         function toggleDeathFields(type) {
             if (type === 'member') {
@@ -1018,22 +1045,13 @@
             if(targetField) targetField.value = dayName;
         }
 
-        function submitForm(event) {
-            event.preventDefault();
-            let photoInput = document.getElementById('photoFile');
-            let file = photoInput.files[0];
-
-            if (file) {
-                let reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function () {
-                    sendDataToGoogleSheet(reader.result);
-                };
-            } else {
-                sendDataToGoogleSheet('');
-            }
-        }
-
+        // पुराना वाला हटाकर यह वाला रख दे
+      function submitForm(event) {
+           event.preventDefault();
+           // सीधे क्रॉप की हुई फोटो को गूगल शीट भेजने के लिए कॉल करते हैं
+           sendDataToGoogleSheet(croppedRegistrationPhotoBase64);
+          }
+        
                 function sendDataToGoogleSheet(base64Photo) {
             let fatherSelect = document.getElementById('fatherId');
             let selectedParentName = fatherSelect.options[fatherSelect.selectedIndex].text;
