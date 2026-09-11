@@ -592,13 +592,38 @@
             generateMemberId();
             loadFamilyData();
             loadComments();
+            
+            // 🔥 इस कोड को यहाँ नीचे जोड़ दे भाई:
+            document.getElementById('name').addEventListener('input', function() {
+                let baseName = this.value.trim();
+                if(baseName) {
+                    let formattedName = baseName.replace(/\s+/g, '_');
+                    let randomNum = Math.floor(1000 + Math.random() * 9000);
+                    document.getElementById('memberIdField').value = `${formattedName}_${randomNum}`;
+                }
+            });
         };
-
+        
         function generateMemberId() {
-            let randomId = 'MEM' + Math.floor(1000 + Math.random() * 9000);
-            let field = document.getElementById('memberIdField');
-            if(field) field.value = randomId;
-        }
+    let nameField = document.getElementById('name');
+    let memberIdField = document.getElementById('memberIdField');
+    
+    let baseName = nameField ? nameField.value.trim() : "";
+    
+    // अगर नाम खाली है तो डिफ़ॉल्ट 'Member' ले लेगा, और अगर नाम भरा है तो "नाम_रैंडम4डिजिट" बना देगा
+    if (!baseName) {
+        baseName = "Member";
+    }
+    
+    // नाम के बीच की स्पेस को अंडरस्कोर (_) से बदल देते हैं ताकि आईडी साफ दिखे
+    let formattedName = baseName.replace(/\s+/g, '_');
+    let randomNum = Math.floor(1000 + Math.random() * 9000);
+    
+    let finalId = `${formattedName}_${randomNum}`;
+    if(memberIdField) {
+        memberIdField.value = finalId;
+    }
+}
 
         function loadFamilyData() {
             fetch(scriptURL)
