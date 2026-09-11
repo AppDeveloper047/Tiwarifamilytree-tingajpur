@@ -646,25 +646,27 @@
         }
 
                 function populateDropdowns(data) {
-            let fatherSelect = document.getElementById('fatherId');
-            let tithiSelect = document.getElementById('tithiSelectDropdown');
-            let searchSelect = document.getElementById('memberSearchDropdown');
-            
-            fatherSelect.innerHTML = '<option value="">-- Root (No Father) --</option>';
-            tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
-            searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
+    let fatherSelect = document.getElementById('fatherId');
+    let tithiSelect = document.getElementById('tithiSelectDropdown');
+    let searchSelect = document.getElementById('memberSearchDropdown');
+    
+    fatherSelect.innerHTML = '<option value="">-- Root (No Father) --</option>';
+    tithiSelect.innerHTML = '<option value="">-- सदस्य चुनें --</option>';
+    searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
 
-            data.forEach(m => {
-                let parentDisplayName = m.name;
-                if (m.spouseName && m.spouseName.trim() !== "") {
-                    parentDisplayName = `${m.name} & ${m.spouseName}`;
-                }
-
-                fatherSelect.innerHTML += `<option value="${m.memberId}">${parentDisplayName} (${m.memberId})</option>`;
-                tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
-                searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
-            });
+    data.forEach(m => {
+        let parentDisplayName = m.name;
+        if (m.spouseName && m.spouseName.trim() !== "") {
+            parentDisplayName = `${m.name} & ${m.spouseName}`;
         }
+
+        // 💡 यहाँ ध्यान दें: ऑप्शन का दिखने वाला नाम (Text) कुछ भी हो, 
+        // लेकिन value में हमेशा m.memberId (यानी असली ID) ही जानी चाहिए!
+        fatherSelect.innerHTML += `<option value="${m.memberId}">${parentDisplayName} (${m.memberId})</option>`;
+        tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+        searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+    });
+}
 
 
         function buildFamilyTree(data, filterId = '') {
@@ -1078,62 +1080,64 @@ function handleRegistrationFileSelect(input) {
           }
         
                 function sendDataToGoogleSheet(base64Photo) {
-            let fatherSelect = document.getElementById('fatherId');
-            let selectedParentName = fatherSelect.options[fatherSelect.selectedIndex].text;
+    let fatherSelect = document.getElementById('fatherId');
+    
+    // 1. यहाँ से हम सेलेक्टेड पिता की असली वैल्यू (यानी ID) ले रहे हैं ताकि ट्री न टूटे
+    let selectedParentId = fatherSelect.value; 
 
-            // यहाँ हम Member ID की जगह मेंबर का असली नाम ले रहे हैं ताकि शीट में नाम सेव हो
-            let memberActualName = document.getElementById('name').value;
+    // 2. फॉर्म में जो ऑटो-जनरेटेड Member ID (जैसे Rahul_4821) बनी है, उसे यहाँ पकड़ते हैं
+    let generatedMemberId = document.getElementById('memberIdField').value;
 
-            let newMem = {
-                fatherId: selectedParentName, 
-                memberId: memberActualName, // 👈 अब यहाँ मेंबर की ID की जगह उसका नाम सेव होगा
-                name: memberActualName,
-                dob: document.getElementById('dob').value,
-                aliveDeath: document.getElementById('aliveDeath').value,
-                deathAnniversary: document.getElementById('deathAnniversary').value,
-                deathDay: document.getElementById('deathDay').value,
-                deathTithi: document.getElementById('deathTithi').value,
-                maritalStatus: document.getElementById('maritalStatus').value,
-                spouseName: document.getElementById('spouseName').value,
-                spouseDob: document.getElementById('spouseDob').value,
-                spouseAliveDeath: document.getElementById('spouseAliveStatus').value,
-                spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
-                spouseDeathDay: document.getElementById('spouseDeathDay').value,
-                spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
-                gender: document.getElementById('gender').value,
-                mobile: document.getElementById('mobile').value,
-                childNumber: document.getElementById('childNumber').value,
-                photo: base64Photo
-            };
+    let newMem = {
+        fatherId: selectedParentId,        // 👈 अब शीट में पिता की असली ID जाएगी (जैसे Rahul_4821)
+        memberId: generatedMemberId,       // 👈 अब शीट में मेंबर की खुद की यूनीक ID जाएगी (जैसे Aakarshan_9182)
+        name: document.getElementById('name').value,
+        dob: document.getElementById('dob').value,
+        aliveDeath: document.getElementById('aliveDeath').value,
+        deathAnniversary: document.getElementById('deathAnniversary').value,
+        deathDay: document.getElementById('deathDay').value,
+        deathTithi: document.getElementById('deathTithi').value,
+        maritalStatus: document.getElementById('maritalStatus').value,
+        spouseName: document.getElementById('spouseName').value,
+        spouseDob: document.getElementById('spouseDob').value,
+        spouseAliveDeath: document.getElementById('spouseAliveStatus').value,
+        spouseDeathAnniv: document.getElementById('spouseDeathAnniv').value,
+        spouseDeathDay: document.getElementById('spouseDeathDay').value,
+        spouseDeathTithi: document.getElementById('spouseDeathTithi').value,
+        gender: document.getElementById('gender').value,
+        mobile: document.getElementById('mobile').value,
+        childNumber: document.getElementById('childNumber').value,
+        photo: base64Photo
+    };
 
+    let submitBtn = document.getElementById('submitBtnText');
+    submitBtn.innerText = "Saving to Google Sheet...";
+    submitBtn.disabled = true;
 
-            let submitBtn = document.getElementById('submitBtnText');
-            submitBtn.innerText = "Saving to Your Profile...";
-            submitBtn.disabled = true;
-
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newMem)
-            })
-            .then(() => {
-                alert('नया डेटा सफलतापूर्वक Google Sheet में सेव हो गया है!');
-                document.getElementById('entryForm').reset();
-                generateMemberId();
-                submitBtn.innerText = "Save Details";
-                submitBtn.disabled = false;
-                
-                loadFamilyData();
-                openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('डेटा सेव करने में त्रुटि हुई!');
-                submitBtn.innerText = "Save Details";
-                submitBtn.disabled = false;
-            });
-        }
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMem)
+    })
+    .then(() => {
+        alert('नया डेटा सफलतापूर्वक Google Sheet में सेव हो गया है!');
+        document.getElementById('entryForm').reset();
+        generateMemberId();
+        submitBtn.innerText = "Save Details";
+        submitBtn.disabled = false;
+        
+        loadFamilyData();
+        openTab({ currentTarget: document.getElementById('navTreeBtn') }, 'treePage');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('डेटा सेव करने में त्रुटि हुई!');
+        submitBtn.innerText = "Save Details";
+        submitBtn.disabled = false;
+    });
+}
+    
     </script>
 </body>
 </html>
