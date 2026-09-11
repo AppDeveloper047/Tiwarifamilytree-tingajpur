@@ -619,7 +619,7 @@
             });
         }
 
-        function populateDropdowns(data) {
+                function populateDropdowns(data) {
             let fatherSelect = document.getElementById('fatherId');
             let tithiSelect = document.getElementById('tithiSelectDropdown');
             let searchSelect = document.getElementById('memberSearchDropdown');
@@ -629,11 +629,17 @@
             searchSelect.innerHTML = '<option value="">-- पूरा ट्री देखें --</option>';
 
             data.forEach(m => {
-                fatherSelect.innerHTML += `<option value="${m.memberId}">${m.name} (${m.memberId})</option>`;
+                let parentDisplayName = m.name;
+                if (m.spouseName && m.spouseName.trim() !== "") {
+                    parentDisplayName = `${m.name} & ${m.spouseName}`;
+                }
+
+                fatherSelect.innerHTML += `<option value="${m.memberId}">${parentDisplayName} (${m.memberId})</option>`;
                 tithiSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
                 searchSelect.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
             });
         }
+
 
         function buildFamilyTree(data, filterId = '') {
             let treeContainer = document.getElementById('tree_structure_div');
