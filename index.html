@@ -226,8 +226,6 @@
         .tree-child-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 18px; }
         .tree-child-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #2a5298; }
         .tree-child-wrapper::after { content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 2px; height: 16px; background: #2a5298; }
-        .tree-child-wrapper:first-child::before { left: 50%; }
-        .tree-child-wrapper:last-child::before { right: 50%; }
         .tree-child-wrapper:only-child::before { display: none; }
         
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
