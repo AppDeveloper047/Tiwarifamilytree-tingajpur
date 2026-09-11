@@ -1034,11 +1034,17 @@
             }
         }
 
-        function sendDataToGoogleSheet(base64Photo) {
+                function sendDataToGoogleSheet(base64Photo) {
+            let fatherSelect = document.getElementById('fatherId');
+            let selectedParentName = fatherSelect.options[fatherSelect.selectedIndex].text;
+
+            // यहाँ हम Member ID की जगह मेंबर का असली नाम ले रहे हैं ताकि शीट में नाम सेव हो
+            let memberActualName = document.getElementById('name').value;
+
             let newMem = {
-                fatherId: document.getElementById('fatherId').value,
-                memberId: document.getElementById('memberIdField').value,
-                name: document.getElementById('name').value,
+                fatherId: selectedParentName, 
+                memberId: memberActualName, // 👈 अब यहाँ मेंबर की ID की जगह उसका नाम सेव होगा
+                name: memberActualName,
                 dob: document.getElementById('dob').value,
                 aliveDeath: document.getElementById('aliveDeath').value,
                 deathAnniversary: document.getElementById('deathAnniversary').value,
@@ -1057,8 +1063,9 @@
                 photo: base64Photo
             };
 
+
             let submitBtn = document.getElementById('submitBtnText');
-            submitBtn.innerText = "Saving to Google Sheet...";
+            submitBtn.innerText = "Saving to Your Profile...";
             submitBtn.disabled = true;
 
             fetch(scriptURL, {
