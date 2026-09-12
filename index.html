@@ -1175,6 +1175,21 @@ function handleRegistrationFileSelect(input) {
         submitBtn.disabled = false;
     });
 }
+
+        // जैसे ही वेबसाइट पूरी खुलेगी, यह कोड अपने-आप डेटा लोड करेगा और ट्री पेज को सामने ले आएगा
+window.addEventListener('DOMContentLoaded', (event) => {
+    // 1. सबसे पहले डेटा लोड करने वाला फंक्शन चलाएं (जैसे loadFamilyData)
+    if (typeof loadFamilyData === 'function') {
+        loadFamilyData();
+    }
+    
+    // 2. ऑटोमैटिकली 'Family Tree' वाले टैब को एक्टिव कर दें ताकि पहली बार में ही ट्री दिखे
+    let treeNavBtn = document.getElementById('navTreeBtn');
+    if (treeNavBtn) {
+        treeNavBtn.click();
+    }
+});
+        
     
     </script>
 </body>
