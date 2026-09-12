@@ -158,16 +158,17 @@
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             border-top: 5px solid #ff9800; 
-            overflow: hidden;
+            /* यहाँ से overflow: hidden; हटा दिया है ताकि साइड का डेटा कटे नहीं */
         }
+        
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         
-           .chart-scroll-wrapper { 
-            width: max-content; /* फिक्स 100% की जगह max-content कर दिया ताकि ट्री के हिसाब से चौड़ाई बढ़े */
-            min-width: 100%;    /* ताकि छोटी स्क्रीन पर कम से कम पूरी स्क्रीन जितनी चौड़ाई तो रहे ही */
+        
+        .chart-scroll-wrapper { 
+            width: 100%; /* वापस 100% कर दिया ताकि स्क्रीन के अंदर सही से स्क्रॉल काम करे */
             height: 650px; 
             overflow: auto; 
             background: #f1f5f9; 
@@ -175,6 +176,7 @@
             padding: 30px; 
             position: relative;
         }
+
 
 
         #chart_wrapper_inner { 
