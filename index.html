@@ -9,35 +9,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
     <style>
-
-        #globalLoader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    font-family: Arial, sans-serif;
-}
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #0056b3;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-        
         .gradient-highlight-text {
             font-size: 22px;
             font-weight: 800;
@@ -282,12 +253,6 @@
 </head>
 
 <body>
-    
-    <!-- यहाँ से लोडर शुरू होता है -->
-<div id="globalLoader">
-    <div class="spinner"></div>
-    <h3>परिवार का डेटा लोड हो रहा है, कृपया प्रतीक्षा करें...</h3>
-</div>
 
     <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
 
@@ -354,7 +319,7 @@
         </div>
 
         <div class="comment-section-card">
-            <h3 id="commentSectionTitle">💬 शुभकामनाएँ एवं संदेश</h3>
+            <h3 id="commentSectionTitle">💬 शुभकामनाएँ एवं संदेश (Comments Box)</h3>
             <textarea id="visitorComment" placeholder="अपनी शुभकामनाएँ या संदेश यहाँ लिखें..."></textarea>
             <button class="comment-submit-btn" id="sendMsgBtn" onclick="postComment()">संदेश भेजें</button>
             <div class="comments-display-list" id="commentsDisplayList">
@@ -626,8 +591,6 @@
             generateMemberId();
             loadFamilyData();
             loadComments();
-
-            document.getElementById('globalLoader').style.display = 'none';
             
             // 🔥 इस कोड को यहाँ नीचे जोड़ दे भाई:
             document.getElementById('name').addEventListener('input', function() {
@@ -662,32 +625,19 @@
 }
 
         function loadFamilyData() {
-    // 1. अगर लोकल स्टोरेज में पहले से डेटा है, तो उसे तुरंत दिखाओ ताकि खाली स्क्रीन न दिखे
-    let cachedData = localStorage.getItem('cachedFamilyTree');
-    if (cachedData) {
-        allFamilyMembers = JSON.parse(cachedData);
-        buildFamilyTree(allFamilyMembers);
-        setupUpcomingEvents(allFamilyMembers);
-        document.getElementById('globalLoader').style.display = 'none'; // लोडर हटाओ
-    }
-
-    // 2. बैकग्राउंड में गूगल शीट से नया डेटा लाओ
-    fetch(scriptURL)
-        .then(response => response.json())
-        .then(data => {
-            allFamilyMembers = data;
-            // लोकल स्टोरेज को अपडेट करो
-            localStorage.setItem('cachedFamilyTree', JSON.stringify(data));
-            
-            buildFamilyTree(allFamilyMembers);
-            setupUpcomingEvents(allFamilyMembers);
-            document.getElementById('globalLoader').style.display = 'none'; // लोडर हटाओ
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('globalLoader').style.display = 'none';
-        });
-}
+            fetch(scriptURL)
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.length > 0) {
+                    allFamilyMembers = data;
+                    populateDropdowns(data);
+                    buildFamilyTree(data);
+                    setupUpcomingEvents(data);
+                } else {
+                    document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #fff;">Google Sheet me koi data nahi mila. Pehli entry karein!</p>';
+                    document.getElementById('treeLoadingText').innerText = 'Family Tree me dikhane ke liye koi data nahi hai.';
+                }
+            })
             .catch(err => {
                 console.error("Error loading data:", err);
                 document.getElementById('sliderBodyContainer').innerHTML = '<p style="color: #ff6b6b;">Data load karne me samasya aayi.</p>';
