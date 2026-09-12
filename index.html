@@ -232,7 +232,7 @@
         .tree-child-wrapper::after { content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 2px; height: 16px; background: #2a5298; }
         .tree-child-wrapper:only-child::before { display: none; }
         
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
+                .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
         .modal-content { 
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
             margin: 6% auto; 
@@ -248,12 +248,12 @@
         .close-btn { color: #555; float: right; font-size: 28px; font-weight: bold; cursor: pointer; position: absolute; right: 20px; top: 12px; transition: 0.2s; }
         .close-btn:hover { color: #ff4757; }
         
-                .cropper-container-box { background: #fff; width: 90%; max-width: 420px; margin: 8% auto; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        #cropperModal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .cropper-container-box { background: #fff; width: 90%; max-width: 420px; margin: 8% auto; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
         .img-container { max-height: 320px; margin-bottom: 20px; background: #000; border-radius: 8px; overflow: hidden; }
         .img-container img { max-width: 100%; display: block; }
         .crop-action-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 12px 25px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
 
-        /* --- यह रहा वह प्रिंट वाला कोड जो सबसे नीचे जोड़ना है --- */
         @media print {
             body * {
                 visibility: hidden;
@@ -274,10 +274,9 @@
                 break-inside: avoid;
             }
         }
+        
     </style> <!-- यहाँ पर स्टाइल टैग बंद होता है -->
 </head>
-
-
 <body>
 
     <input type="file" id="popupPhotoFile" accept="image/*" style="display: none;" onchange="handleFileSelect(this)">
