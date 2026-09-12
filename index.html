@@ -729,7 +729,7 @@
         }
 
         function zoomTree(amount) {
-            currentScale = Math.max(0.4, Math.min(1.8, currentScale + amount));
+            currentScale = Math.max(0.2, Math.min(1.8, currentScale + amount));
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
@@ -990,28 +990,60 @@
             }
         }
 
-        // पुराना वाला हटाकर पूरा यह वाला डाल दे
-function getCroppedImage() {
-    if (!cropper) return;
-    let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
-    let croppedBase64 = canvas.toDataURL('image/jpeg');
-    
-    if (selectedMemberForProfileCrop === "REGISTRATION_NEW") {
-        croppedRegistrationPhotoBase64 = croppedBase64;
-        alert('फोटो सफलतापूर्वक क्रॉप कर ली गई है! अब आप फॉर्म सेव कर सकते हैं।');
-    } else {
-        let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
-        if(member) {
-            member.photo = croppedBase64;
+                function getCroppedImage() {
+            if (!cropper) return;
+            let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            let croppedBase64 = canvas.toDataURL('image/jpeg');
             
-            // 💡 यहाँ पर गूगल शीट अपडेट करने का फंक्शन कॉल कर दें ताकि रीफ्रेश करने पर भी फोटो उड़े नहीं!
-            updateMemberPhotoInGoogleSheet(member.memberId, croppedBase64);
+            let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
+            if(member) {
+                member.photo = croppedBase64;
+                setupUpcomingEvents(allFamilyMembers);
+                buildFamilyTree(allFamilyMembers);
+                
+                // 👉 यहाँ हमने Google Sheet पर अपडेटेड डेटा भेजने का कोड जोड़ दिया है
+                let updatedDataForSheet = {
+                    action: "updatePhoto", // अगर आपकी Google Apps Script में एक्शन हैंडल होता है
+                    memberId: member.memberId,
+                    name: member.name,
+                    fatherId: member.fatherId,
+                    dob: member.dob,
+                    aliveDeath: member.aliveDeath,
+                    deathAnniversary: member.deathAnniversary,
+                    deathDay: member.deathDay,
+                    deathTithi: member.deathTithi,
+                    maritalStatus: member.maritalStatus,
+                    spouseName: member.spouseName,
+                    spouseDob: member.spouseDob,
+                    spouseAliveDeath: member.spouseAliveDeath,
+                    spouseDeathAnniv: member.spouseDeathAnniv,
+                    spouseDeathDay: member.spouseDeathDay,
+                    spouseDeathTithi: member.spouseDeathTithi,
+                    gender: member.gender,
+                    mobile: member.mobile,
+                    childNumber: member.childNumber,
+                    photo: croppedBase64 // नई क्रॉप की हुई फोटो
+                };
 
-            setupUpcomingEvents(allFamilyMembers);
-            buildFamilyTree(allFamilyMembers);
-            alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट कर ली गई है!');
+                // डेटा को Google Sheet पर पोस्ट करें
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedDataForSheet)
+                }).then(() => {
+                    console.log('Profile photo updated on Google Sheet successfully');
+                }).catch(err => {
+                    console.error('Error updating sheet:', err);
+                });
+
+                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट और सेव कर ली गई है!');
+            }
+            
+            document.getElementById('cropperModal').style.display = 'none';
+            if (cropper) cropper.destroy();
         }
-    }
+
     
     document.getElementById('cropperModal').style.display = 'none';
     if (cropper) cropper.destroy();
