@@ -995,14 +995,14 @@
             
             // 1. यहाँ हमने साइज़ को 200x200 पिक्सल फिक्स कर दिया है ताकि भारी फोटो छोटी हो जाए
             let canvas = cropper.getCroppedCanvas({ 
-                width: 200, 
-                height: 200,
+                width: 400, 
+                height: 400,
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'medium'
             });
             
             // 2. यहाँ 0.5 क्वालिटी (50%) कर दी है ताकि MB की फोटो सीधा KB में बदल जाए
-            let croppedBase64 = canvas.toDataURL('image/jpeg', 0.5); 
+            let croppedBase64 = canvas.toDataURL('image/jpeg', 0.8); 
             
             let member = allFamilyMembers.find(m => m.memberId === selectedMemberForProfileCrop);
             if(member) {
