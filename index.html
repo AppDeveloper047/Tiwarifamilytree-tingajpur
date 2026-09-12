@@ -990,7 +990,7 @@
             }
         }
 
-                function getCroppedImage() {
+                        function getCroppedImage() {
             if (!cropper) return;
             let canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
             let croppedBase64 = canvas.toDataURL('image/jpeg');
@@ -1001,9 +1001,8 @@
                 setupUpcomingEvents(allFamilyMembers);
                 buildFamilyTree(allFamilyMembers);
                 
-                // 👉 यहाँ हमने Google Sheet पर अपडेटेड डेटा भेजने का कोड जोड़ दिया है
                 let updatedDataForSheet = {
-                    action: "updatePhoto", // अगर आपकी Google Apps Script में एक्शन हैंडल होता है
+                    action: "update", // 👈 यहाँ "update" या आपके गूगल स्क्रिप्ट के अनुसार एडिट वाला एक्शन लिखें
                     memberId: member.memberId,
                     name: member.name,
                     fatherId: member.fatherId,
@@ -1022,22 +1021,21 @@
                     gender: member.gender,
                     mobile: member.mobile,
                     childNumber: member.childNumber,
-                    photo: croppedBase64 // नई क्रॉप की हुई फोटो
+                    photo: croppedBase64
                 };
 
-                // डेटा को Google Sheet पर पोस्ट करें
                 fetch(scriptURL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updatedDataForSheet)
                 }).then(() => {
-                    console.log('Profile photo updated on Google Sheet successfully');
+                    console.log('Profile updated successfully');
                 }).catch(err => {
                     console.error('Error updating sheet:', err);
                 });
 
-                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट और सेव कर ली गई है!');
+                alert('प्रोफाइल फोटो सफलतापूर्वक अपडेट हो गई है!');
             }
             
             document.getElementById('cropperModal').style.display = 'none';
@@ -1064,6 +1062,7 @@ function handleRegistrationFileSelect(input) {
     }
 }
 
+    
         function toggleDeathFields(type) {
             if (type === 'member') {
                 const status = document.getElementById('aliveDeath').value;
