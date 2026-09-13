@@ -44,7 +44,7 @@
             100% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
         }
 
-        .event-slider-card { 
+           .event-slider-card { 
             background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); 
             border-radius: 20px; 
             padding: 30px; 
@@ -54,7 +54,10 @@
             position: relative;
             overflow: hidden;
             animation: premiumGlow 5s infinite;
+            min-height: 260px; /* फिक्स हाइट */
+            box-sizing: border-box;
         }
+
         
         .event-header-title { 
             font-size: 17px; 
@@ -739,7 +742,7 @@
             return (diffDays >= 0 && diffDays <= 7);
         }
 
-        function setupUpcomingEvents(data) {
+                function setupUpcomingEvents(data) {
             upcomingEventsList = [];
             
             data.forEach(m => {
@@ -748,7 +751,7 @@
                     upcomingEventsList.push({
                         member: m,
                         targetName: m.name,
-                        eventType: 'पुण्यतिथि (Death Anniversary)',
+                        eventType: 'पुण्यतिथि',
                         dateVal: m.deathAnniversary,
                         dayVal: m.deathDay || '',
                         tithiVal: m.deathTithi || ''
@@ -759,7 +762,7 @@
                     upcomingEventsList.push({
                         member: m,
                         targetName: m.name,
-                        eventType: 'जन्मदिन (Birthday)',
+                        eventType: 'जन्मदिन',
                         dateVal: m.dob,
                         dayVal: '',
                         tithiVal: ''
@@ -771,22 +774,26 @@
                     if (m.spouseAliveDeath === 'Death' && isWithinNext7Days(m.spouseDeathAnniv)) {
                         upcomingEventsList.push({
                             member: m,
-                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
-                            eventType: 'पुण्यतिथि (Spouse Death Anniversary)',
+                            targetName: m.spouseName,
+                            eventType: 'पुण्यतिथि',
                             dateVal: m.spouseDeathAnniv,
                             dayVal: m.spouseDeathDay || '',
-                            tithiVal: m.spouseDeathTithi || ''
+                            tithiVal: m.spouseDeathTithi || '',
+                            isSpouse: true,
+                            mainMemberName: m.name
                         });
                         spouseEventFound = true;
                     }
                     if (!spouseEventFound && isWithinNext7Days(m.spouseDob)) {
                         upcomingEventsList.push({
                             member: m,
-                            targetName: `${m.spouseName} (जीवनसाथी - ${m.name})`,
-                            eventType: 'जन्मदिन (Spouse Birthday)',
+                            targetName: m.spouseName,
+                            eventType: 'जन्मदिन',
                             dateVal: m.spouseDob,
                             dayVal: '',
-                            tithiVal: ''
+                            tithiVal: '',
+                            isSpouse: true,
+                            mainMemberName: m.name
                         });
                     }
                 }
@@ -808,7 +815,8 @@
             }, 6000);
         }
 
-        function renderEventSlide(index) {
+
+                function renderEventSlide(index) {
             let ev = upcomingEventsList[index];
             let m = ev.member;
             let container = document.getElementById('sliderBodyContainer');
@@ -816,11 +824,11 @@
             
             let detailsHtml = `
                 <span class="gradient-highlight-text">✨ ${ev.eventType} ✨</span>
-                <h3 style="margin:4px 0 10px 0; font-size:22px; font-weight:800;" class="gradient-highlight-text">नाम: ${ev.targetName}</h3>
+                <h3 style="margin:4px 0 10px 0; font-size:22px; font-weight:800;" class="gradient-highlight-text">${ev.targetName}</h3>
                 <p style="margin:4px 0; font-size:15px;"><strong>दिनांक:</strong> ${ev.dateVal || 'उपलब्ध नहीं'}</p>
                 ${ev.dayVal ? `<p style="margin:4px 0; font-size:15px;"><strong>वार:</strong> ${ev.dayVal}</p>` : ''}
                 ${ev.tithiVal ? `<p style="margin:4px 0; font-size:15px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : ''}
-                <p style="margin:4px 0; font-size:14px; opacity:0.85;">मुख्य सदस्य: ${m.name} (ID: ${m.memberId})</p>
+                ${ev.isSpouse ? `<p style="margin:4px 0; font-size:14px; opacity:0.85;">जीवनसाथी: ${ev.mainMemberName}</p>` : ''}
                 <button class="edit-profile-btn" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
             `;
 
@@ -833,6 +841,7 @@
                 </div>
             `;
         }
+
 
         function postComment() {
             let msgBox = document.getElementById('visitorComment');
