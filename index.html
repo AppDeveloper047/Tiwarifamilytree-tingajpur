@@ -231,24 +231,23 @@
       
         /* लाइन्स सीधे बॉक्स से टच होने के लिए स्ट्रक्चर */
         
-        .tree-root-node { display: flex; flex-direction: column; align-items: center; position: relative; }
-        
-        .tree-children-list { 
+            .tree-children-list { 
             display: flex; 
             justify-content: center; 
-            gap: 25px; 
-            margin-top: 22px; 
+            gap: 20px; /* बॉक्स के बीच का असली गैप */
+            margin-top: 25px; 
             position: relative; 
         }
         
+        /* ऊपर से आने वाली मुख्य खड़ी लाइन */
         .tree-children-list::before { 
             content: ''; 
             position: absolute; 
-            top: -22px; 
+            top: -25px; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 2px; 
-            height: 22px; 
+            height: 25px; 
             background: #2a5298; 
         }
         
@@ -257,19 +256,21 @@
             flex-direction: column; 
             align-items: center; 
             position: relative; 
-            padding-top: 20px; 
+            padding-top: 18px; 
         }
         
+        /* यह आड़ी लाइन अब बिना किसी गैप के एक छोर से दूसरे छोर तक जुड़ी हुई दिखेगी */
         .tree-child-wrapper::before { 
             content: ''; 
             position: absolute; 
             top: 0; 
-            left: 0; 
-            right: 0; 
+            left: -10px;  /* बाएं वाले गैप को ढंकेगी ताकि लाइन जुड़ी रहे */
+            right: -10px; /* दाएं वाले गैप को ढंकेगी */
             height: 2px; 
             background: #2a5298; 
         }
         
+        /* हर बॉक्स के ऊपर जाने वाली छोटी खड़ी लाइन */
         .tree-child-wrapper::after { 
             content: ''; 
             position: absolute; 
@@ -277,18 +278,28 @@
             left: 50%; 
             transform: translateX(-50%); 
             width: 2px; 
-            height: 18px; 
+            height: 16px; 
             background: #2a5298; 
         }
         
-        .tree-child-wrapper:first-child::before { left: 50%; }
-        .tree-child-wrapper:last-child::before { right: 50%; }
-        .tree-child-wrapper:only-child::before { display: none; }
+        /* अगर सिर्फ एक ही बच्चा है, तो कोई आड़ी या खड़ी ऊपर की लाइन नहीं आएगी */
+        .tree-child-wrapper:only-child::before,
+        .tree-child-wrapper:only-child::after { 
+            display: none !important; 
+        }
+        .tree-child-wrapper:only-child { 
+            padding-top: 0px; 
+        }
+        
+        /* पहले और आखिरी बच्चे के सिर पर साइड की फालतू लाइन रोकने के लिए */
+        .tree-child-wrapper:first-child:not(:last-child)::before { left: 50%; }
+        .tree-child-wrapper:last-child:not(:first-child)::before { right: 50%; }
+
 
 
         
-                .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
-        .modal-content { 
+           .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); overflow-y: auto; backdrop-filter: blur(5px); }
+           .modal-content { 
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); 
             margin: 6% auto; 
             padding: 30px 25px; 
