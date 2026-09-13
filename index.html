@@ -831,17 +831,14 @@
         }
 
         function downloadFamilyTreePDF() {
-    // ट्री वाले हिस्से को सीधे टारगेट करते हैं
     const treeElement = document.getElementById('chart_wrapper_inner');
     if (!treeElement) {
         alert('ट्री डेटा नहीं मिला!');
         return;
     }
 
-    // एक नई प्रिंट विंडो बनाते हैं ताकि मेन पेज डिस्टर्ब न हो
     const printWindow = window.open('', '_blank');
     
-    // वर्तमान पेज की सारी स्टाइल शीट (CSS) को कॉपी कर लेते हैं ताकि डिजाइन वैसी की वैसी बनी रहे
     const styles = Array.from(document.styleSheets)
         .map(sheet => {
             try {
@@ -851,7 +848,7 @@
             }
         }).join('');
 
-        printWindow.document.write(`
+    printWindow.document.write(`
         <html>
             <head>
                 <title>परिवार का स्वर्णिम इतिहास - Family Tree</title>
@@ -901,7 +898,6 @@
             </body>
         </html>
     `);
-
     printWindow.document.close();
 }
 
