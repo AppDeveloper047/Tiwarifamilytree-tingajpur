@@ -419,17 +419,18 @@
         </div>
 
         <div class="tree-container">
-            <div class="action-bar">
-                <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
-                        <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
-                        <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">↺ रीसेट</button>
-                    </div>
-                    <button class="pdf-btn" onclick="downloadPDF()" id="pdfBtnText">📥 Save as PDF</button>
-                </div>
+    <div class="action-bar">
+        <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
+                <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">🔄 रीसेट</button>
             </div>
+            <button class="pdf-btn" onclick="downloadFamilyTreePDF()" id="pdfBtnText">💾 Save as PDF</button>
+        </div>
+    </div>
+
             
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
                 <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
@@ -829,20 +830,82 @@
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
         }
 
-        function downloadPDF() {
-            const element = document.getElementById('pdfContent');
-            document.getElementById('pdfTitle').style.display = 'block';
-            let opt = {
-                margin:       10,
-                filename:     'Family_Tree_Report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(element).set(opt).save().then(() => {
-                document.getElementById('pdfTitle').style.display = 'none';
-            });
-        }
+        function downloadFamilyTreePDF() {
+    // ट्री वाले हिस्से को सीधे टारगेट करते हैं
+    const treeElement = document.getElementById('chart_wrapper_inner');
+    if (!treeElement) {
+        alert('ट्री डेटा नहीं मिला!');
+        return;
+    }
+
+    // एक नई प्रिंट विंडो बनाते हैं ताकि मेन पेज डिस्टर्ब न हो
+    const printWindow = window.open('', '_blank');
+    
+    // वर्तमान पेज की सारी स्टाइल शीट (CSS) को कॉपी कर लेते हैं ताकि डिजाइन वैसी की वैसी बनी रहे
+    const styles = Array.from(document.styleSheets)
+        .map(sheet => {
+            try {
+                return Array.from(sheet.cssRules).map(rule => rule.cssText).join('');
+            } catch (e) {
+                return '';
+            }
+        }).join('');
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>परिवार का स्वर्णम इतिहास - Family Tree</title>
+                <style>
+                    ${styles}
+                    body {
+                        background: #ffffff !important;
+                        margin: 0;
+                        padding: 10px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: flex-start;
+                    }
+                    /* प्रिंट के वक्त स्क्रॉल और फालतू बटन छिपाकर पूरा ट्री एक पेज पर फैलाना */
+                    .chart-scroll-wrapper {
+                        overflow: visible !important;
+                        height: auto !important;
+                        max-height: none !important;
+                        width: 100% !important;
+                        background: #fff !important;
+                        border: none !important;
+                        box-shadow: none !important;
+                        padding: 0 !important;
+                    }
+                    #chart_wrapper_inner {
+                        transform: scale(0.55) !important; /* साइज को थोड़ा सिकोड़कर सिंगल पेज पर फिट करेगा */
+                        transform-origin: top center !important;
+                        width: 100% !important;
+                    }
+                    @page {
+                        size: A4 landscape; /* लैंडस्केप मोड ताकि चौड़ाई में पूरा परिवार एक बार में आ जाए */
+                        margin: 5mm;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="chart-scroll-wrapper">
+                    ${treeElement.outerHTML}
+                </div>
+                <script>
+                    // लोड होते ही ऑटोमैटिक प्रिंट डायलॉग बॉक्स खुल जाएगा
+                    window.onload = function() {
+                        setTimeout(function() {
+                            window.print();
+                            window.close();
+                        }, 600);
+                    };
+                </script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
 
         // Helper function to check if a date (MM-DD) falls within the next 7 days
         function isWithinNext7Days(dateStr) {
