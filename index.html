@@ -851,10 +851,10 @@
             }
         }).join('');
 
-    printWindow.document.write(`
+        printWindow.document.write(`
         <html>
             <head>
-                <title>परिवार का स्वर्णम इतिहास - Family Tree</title>
+                <title>परिवार का स्वर्णिम इतिहास - Family Tree</title>
                 <style>
                     ${styles}
                     body {
@@ -865,7 +865,6 @@
                         justify-content: center;
                         align-items: flex-start;
                     }
-                    /* प्रिंट के वक्त स्क्रॉल और फालतू बटन छिपाकर पूरा ट्री एक पेज पर फैलाना */
                     .chart-scroll-wrapper {
                         overflow: visible !important;
                         height: auto !important;
@@ -877,12 +876,12 @@
                         padding: 0 !important;
                     }
                     #chart_wrapper_inner {
-                        transform: scale(0.55) !important; /* साइज को थोड़ा सिकोड़कर सिंगल पेज पर फिट करेगा */
+                        transform: scale(0.55) !important;
                         transform-origin: top center !important;
                         width: 100% !important;
                     }
                     @page {
-                        size: A4 landscape; /* लैंडस्केप मोड ताकि चौड़ाई में पूरा परिवार एक बार में आ जाए */
+                        size: A4 landscape;
                         margin: 5mm;
                     }
                 </style>
@@ -892,7 +891,6 @@
                     ${treeElement.outerHTML}
                 </div>
                 <script>
-                    // लोड होते ही ऑटोमैटिक प्रिंट डायलॉग बॉक्स खुल जाएगा
                     window.onload = function() {
                         setTimeout(function() {
                             window.print();
@@ -903,6 +901,7 @@
             </body>
         </html>
     `);
+
     printWindow.document.close();
 }
 
