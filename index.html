@@ -711,7 +711,7 @@
             let generationNum = depth + 1;
 
             let nodeHtml = `
-                <div class="node-content-box ${genClass}" onclick='openMemberModal("${member.memberId}")'>
+                <div class="node-content-box ${genClass}" onclick="openMemberModal('${member.memberId}')">
                     <img src="${photoSrc}" style="width:55px; height:55px; border-radius:50%; object-fit:cover; border:3px solid #fff; margin-bottom:8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
                     <div style="font-weight:bold; font-size:13px; line-height:1.2; width:100%; word-break: break-word; margin-bottom:4px;">${member.name}</div>
                     <div style="font-size:10px; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:10px; margin-bottom:6px; font-weight:600;">पीढ़ी ${generationNum}</div>
