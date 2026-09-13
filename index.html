@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree View & Updates</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
@@ -164,7 +163,6 @@
         }
         
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         
@@ -247,27 +245,6 @@
         .img-container { max-height: 320px; margin-bottom: 20px; background: #000; border-radius: 8px; overflow: hidden; }
         .img-container img { max-width: 100%; display: block; }
         .crop-action-btn { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; border: none; padding: 12px 25px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4); }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #chart_wrapper_inner, #chart_wrapper_inner * {
-                visibility: visible;
-            }
-            #chart_wrapper_inner {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100% !important;
-                transform: scale(0.6) !important;
-                transform-origin: top left;
-            }
-            .tree-child-wrapper, .tree-root-node {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
-        }
     </style>
 </head>
 <body>
@@ -348,18 +325,14 @@
         <div class="tree-container">
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
-                    <div class="zoom-controls">
-                        <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
-                        <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
-                        <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">🔄 रीसेट</button>
-                    </div>
-                    <button class="pdf-btn" onclick="downloadFamilyTreePDF()" id="pdfBtnText">💾 Save as PDF</button>
+                <div class="zoom-controls">
+                    <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
+                    <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                    <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">🔄 रीसेट</button>
                 </div>
             </div>
             
             <div id="pdfContent" style="background: #fff; padding: 20px; border-radius: 10px;">
-                <h3 style="text-align: center; color: #1e3c72; display:none;" id="pdfTitle">Family Tree Report</h3>
                 <div class="chart-scroll-wrapper" id="scrollWrapper">
                     <div id="chart_wrapper_inner">
                         <div id="tree_structure_div">
@@ -486,7 +459,6 @@
     </div>
 
     <script>
-        // Google Apps Script Web App URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxSaAJ8pIrZz9nta8AG0sROBHXfVD1IIDDQgN3iaK3yM4evHWfnhvjhEr7QuBxvfK6DdQ/exec'; 
 
         let currentScale = 1;
@@ -513,7 +485,6 @@
                 zoomPlus: "➕ ज़ूम+",
                 zoomMinus: "➖ ज़ूम-",
                 zoomReset: "↺ रीसेट",
-                pdfBtn: "📥 Save as PDF",
                 formTitle: "Naye Member ki Entry Karein",
                 fatherLabel: "Father / Parent:*",
                 nameLabel: "Member Name:*",
@@ -547,7 +518,6 @@
                 zoomPlus: "➕ Zoom+",
                 zoomMinus: "➖ Zoom-",
                 zoomReset: "↺ Reset",
-                pdfBtn: "📥 Save as PDF",
                 formTitle: "Register New Member",
                 fatherLabel: "Father / Parent:*",
                 nameLabel: "Member Name:*",
@@ -584,7 +554,6 @@
             document.getElementById('zoomPlusBtn').innerText = t.zoomPlus;
             document.getElementById('zoomMinusBtn').innerText = t.zoomMinus;
             document.getElementById('zoomResetBtn').innerText = t.zoomReset;
-            document.getElementById('pdfBtnText').innerText = t.pdfBtn;
             document.getElementById('formTitleText').innerText = t.formTitle;
             document.getElementById('lblFather').innerText = t.fatherLabel;
             document.getElementById('lblName').innerText = t.nameLabel;
@@ -745,76 +714,6 @@
         function resetZoom() {
             currentScale = 1;
             document.getElementById('chart_wrapper_inner').style.setProperty('--tree-scale', currentScale);
-        }
-
-        function downloadFamilyTreePDF() {
-            const treeElement = document.getElementById('chart_wrapper_inner');
-            if (!treeElement) {
-                alert('ट्री डेटा नहीं मिला!');
-                return;
-            }
-
-            const printWindow = window.open('', '_blank');
-            const styles = Array.from(document.styleSheets)
-                .map(sheet => {
-                    try {
-                        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('');
-                    } catch (e) {
-                        return '';
-                    }
-                }).join('');
-
-            printWindow.document.write(`
-                <html>
-                    <head>
-                        <title>परिवार का स्वर्णिम इतिहास - Family Tree</title>
-                        <style>
-                            ${styles}
-                            body {
-                                background: #ffffff !important;
-                                margin: 0;
-                                padding: 10px;
-                                display: flex;
-                                justify-content: center;
-                                align-items: flex-start;
-                            }
-                            .chart-scroll-wrapper {
-                                overflow: visible !important;
-                                height: auto !important;
-                                max-height: none !important;
-                                width: 100% !important;
-                                background: #fff !important;
-                                border: none !important;
-                                box-shadow: none !important;
-                                padding: 0 !important;
-                            }
-                            #chart_wrapper_inner {
-                                transform: scale(0.55) !important;
-                                transform-origin: top center !important;
-                                width: 100% !important;
-                            }
-                            @page {
-                                size: A4 landscape;
-                                margin: 5mm;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="chart-scroll-wrapper">
-                            ${treeElement.outerHTML}
-                        </div>
-                        <script>
-                            window.onload = function() {
-                                setTimeout(function() {
-                                    window.print();
-                                    window.close();
-                                }, 600);
-                            };
-                        </script>
-                    </body>
-                </html>
-            `);
-            printWindow.document.close();
         }
 
         function isWithinNext7Days(dateStr) {
