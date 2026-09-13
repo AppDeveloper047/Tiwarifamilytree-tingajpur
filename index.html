@@ -44,21 +44,18 @@
             100% { box-shadow: 0 15px 35px rgba(10, 38, 71, 0.2); }
         }
 
-            .event-slider-card { 
+           .event-slider-card { 
             background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); 
             border-radius: 20px; 
-            padding: 25px; 
+            padding: 20px; 
             margin-bottom: 30px; 
             border: 2px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 15px 35px rgba(0,0,0,0.25); 
             position: relative;
             overflow: hidden;
             animation: premiumGlow 5s infinite;
-            height: 270px; /* यहाँ फिक्स हाइट कर दी है ताकि बॉक्स ऊपर-नीचे न हो */
+            height: 270px; /* फिक्स हाइट */
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
 
            .event-header-title { 
@@ -75,23 +72,19 @@
         }
 
         .slider-content-box { 
-            display: flex; 
-            align-items: center; 
-            gap: 25px; 
-            flex-wrap: nowrap; /* इसे nowrap किया ताकि लाइन से बाहर न जाए */
-            justify-content: center; 
+            position: relative;
             width: 100%; 
             height: 100%;
             animation: fadeInSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .slider-img-wrapper {
-            position: relative;
-            padding: 5px;
-            background: linear-gradient(135deg, #ff9e00 0%, #ff0054 50%, #9b5de5 100%);
-            border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            flex-shrink: 0;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 130px;
+            text-align: center;
         }
 
         .slider-img { 
@@ -104,27 +97,25 @@
         }
 
         .slider-details { 
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(100% - 145px); /* फोटो की जगह छोड़कर बाकी पूरी जगह लेगा */
+            height: 220px; /* फिक्स हाइट */
             text-align: left; 
-            max-width: 600px; 
-            font-size: 14px; 
-            line-height: 1.6; 
+            font-size: 13px; 
+            line-height: 1.5; 
             background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-radius: 16px;
-            border-left: 6px solid #4361ee;
+            border-left: 5px solid #4361ee;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            flex: 1;
-            min-width: 280px;
-            height: 185px; /* सफेद बॉक्स की हाइट भी फिक्स कर दी है */
-            max-height: 185px;
             box-sizing: border-box;
             overflow: hidden;
             color: #1e293b;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
-
+        
         .edit-profile-btn { 
             background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%); 
             color: #432818; 
