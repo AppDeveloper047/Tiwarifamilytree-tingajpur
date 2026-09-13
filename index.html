@@ -154,32 +154,32 @@
         
            .tree-container { 
             background: #fff; 
-            padding: 20px; 
+            padding: 10px 5px; /* चारों तरफ की पैडिंग कम कर दी ताकि ज्यादा जगह मिले */
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             border-top: 5px solid #ff9800; 
             width: 100%;
             max-width: 100%;
-            box-sizing: border-box; /* यह पैडिंग को बाहर जाने से रोकेगा */
+            box-sizing: border-box;
         }
-    
-       
+        
+        
         .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .pdf-btn { background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%); color: white; padding: 10px 22px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 4px 12px rgba(255, 65, 108, 0.3); }
         .zoom-controls { display: flex; gap: 6px; align-items: center; }
         .zoom-btn { background: #2a5298; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
         
         
-        .chart-scroll-wrapper { 
+           .chart-scroll-wrapper { 
             width: 100%; 
             max-width: 100%;
             height: 650px; 
             overflow: auto; 
             background: #f1f5f9; 
             border-radius: 12px; 
-            padding: 20px; 
+            padding: 10px; /* अंदर के स्क्रॉल एरिया की पैडिंग भी कम कर दी */
             position: relative;
-            box-sizing: border-box; /* यह भी बॉक्स को अंदर बांधकर रखेगा */
+            box-sizing: border-box;
         }
 
 
