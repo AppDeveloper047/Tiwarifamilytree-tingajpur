@@ -1164,46 +1164,50 @@
             }
         });
 
-        // परिवार का पूरा ट्री एक ही इमेज में डाउनलोड करने का फंक्शन
+        // परिवार का पूरा ट्री सही तरीके से सिंगल इमेज में डाउनलोड करने का फाइनल फंक्शन
 function downloadCompleteFamilyTree() {
-    let treeElement = document.getElementById('pdfContent'); 
+    // हम सीधे उस डिब्बे को टारगेट कर रहे हैं जहाँ असली ट्री स्ट्रक्चर लोड होता है
+    let treeElement = document.getElementById('tree_structure_div'); 
 
-    if(!treeElement) {
-        alert('ट्री का डेटा नहीं मिला!');
+    if(!treeElement || treeElement.innerText.includes('load ho raha hai')) {
+        alert('⚠️ ट्री अभी पूरी तरह लोड नहीं हुआ है, कृपया थोड़ा इंतज़ार करें!');
         return;
     }
 
     let btn = document.getElementById('downloadTreeBtn');
-    let originalText = btn.innerText;
+    let originalText = btn.innerText; // डिमांड 01 & 02 के लिए टेक्स्ट स्टोर किया
     btn.innerText = "डाउनलोड हो रहा है...";
     btn.disabled = true;
 
-    let innerChart = document.getElementById('chart_wrapper_inner');
-    let previousTransform = innerChart.style.transform;
-    innerChart.style.transform = 'scale(1)';
-
+    // html2canvas की मदद से सिर्फ ट्री स्ट्रक्चर को परफेक्ट कैप्चर करना
     html2canvas(treeElement, {
-        scale: 2, 
+        scale: 2, // हाई क्वालिटी इमेज के लिए
         useCORS: true,
-        backgroundColor: "#ffffff" 
+        backgroundColor: "#ffffff", // साफ़ सफ़ेद बैकग्राउंड ताकि ब्लैंक न आए
+        logging: false
     }).then(canvas => {
-        innerChart.style.transform = previousTransform;
-
         let link = document.createElement('a');
         link.download = 'Family_Tree_Complete.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
 
-        btn.innerText = originalTest;
+        // डिमांड 02: सफलता का मैसेज और बटन को वापस नॉर्मल करना
+        btn.innerText = originalText;
         btn.disabled = false;
+        alert('✨ परिवार का ट्री सफलतापूर्वक डाउनलोड हो गया है!');
+
     }).catch(err => {
         console.error('डाउनलोड एरर:', err);
-        innerChart.style.transform = previousTransform;
-        alert('ट्री डाउनलोड करने में कुछ समस्या आई, कृपया दोबारा कोशिश करें।');
-        btn.innerText = originalTest;
+        
+        // डिमांड 01: यदि डाउनलोड न हो तो गड़बड़ी वाला मैसेज दिखाना
+        alert('❌ ट्री डाउनलोड करने में कुछ समस्या आई, कृपया दोबारा कोशिश करें।');
+        
+        // बटन का टेक्स्ट और स्टेट वापस ठीक करना ताकि रिफ्रेश न करना पड़े
+        btn.innerText = originalText;
         btn.disabled = false;
     });
 }
+
         
     </script>
 </body>
