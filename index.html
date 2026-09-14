@@ -271,6 +271,33 @@
         </div>
     </div>
 
+    <!-- रिश्ता देखने वाला पॉपअप बॉक्स (Modal) -->
+<div id="relationModal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background: white; margin: 15% auto; padding: 20px; width: 90%; max-width: 400px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); position: relative;">
+        <span onclick="closeRelationModal()" style="position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #555;">&times;</span>
+        <h3 style="color: #1e3c72; margin-top: 0; font-size: 18px; text-align: center;">पारिवारिक रिश्ता जांचें</h3>
+        
+        <div style="margin: 15px 0;">
+            <label style="font-size: 13px; font-weight: bold; color: #444;">पहला सदस्य (Member A):</label>
+            <select id="memberASel" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="">सदस्य चुनें...</option>
+            </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+            <label style="font-size: 13px; font-weight: bold; color: #444;">दूसरा सदस्य (Member B):</label>
+            <select id="memberBSel" style="width: 100%; padding: 8px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="">सदस्य चुनें...</option>
+            </select>
+        </div>
+
+        <button onclick="calculateRelationship()" style="width: 100%; background: #2b9348; color: white; border: none; padding: 10px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px;">रिश्ता ढूँढें</button>
+
+        <div id="relationResultBox" style="margin-top: 15px; padding: 10px; background: #f1f3f5; border-radius: 5px; display: none; text-align: center; font-size: 14px; color: #333;"></div>
+    </div>
+</div>
+    
+
     <div class="navbar">
         <button id="navTreeBtn" class="active" onclick="openTab(event, 'treePage')">🌳 Family Tree & Updates</button>
         <button id="navEntryBtn" onclick="openTab(event, 'entryPage')">➕ New Data Entry</button>
@@ -309,7 +336,9 @@
                     </select>
                 </div>
             </div>
-        </div>
+                <div class="feature-dropdown-container">
+                <button class="feature-btn" onclick="openRelationModal()" style="background: #1e3c72; color: white;">👥 रिश्ता देखें</button>
+            </div>
 
         <div class="event-slider-card" id="upcomingSliderWidget" style="text-align: center;">
             <div class="event-header-title" id="sliderHeaderTitle">✨ आगामी 7 दिन - जन्मदिन / पुण्य तिथि</div>
@@ -332,7 +361,7 @@
                 <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
                 <div class="zoom-controls">
                     <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
-                    <button class="zoom-btn" onclick="zoomTree(-0.2)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                    <button class="zoom-btn" onclick="zoomTree(-0.3)" id="zoomMinusBtn">➖ ज़ूम-</button>
                     <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">🔄 रीसेट</button>
                     <button class="zoom-btn" onclick="downloadCompleteFamilyTree()" style="background: #2b9348;" id="downloadTreeBtn">📥 ट्री डाउनलोड</button>
                 </div>
@@ -1214,6 +1243,147 @@ function downloadCompleteFamilyTree() {
     });
 }
 
+   // रिश्ता देखने वाला मोडल खोलने और बंद करने के फंक्शन्स
+function openRelationModal() {
+    let modal = document.getElementById('relationModal');
+    if(modal) {
+        modal.style.display = 'block';
+        populateRelationDropdowns();
+    }
+}
+
+function closeRelationModal() {
+    let modal = document.getElementById('relationModal');
+    let resBox = document.getElementById('relationResultBox');
+    if(modal) modal.style.display = 'none';
+    if(resBox) resBox.style.display = 'none';
+}
+
+// ड्रॉपडाउन में परिवार के सभी सदस्यों के नाम भरने का फंक्शन
+function populateRelationDropdowns() {
+    const selA = document.getElementById('memberASel');
+    const selB = document.getElementById('memberBSel');
+    if(!selA || !selB) return;
+    
+    selA.innerHTML = '<option value="">सदस्य चुनें...</option>';
+    selB.innerHTML = '<option value="">सदस्य चुनें...</option>';
+    
+    // यह मानकर चल रहा है कि आपकी मुख्य लिस्ट 'allMembersList' में सारे सदस्य मौजूद हैं
+    if (typeof allMembersList !== 'undefined' && allMembersList.length > 0) {
+        allMembersList.forEach(m => {
+            let mId = m.id || m.name;
+            selA.innerHTML += `<option value="${mId}">${m.name}</option>`;
+            selB.innerHTML += `<option value="${mId}">${m.name}</option>`;
+        });
+    }
+}
+
+// दोनों सदस्यों के बीच का रिश्ता कैलकुलेट करने का मुख्य लॉजिक
+function calculateRelationship() {
+    const idA = document.getElementById('memberASel').value;
+    const idB = document.getElementById('memberBSel').value;
+    const resBox = document.getElementById('relationResultBox');
+    
+    if(!idA || !idB) {
+        alert('⚠️ कृपया दोनों सदस्यों के नाम चुनें!');
+        return;
+    }
+    
+    if(idA === idB) {
+        alert('⚠️ कृपया दो अलग-अलग सदस्य चुनें!');
+        return;
+    }
+
+    resBox.style.display = 'block';
+    resBox.innerHTML = '🔄 रिश्ता खोजा जा रहा है...';
+
+    let path = findPathBetweenMembers(idA, idB);
+    
+    if(!path || path.length === 0) {
+        resBox.innerHTML = '❌ इन दोनों के बीच का सीधा पारिवारिक संबंध रिकॉर्ड में नहीं मिला।';
+    } else {
+        resBox.innerHTML = generateRelationshipDescription(path);
+    }
+}
+
+// ग्राफ एल्गोरिदम (BFS) से दोनों के बीच का रास्ता ढूंढना
+function findPathBetweenMembers(startId, targetId) {
+    let queue = [[startId]];
+    let visited = new Set([startId]);
+
+    while(queue.length > 0) {
+        let currentPath = queue.shift();
+        let currentId = currentPath[currentPath.length - 1];
+
+        if(currentId === targetId) {
+            return currentPath;
+        }
+
+        let neighbors = getMemberConnections(currentId);
+        for(let neighbor of neighbors) {
+            if(!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push([...currentPath, neighbor]);
+            }
+        }
+    }
+    return null;
+}
+
+// माता-पिता, बच्चे, पति-पत्नी और भाई-बहन के कनेक्शन निकालना
+function getMemberConnections(memberId) {
+    let connections = [];
+    if (typeof allMembersList === 'undefined') return connections;
+    
+    let member = allMembersList.find(m => (m.id || m.name) === memberId);
+    if(!member) return connections;
+
+    if(member.father) connections.push(member.father);
+    if(member.mother) connections.push(member.mother);
+    if(member.spouse) connections.push(member.spouse);
+    
+    allMembersList.forEach(m => {
+        let mId = m.id || m.name;
+        if(m.father === memberId || m.mother === memberId) {
+            connections.push(mId);
+        }
+        if(mId !== memberId) {
+            if((member.father && m.father === member.father) || (member.mother && m.mother === member.mother)) {
+                connections.push(mId);
+            }
+        }
+    });
+
+    return connections;
+}
+
+// रिश्ते को सुंदर शब्दों और पाथ के रूप में दिखाना
+function generateRelationshipDescription(path) {
+    let names = path.map(id => {
+        let m = allMembersList.find(item => (item.id || item.name) === id);
+        return m ? m.name : id;
+    });
+
+    let nameA = names[0];
+    let nameB = names[names.length - 1];
+
+    if(path.length === 2) {
+        let m1 = allMembersList.find(item => (item.id || item.name) === path[0]);
+        let m2 = allMembersList.find(item => (item.id || item.name) === path[1]);
+        if(m2.father === m1.id || m2.mother === m1.id) {
+            return `<b>${nameB}</b>, <b>${nameA}</b> की संतान हैं।`;
+        } else if(m1.father === m2.id || m1.mother === m2.id) {
+            return `<b>${nameB}</b>, <b>${nameA}</b> के माता/पिता हैं।`;
+        } else if(m1.spouse === m2.id || m2.spouse === m1.id) {
+            return `<b>${nameB}</b> और <b>${nameA}</b> आपस में पति-पत्नी हैं।`;
+        } else {
+            return `<b>${nameB}</b> और <b>${nameA}</b> आपस में भाई-बहन हैं।`;
+        }
+    }
+
+    let pathStr = names.join(" ➔ ");
+    return `<b>${nameA}</b> से <b>${nameB}</b> का संबंध:<br><br><span style="color: #1e3c72; font-weight: bold; font-size: 13px; background: #e9ecef; padding: 6px 10px; display: inline-block; border-radius: 4px; word-break: break-all;">${pathStr}</span>`;
+}
         
     </script>
 </body>
