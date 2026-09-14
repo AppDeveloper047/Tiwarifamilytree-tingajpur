@@ -1370,31 +1370,79 @@ function getMemberConnections(memberId) {
     return connections;
 }
 
-// रिश्ते को सुंदर शब्दों और पाथ के रूप में दिखाना
+// रिश्ते को सही नाम (दादा, चाचा, पोता, चचेरा भाई आदि) और शब्दों में दिखाने का एडवांस्ड फंक्शन
 function generateRelationshipDescription(path) {
-    let names = path.map(id => {
-        let m = allFamilyMembers.find(item => item.memberId === id);
-        return m ? m.name : id;
-    });
+    let members = path.map(id => allFamilyMembers.find(item => item.memberId === id));
+    let names = members.map(m => m ? m.name : id);
 
     let nameA = names[0];
     let nameB = names[names.length - 1];
+    let mA = members[0];
+    let mB = members[members.length - 1];
 
-    if(path.length === 2) {
-        let m1 = allFamilyMembers.find(item => item.memberId === path[0]);
-        let m2 = allFamilyMembers.find(item => item.memberId === path[1]);
-        if(m2.fatherId === m1.memberId) {
-            return `<b>${nameB}</b>, <b>${nameA}</b> की संतान हैं।`;
-        } else if(m1.fatherId === m2.memberId) {
-            return `<b>${nameB}</b>, <b>${nameA}</b> के पिता हैं।`;
+    let relationText = "";
+    let detailPath = names.join(" ➔ ");
+
+    if (path.length === 2) {
+        let m1 = members[0];
+        let m2 = members[1];
+        if (m2.fatherId === m1.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पुत्र/संतान हैं।`;
+        } else if (m1.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पिता हैं।`;
         } else {
-            return `<b>${nameB}</b> और <b>${nameA}</b> आपस में भाई-बहन हैं।`;
+            relationText = `<b>${nameB}</b> और <b>${nameA}</b> आपस में भाई-बहन हैं।`;
         }
+    } 
+    else if (path.length === 3) {
+        let m1 = members[0]; // A
+        let m2 = members[1]; // बीच का पिता/कॉमन लिंक
+        let m3 = members[2]; // B
+
+        // केस 1: दादा जी / पोता (A -> पिता -> B)
+        if (m2.fatherId === m1.memberId && m3.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>पोते</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>दादा जी</b> हैं।`;
+        } 
+        // केस 2: पोता / दादा जी उल्टा (B -> पिता -> A)
+        else if (m2.fatherId === m3.memberId && m1.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>दादा जी</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>पोते</b> हैं।`;
+        }
+        // केस 3: चाचा/ताऊ और भतीजा (A का पिता और B आपस में भाई हैं)
+        else if (m1.fatherId === m2.memberId && m2.fatherId === m3.fatherId && m1.memberId !== m3.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>चाचा / ताऊ</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>भतीजे</b> हैं।`;
+        }
+        // केस 4: उल्टा चाचा/भतीजा
+        else if (m3.fatherId === m2.memberId && m2.fatherId === m1.fatherId && m3.memberId !== m1.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>भतीजे</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ</b> हैं।`;
+        }
+        else {
+            relationText = `<b>${nameA}</b> से <b>${nameB}</b> का संबंध।`;
+        }
+    } 
+    else if (path.length === 4) {
+        let m1 = members[0];
+        let p1 = members[1];
+        let p2 = members[2];
+        let m2 = members[3];
+
+        // चचेरे भाई (Cousins): दोनों के पिता आपस में भाई हैं (यानी दोनों का दादा एक है)
+        if (p1.fatherId && p2.fatherId && p1.fatherId === p2.fatherId) {
+            relationText = `<b>${nameA}</b> और <b>${nameB}</b> आपस में <b>चचेरे भाई / बहन (Cousins)</b> हैं।`;
+        } else {
+            relationText = `<b>${nameA}</b> से <b>${nameB}</b> का पारिवारिक संबंध।`;
+        }
+    } 
+    else {
+        relationText = `<b>${nameA}</b> से <b>${nameB}</b> का संबंध।`;
     }
 
-    let pathStr = names.join(" ➔ ");
-    return `<b>${nameA}</b> से <b>${nameB}</b> का संबंध:<br><br><span style="color: #1e3c72; font-weight: bold; font-size: 13px; background: #e9ecef; padding: 6px 10px; display: inline-block; border-radius: 4px; word-break: break-all;">${pathStr}</span>`;
+    return `
+        <div style="font-size: 15px; margin-bottom: 8px;">${relationText}</div>
+        <div style="font-size: 12px; color: #555; margin-top: 6px;">पारिवारिक क्रम:</div>
+        <span style="color: #1e3c72; font-weight: bold; font-size: 12px; background: #e9ecef; padding: 6px 10px; display: inline-block; border-radius: 4px; word-break: break-all; margin-top: 4px;">${detailPath}</span>
+    `;
 }
+
 
         
     </script>
