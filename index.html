@@ -1370,7 +1370,7 @@ function getMemberConnections(memberId) {
     return connections;
 }
 
-// रिश्ते को सही पारिवारिक नाम और शब्दों में दिखाने का एडवांस्ड फंक्शन
+// सही पारिवारिक रिश्ते (चाचा, बुआ, भाई-बहन, भतीजा, दादा आदि) बताने वाला एडवांस्ड फंक्शन
 function generateRelationshipDescription(path) {
     let members = path.map(id => allFamilyMembers.find(item => item.memberId === id));
     let names = members.map(m => m ? m.name : id);
@@ -1383,78 +1383,86 @@ function generateRelationshipDescription(path) {
     let relationText = "";
     let detailPath = names.join(" ➔ ");
 
-    // पीढ़ियों का अंतर (Level/Depth Difference) निकालें
-    let genA = mA && mA.generation ? parseInt(mA.generation) : null;
-    let genB = mB && mB.generation ? parseInt(mB.generation) : null;
-    let genDiff = (genA !== null && genB !== null) ? genB - genA : path.length - 1;
+    if (!mA || !mB) {
+        return `<div style="font-size: 14px; color: #333;">सदस्य नहीं मिले।</div><span style="font-size: 12px; background: #eee; padding: 4px; display: inline-block; margin-top: 4px;">${detailPath}</span>`;
+    }
 
-    // यदि सीधे पिता-पुत्र या भाई का केस हो (Path Length 2)
+    // 1. यदि लंबाई 2 है (सीधा पिता-पुत्र या भाई-बहन)
     if (path.length === 2) {
+        let m1 = members[0];
+        let m2 = members[1];
         if (m2.fatherId === m1.memberId) {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पुत्र हैं।`;
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पुत्र/संतान हैं।`;
         } else if (m1.fatherId === m2.memberId) {
             relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पिता हैं।`;
-        } else {
+        } else if (m1.fatherId && m1.fatherId === m2.fatherId) {
             relationText = `<b>${nameB}</b> और <b>${nameA}</b> आपस में भाई-बहन हैं।`;
+        } else {
+            relationText = `<b>${nameB}</b> और <b>${nameA}</b> का पारिवारिक संबंध।`;
         }
     } 
-    // यदि दोनों एक ही पीढ़ी के हैं (GenDiff === 0) लेकिन सीधे भाई नहीं हैं -> चचेरे भाई (Cousins)
-    else if (genDiff === 0 && path.length > 2) {
-        relationText = `<b>${nameA}</b> और <b>${nameB}</b> आपस में <b>चचेरे भाई / बहन (Cousins)</b> हैं।`;
-    }
-    // यदि B, A से 1 पीढ़ी नीचे है (पुत्र या भतीजे की पीढ़ी)
-    else if (genDiff === 1) {
-        // चेक करें कि क्या सीधा पिता-पुत्र है या चाचा-भतीजा
-        if (mB.fatherId === mA.memberId) {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पुत्र हैं।`;
-        } else {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>भतीजे</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ</b> हैं।`;
+    // 2. यदि लंबाई 3 है (दादा-पोता, चाचा-भतीजा या बुआ-भतीजा/भतीजी)
+    else if (path.length === 3) {
+        let m1 = members[0];
+        let m2 = members[1];
+        let m3 = members[2];
+
+        // दादा जी और पोता (A -> पिता -> B)
+        if (m2.fatherId === m1.memberId && m3.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पोते हैं और <b>${nameA}</b>, <b>${nameB}</b> के दादा जी हैं।`;
+        } 
+        // पोता और दादा जी (उल्टा)
+        else if (m2.fatherId === m3.memberId && m1.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के दादा जी हैं और <b>${nameA}</b>, <b>${nameB}</b> के पोते हैं।`;
+        } 
+        // बुआ और भतीजा/भतीजी (जैसे Sarita -> Dharmendra -> Bhumika: Sarita और Dharmendra भाई-बहन हैं, Dharmendra का बच्चा Bhumika है)
+        else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> की भतीजी/भतीजे हैं और <b>${nameA}</b>, <b>${nameB}</b> की <b>बुआ</b> हैं।`;
+        } 
+        // भतीजा/भतीजी और बुआ (उल्टा)
+        else if (m3.fatherId && m2.fatherId && m3.fatherId === m2.fatherId && m1.fatherId === m2.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> की बुआ हैं और <b>${nameA}</b>, <b>${nameB}</b> के भतीजे/भतीजी हैं।`;
+        }
+        // चाचा/ताऊ और भतीजा (A और M2 भाई हैं, M2 का बेटा B है)
+        else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m1.memberId) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के भतीजे हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ</b> हैं।`;
+        }
+        else {
+            relationText = `<b>${nameA}</b> और <b>${nameB}</b> के बीच पारिवारिक संबंध।`;
         }
     }
-    // यदि B, A से 1 पीढ़ी ऊपर है (पिता या चाचा की पीढ़ी)
-    else if (genDiff === -1) {
-        if (mA.fatherId === mB.memberId) {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पिता हैं।`;
-        } else {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>चाचा / ताऊ</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>भतीजे</b> हैं।`;
-        }
-    }
-    // यदि B, A से 2 पीढ़ी नीचे है (पोता या चचेरे भाई का लड़का)
-    else if (genDiff === 2) {
-        if (path.length === 3) {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>पोते</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>दादा जी</b> हैं।`;
-        } else {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के वंशज (पोते की पीढ़ी के) हैं।`;
-        }
-    }
-    // यदि B, A से 2 पीढ़ी ऊपर है (दादा या परदादा की पीढ़ी)
-    else if (genDiff === -2) {
-        if (path.length === 3) {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>दादा जी</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>पोते</b> हैं।`;
-        } else {
-            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पूर्वज (दादा/परदादा की पीढ़ी) हैं।`;
-        }
-    }
-    // उससे अधिक पीढ़ियों का अंतर होने पर (जैसे बाला राम जी और पुरुषोत्तम तिवारी)
-    else if (genDiff > 2) {
-        relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>${genDiff}वीं पीढ़ी के वंशज</b> हैं।`;
-    }
-    else if (genDiff < -2) {
-        let absGen = Math.abs(genDiff);
-        relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>${absGen}वें पूर्वज</b> हैं।`;
-    }
+    // 3. यदि लंबी शाखाएं हैं (जैसे मुरलीधर तिवारी और पुरुषोत्तम तिवारी - चाचा/ताऊ और भतीजा या चचेरे रिश्ते)
     else {
-        relationText = `<b>${nameA}</b> से <b>${nameB}</b> का पारिवारिक संबंध।`;
+        let genA = mA.generation ? parseInt(mA.generation) : 0;
+        let genB = mB.generation ? parseInt(mB.generation) : 0;
+        let genDiff = genB - genA;
+
+        // यदि दोनों समान पीढ़ी के हैं (चचेरे भाई / Cousins)
+        if (genDiff === 0) {
+            relationText = `<b>${nameA}</b> और <b>${nameB}</b> आपस में <b>चचेरे भाई / बहन (Cousins)</b> हैं।`;
+        } 
+        // यदि B, A से एक पीढ़ी नीचे है (चाचा और भतीजा)
+        else if (genDiff === 1) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>भतीजे</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ</b> हैं।`;
+        } 
+        // यदि B, A से एक पीढ़ी ऊपर है (भतीजा और चाचा)
+        else if (genDiff === -1) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के <b>चाचा / ताऊ</b> हैं और <b>${nameA}</b>, <b>${nameB}</b> के <b>भतीजे</b> हैं।`;
+        } 
+        // अन्य बड़ी दूरियों के लिए
+        else if (genDiff > 1) {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के वंशज हैं (पीढ़ी का अंतर: ${genDiff} स्तर)।`;
+        } else {
+            relationText = `<b>${nameB}</b>, <b>${nameA}</b> के पूर्वज हैं।`;
+        }
     }
 
     return `
-        <div style="font-size: 15px; margin-bottom: 8px; font-weight: bold; color: #1e3c72;">${relationText}</div>
-        <div style="font-size: 12px; color: #555; margin-top: 6px;">पारिवारिक क्रम (Path):</div>
-        <span style="color: #333; font-weight: 500; font-size: 12px; background: #e9ecef; padding: 6px 10px; display: inline-block; border-radius: 4px; word-break: break-all; margin-top: 4px;">${detailPath}</span>
+        <div style="font-size: 14px; font-weight: bold; color: #1e3c72; margin-bottom: 6px;">${relationText}</div>
+        <div style="font-size: 11px; color: #555; margin-top: 4px;">पारिवारिक क्रम (Path):</div>
+        <span style="color: #333; font-weight: 500; font-size: 11px; background: #e9ecef; padding: 5px 8px; display: inline-block; border-radius: 4px; word-break: break-all; margin-top: 3px;">${detailPath}</span>
     `;
 }
-
-
         
     </script>
 </body>
