@@ -6,7 +6,8 @@
     <title>Family Tree View & Updates</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         .gradient-highlight-text {
             font-size: 22px;
@@ -326,13 +327,14 @@
             </div>
         </div>
 
-        <div class="tree-container">
+                <div class="tree-container">
             <div class="action-bar">
                 <h2 style="margin:0; color:#1e3c72;" id="treeHeadingTitle">परिवार का स्वर्णिम इतिहास</h2>
                 <div class="zoom-controls">
                     <button class="zoom-btn" onclick="zoomTree(0.1)" id="zoomPlusBtn">➕ ज़ूम+</button>
-                    <button class="zoom-btn" onclick="zoomTree(-0.1)" id="zoomMinusBtn">➖ ज़ूम-</button>
+                    <button class="zoom-btn" onclick="zoomTree(-0.0)" id="zoomMinusBtn">➖ ज़ूम-</button>
                     <button class="zoom-btn" onclick="resetZoom()" id="zoomResetBtn">🔄 रीसेट</button>
+                    <button class="zoom-btn" onclick="downloadCompleteFamilyTree()" style="background: #2b9348;" id="downloadTreeBtn">📥 ट्री डाउनलोड</button>
                 </div>
             </div>
             
@@ -1161,6 +1163,48 @@
                 treeNavBtn.click();
             }
         });
+
+        // परिवार का पूरा ट्री एक ही इमेज में डाउनलोड करने का फंक्शन
+function downloadCompleteFamilyTree() {
+    let treeElement = document.getElementById('pdfContent'); 
+
+    if(!treeElement) {
+        alert('ट्री का डेटा नहीं मिला!');
+        return;
+    }
+
+    let btn = document.getElementById('downloadTreeBtn');
+    let originalText = btn.innerText;
+    btn.innerText = "डाउनलोड हो रहा है...";
+    btn.disabled = true;
+
+    let innerChart = document.getElementById('chart_wrapper_inner');
+    let previousTransform = innerChart.style.transform;
+    innerChart.style.transform = 'scale(1)';
+
+    html2canvas(treeElement, {
+        scale: 2, 
+        useCORS: true,
+        backgroundColor: "#ffffff" 
+    }).then(canvas => {
+        innerChart.style.transform = previousTransform;
+
+        let link = document.createElement('a');
+        link.download = 'Family_Tree_Complete.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        btn.innerText = originalTest;
+        btn.disabled = false;
+    }).catch(err => {
+        console.error('डाउनलोड एरर:', err);
+        innerChart.style.transform = previousTransform;
+        alert('ट्री डाउनलोड करने में कुछ समस्या आई, कृपया दोबारा कोशिश करें।');
+        btn.innerText = originalTest;
+        btn.disabled = false;
+    });
+}
+        
     </script>
 </body>
 </html>
