@@ -1259,7 +1259,23 @@ function closeRelationModal() {
     if(resBox) resBox.style.display = 'none';
 }
 
-// ड्रॉपडाउन में परिवार के सभी सदस्यों के नाम भरने का फंक्शन
+// रिश्ता देखने वाला मोडल खोलने और बंद करने के फंक्शन्स
+function openRelationModal() {
+    let modal = document.getElementById('relationModal');
+    if(modal) {
+        modal.style.display = 'block';
+        populateRelationDropdowns();
+    }
+}
+
+function closeRelationModal() {
+    let modal = document.getElementById('relationModal');
+    let resBox = document.getElementById('relationResultBox');
+    if(modal) modal.style.display = 'none';
+    if(resBox) resBox.style.display = 'none';
+}
+
+// ड्रॉपडाउन में परिवार के सभी सदस्यों के नाम भरने का फंक्शन (allFamilyMembers के साथ)
 function populateRelationDropdowns() {
     const selA = document.getElementById('memberASel');
     const selB = document.getElementById('memberBSel');
@@ -1268,12 +1284,10 @@ function populateRelationDropdowns() {
     selA.innerHTML = '<option value="">सदस्य चुनें...</option>';
     selB.innerHTML = '<option value="">सदस्य चुनें...</option>';
     
-    // यह मानकर चल रहा है कि आपकी मुख्य लिस्ट 'allMembersList' में सारे सदस्य मौजूद हैं
-    if (typeof allMembersList !== 'undefined' && allMembersList.length > 0) {
-        allMembersList.forEach(m => {
-            let mId = m.id || m.name;
-            selA.innerHTML += `<option value="${mId}">${m.name}</option>`;
-            selB.innerHTML += `<option value="${mId}">${m.name}</option>`;
+    if (typeof allFamilyMembers !== 'undefined' && allFamilyMembers.length > 0) {
+        allFamilyMembers.forEach(m => {
+            selA.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
+            selB.innerHTML += `<option value="${m.memberId}">${m.name}</option>`;
         });
     }
 }
@@ -1330,27 +1344,25 @@ function findPathBetweenMembers(startId, targetId) {
     return null;
 }
 
-// माता-पिता, बच्चे, पति-पत्नी और भाई-बहन के कनेक्शन निकालना
+// माता-पिता, बच्चे और भाई-बहन के कनेक्शन निकालना
 function getMemberConnections(memberId) {
     let connections = [];
-    if (typeof allMembersList === 'undefined') return connections;
+    if (typeof allFamilyMembers === 'undefined') return connections;
     
-    let member = allMembersList.find(m => (m.id || m.name) === memberId);
+    let member = allFamilyMembers.find(m => m.memberId === memberId);
     if(!member) return connections;
 
-    if(member.father) connections.push(member.father);
-    if(member.mother) connections.push(member.mother);
-    if(member.spouse) connections.push(member.spouse);
+    // पिता का कनेक्शन
+    if(member.fatherId) connections.push(member.fatherId);
     
-    allMembersList.forEach(m => {
-        let mId = m.id || m.name;
-        if(m.father === memberId || m.mother === memberId) {
-            connections.push(mId);
+    // बच्चों के कनेक्शन (जिनका fatherId यह सदस्य है)
+    allFamilyMembers.forEach(m => {
+        if(m.fatherId === memberId) {
+            connections.push(m.memberId);
         }
-        if(mId !== memberId) {
-            if((member.father && m.father === member.father) || (member.mother && m.mother === member.mother)) {
-                connections.push(mId);
-            }
+        // भाई-बहन (जिनका fatherId इस सदस्य के fatherId से मेल खाता है)
+        if(member.fatherId && m.fatherId === member.fatherId && m.memberId !== memberId) {
+            connections.push(m.memberId);
         }
     });
 
@@ -1360,7 +1372,7 @@ function getMemberConnections(memberId) {
 // रिश्ते को सुंदर शब्दों और पाथ के रूप में दिखाना
 function generateRelationshipDescription(path) {
     let names = path.map(id => {
-        let m = allMembersList.find(item => (item.id || item.name) === id);
+        let m = allFamilyMembers.find(item => item.memberId === id);
         return m ? m.name : id;
     });
 
@@ -1368,14 +1380,12 @@ function generateRelationshipDescription(path) {
     let nameB = names[names.length - 1];
 
     if(path.length === 2) {
-        let m1 = allMembersList.find(item => (item.id || item.name) === path[0]);
-        let m2 = allMembersList.find(item => (item.id || item.name) === path[1]);
-        if(m2.father === m1.id || m2.mother === m1.id) {
+        let m1 = allFamilyMembers.find(item => item.memberId === path[0]);
+        let m2 = allFamilyMembers.find(item => item.memberId === path[1]);
+        if(m2.fatherId === m1.memberId) {
             return `<b>${nameB}</b>, <b>${nameA}</b> की संतान हैं।`;
-        } else if(m1.father === m2.id || m1.mother === m2.id) {
-            return `<b>${nameB}</b>, <b>${nameA}</b> के माता/पिता हैं।`;
-        } else if(m1.spouse === m2.id || m2.spouse === m1.id) {
-            return `<b>${nameB}</b> और <b>${nameA}</b> आपस में पति-पत्नी हैं।`;
+        } else if(m1.fatherId === m2.memberId) {
+            return `<b>${nameB}</b>, <b>${nameA}</b> के पिता हैं।`;
         } else {
             return `<b>${nameB}</b> और <b>${nameA}</b> आपस में भाई-बहन हैं।`;
         }
@@ -1384,6 +1394,7 @@ function generateRelationshipDescription(path) {
     let pathStr = names.join(" ➔ ");
     return `<b>${nameA}</b> से <b>${nameB}</b> का संबंध:<br><br><span style="color: #1e3c72; font-weight: bold; font-size: 13px; background: #e9ecef; padding: 6px 10px; display: inline-block; border-radius: 4px; word-break: break-all;">${pathStr}</span>`;
 }
+
         
     </script>
 </body>
