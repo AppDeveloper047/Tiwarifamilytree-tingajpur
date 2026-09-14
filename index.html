@@ -1164,9 +1164,8 @@
             }
         });
 
-        // परिवार का पूरा ट्री सही तरीके से सिंगल इमेज में डाउनलोड करने का फाइनल फंक्शन
+        // परिवार का पूरा ट्री एकदम सही और साफ़ साइज में डाउनलोड करने का फाइनल कोड
 function downloadCompleteFamilyTree() {
-    // हम सीधे उस डिब्बे को टारगेट कर रहे हैं जहाँ असली ट्री स्ट्रक्चर लोड होता है
     let treeElement = document.getElementById('tree_structure_div'); 
 
     if(!treeElement || treeElement.innerText.includes('load ho raha hai')) {
@@ -1175,34 +1174,41 @@ function downloadCompleteFamilyTree() {
     }
 
     let btn = document.getElementById('downloadTreeBtn');
-    let originalText = btn.innerText; // डिमांड 01 & 02 के लिए टेक्स्ट स्टोर किया
+    let originalText = btn.innerText;
     btn.innerText = "डाउनलोड हो रहा है...";
     btn.disabled = true;
 
-    // html2canvas की मदद से सिर्फ ट्री स्ट्रक्चर को परफेक्ट कैप्चर करना
+    // ट्री के चारों तरफ थोड़ा पैडिंग और सही लुक देने के लिए स्टाइल को अस्थायी रूप से एडजस्ट करना
+    let originalPadding = treeElement.style.padding;
+    let originalBackground = treeElement.style.background;
+    treeElement.style.padding = '30px';
+    treeElement.style.background = '#ffffff';
+
     html2canvas(treeElement, {
-        scale: 2, // हाई क्वालिटी इमेज के लिए
+        scale: 3, // क्वालिटी और बढ़ाने के लिए ताकि ज़ूम करने पर नाम फटे नहीं
         useCORS: true,
-        backgroundColor: "#ffffff", // साफ़ सफ़ेद बैकग्राउंड ताकि ब्लैंक न आए
+        backgroundColor: "#ffffff",
         logging: false
     }).then(canvas => {
+        // स्टाइल वापस पुरानी हालत में करना
+        treeElement.style.padding = originalPadding;
+        treeElement.style.background = originalBackground;
+
         let link = document.createElement('a');
         link.download = 'Family_Tree_Complete.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
 
-        // डिमांड 02: सफलता का मैसेज और बटन को वापस नॉर्मल करना
         btn.innerText = originalText;
         btn.disabled = false;
         alert('✨ परिवार का ट्री सफलतापूर्वक डाउनलोड हो गया है!');
 
     }).catch(err => {
         console.error('डाउनलोड एरर:', err);
+        treeElement.style.padding = originalPadding;
+        treeElement.style.background = originalBackground;
         
-        // डिमांड 01: यदि डाउनलोड न हो तो गड़बड़ी वाला मैसेज दिखाना
         alert('❌ ट्री डाउनलोड करने में कुछ समस्या आई, कृपया दोबारा कोशिश करें।');
-        
-        // बटन का टेक्स्ट और स्टेट वापस ठीक करना ताकि रिफ्रेश न करना पड़े
         btn.innerText = originalText;
         btn.disabled = false;
     });
