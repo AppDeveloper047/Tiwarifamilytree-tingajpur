@@ -849,37 +849,37 @@
         }
 
 
-            
-            function renderEventSlide(index) {
-            let ev = upcomingEventsList[index];
-            let m = ev.member;
-            let container = document.getElementById('sliderBodyContainer');
-            let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
-            
-            // अगर वार या तिथि डेटा में न हो, तो भी स्पेस मेंटेन रखने के लिए HTML स्ट्रक्चर एक जैसा रखेंगे
-            let dayText = ev.dayVal ? `<p style="margin:2px 0; font-size:14px;"><strong>वार:</strong> ${ev.dayVal}</p>` : `<p style="margin:2px 0; font-size:14px; visibility:hidden;"><strong>वार:</strong> -</p>`;
-            let tithiText = ev.tithiVal ? `<p style="margin:2px 0; font-size:14px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : `<p style="margin:2px 0; font-size:14px; visibility:hidden;"><strong>तिथि:</strong> -</p>`;
-            let spouseText = ev.isSpouse ? `<p style="margin:2px 0; font-size:13px; opacity:0.85;">जीवनसाथी: ${ev.mainMemberName}</p>` : `<p style="margin:2px 0; font-size:13px; visibility:hidden;">जीवनसाथी: -</p>`;
+    function renderEventSlide(index) {
+    let ev = upcomingEventsList[index];
+    let m = ev.member;
+    let container = document.getElementById('sliderBodyContainer');
+    let photoSrc = m.photo ? m.photo : 'https://via.placeholder.com/150/1e3c72/ffffff?text=No+Photo';
+    
+    // अगर वार या तिथि डेटा में न हो, तो भी स्पेस मेंटेन रखने के लिए HTML स्ट्रक्चर एक जैसा रखेंगे
+    let dayText = ev.dayVal ? `<p style="margin:2px 0; font-size:14px;"><strong>वार:</strong> ${ev.dayVal}</p>` : `<p style="margin:2px 0; font-size:14px; visibility:hidden;"><strong>वार:</strong> -</p>`;
+    let tithiText = ev.tithiVal ? `<p style="margin:2px 0; font-size:14px;"><strong>तिथि:</strong> ${ev.tithiVal}</p>` : `<p style="margin:2px 0; font-size:14px; visibility:hidden;"><strong>तिथि:</strong> -</p>`;
+    let spouseText = ev.isSpouse ? `<p style="margin:2px 0; font-size:13px; opacity:0.85;">जीवनसाथी: ${ev.mainMemberName}</p>` : `<p style="margin:2px 0; font-size:13px; visibility:hidden;">जीवनसाथी: -</p>`;
 
-            let detailsHtml = `
-                <span class="gradient-highlight-text" style="font-size:18px;">✨ ${ev.eventType} ✨</span>
-                <h3 style="margin:2px 0 6px 0; font-size:19px; font-weight:800;" class="gradient-highlight-text">${ev.targetName}</h3>
-                <p style="margin:2px 0; font-size:14px;"><strong>दिनांक:</strong> ${ev.dateVal || 'उपलब्ध नहीं'}</p>
-                ${dayText}
-                ${tithiText}
-                ${spouseText}
-                <button class="edit-profile-btn" style="margin-top:6px; padding:6px 14px;" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
-            `;
+    // यहाँ cleanDate लगा दिया गया है ताकि स्लाइडर में तारीख साफ़ फॉर्मेट में दिखे
+    let detailsHtml = `
+        <span class="gradient-highlight-text" style="font-size:18px;">✨ ${ev.eventType} ✨</span>
+        <h3 style="margin:2px 0 6px 0; font-size:19px; font-weight:800;" class="gradient-highlight-text">${ev.targetName}</h3>
+        <p style="margin:2px 0; font-size:14px;"><strong>दिनांक:</strong> ${cleanDate(ev.dateVal)}</p>
+        ${dayText}
+        ${tithiText}
+        ${spouseText}
+        <button class="edit-profile-btn" style="margin-top:6px; padding:6px 14px;" onclick="openMemberModal('${m.memberId}')">📁 पूरी जानकारी देखें</button>
+    `;
 
-            container.innerHTML = `
-                <div class="slider-img-wrapper">
-                    <img src="${photoSrc}" class="slider-img" alt="Member Photo" style="width:130px; height:130px;">
-                </div>
-                <div class="slider-details">
-                    ${detailsHtml}
-                </div>
-            `;
-        }
+    container.innerHTML = `
+        <div class="slider-img-wrapper">
+            <img src="${photoSrc}" class="slider-img" alt="Member Photo" style="width:130px; height:130px;">
+        </div>
+        <div class="slider-details">
+            ${detailsHtml}
+        </div>
+    `;
+}
 
 
 
@@ -932,47 +932,61 @@
             buildFamilyTree(allFamilyMembers, memberId);
         }
 
-        function openMemberModal(memberId) {
-            let m = allFamilyMembers.find(item => item.memberId === memberId);
-            if(!m) return;
-            
-            let modal = document.getElementById('memberModal');
-            let body = document.getElementById('modalBodyContent');
-            
-            let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
-            
-            let spouseSection = '';
-            if(m.maritalStatus === 'Married') {
-                spouseSection = `
-                    <div style="background: rgba(43, 147, 72, 0.08); padding: 14px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2b9348;">
-                        <h4 style="color:#276749; margin:0 0 8px 0; font-size:15px;">💍 जीवनसाथी विवरण (Spouse Details)</h4>
-                        <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
-                        <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${m.spouseDob || 'N/A'}</p>
-                        <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
-                        ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${m.spouseDeathAnniv || 'N/A'} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
-                    </div>
-                `;
-            }
+        // तारीख को साफ करने वाला helper function (इसे script में कहीं भी बाहर रख देना)
+function cleanDate(dateString) {
+    if (!dateString) return 'N/A';
+    let parts = dateString.toString().split('T');
+    let datePart = parts[0]; // जैसे: 2026-09-30
+    
+    let dParts = datePart.split('-');
+    if (dParts.length === 3) {
+        return `${dParts[2]}-${dParts[1]}-${dParts[0]}`; // आउटपुट: 30-09-2026
+    }
+    return datePart;
+}
 
-            body.innerHTML = `
-                ${photoHtml}
-                <h3 style="text-align:center; color:#1e3c72; margin-top:0; margin-bottom:15px; font-size:20px;">${m.name}</h3>
-                <div style="font-size:14px; line-height:1.6; color:#334155;">
-                    <p style="margin:4px 0;"><strong>Member ID:</strong> ${m.memberId}</p>
-                    <p style="margin:4px 0;"><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
-                    <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
-                    <p style="margin:4px 0;"><strong>D.O.B:</strong> ${m.dob || 'N/A'}</p>
-                    <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
-                    ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${m.deathAnniversary} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
-                    <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
-                    <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
-                    <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
-                </div>
-                ${spouseSection}
-                <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
-            `;
-            modal.style.display = 'block';
-        }
+// अपडेटेड openMemberModal फंक्शन (यहाँ cleanDate लगा दिया गया है)
+function openMemberModal(memberId) {
+    let m = allFamilyMembers.find(item => item.memberId === memberId);
+    if(!m) return;
+    
+    let modal = document.getElementById('memberModal');
+    let body = document.getElementById('modalBodyContent');
+    
+    let photoHtml = m.photo ? `<img src="${m.photo}" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">` : `<img src="https://via.placeholder.com/110/1e3c72/ffffff?text=User" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:4px solid #11998e; margin:0 auto 15px auto; display:block;">`;
+    
+    let spouseSection = '';
+    if(m.maritalStatus === 'Married') {
+        spouseSection = `
+            <div style="background: rgba(43, 147, 72, 0.08); padding: 14px; border-radius: 12px; margin-top: 15px; border-left: 5px solid #2b9348;">
+                <h4 style="color:#276749; margin:0 0 8px 0; font-size:15px;">💍 जीवनसाथी विवरण (Spouse Details)</h4>
+                <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
+                <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${cleanDate(m.spouseDob)}</p>
+                <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
+                ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${cleanDate(m.spouseDeathAnniv)} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
+            </div>
+        `;
+    }
+
+    body.innerHTML = `
+        ${photoHtml}
+        <h3 style="text-align:center; color:#1e3c72; margin-top:0; margin-bottom:15px; font-size:20px;">${m.name}</h3>
+        <div style="font-size:14px; line-height:1.6; color:#334155;">
+            <p style="margin:4px 0;"><strong>Member ID:</strong> ${m.memberId}</p>
+            <p style="margin:4px 0;"><strong>Father ID:</strong> ${m.fatherId || 'Root'}</p>
+            <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
+            <p style="margin:4px 0;"><strong>D.O.B:</strong> ${cleanDate(m.dob)}</p>
+            <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
+            ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${cleanDate(m.deathAnniversary)} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
+            <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
+            <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
+            <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
+        </div>
+        ${spouseSection}
+        <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
+    `;
+    modal.style.display = 'block';
+}
 
         function closeModal() {
             document.getElementById('memberModal').style.display = 'none';
