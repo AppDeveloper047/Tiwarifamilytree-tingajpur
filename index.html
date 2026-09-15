@@ -1503,6 +1503,7 @@ function generateRelationshipDescription(path) {
                 • इस नाते <b>मुरलीधर तिवारी</b>, पुरुषोत्तम तिवारी के <b>चाचा / ताऊ (चचेरे काका / अंकल)</b> लगते हैं और <b>पुरुषोत्तम तिवारी</b> उनके <b>भतीजे</b> लगते हैं (पीढ़ी का अंतर: 1 स्तर)।
             `;
         } 
+        
 // पारिवारिक रिश्तों का सटीक और पूर्वज-पहचानने वाला फाइनल कोड
 function generateRelationshipDescription(path) {
     let members = path.map(id => allFamilyMembers.find(item => item.memberId === id));
@@ -1621,6 +1622,7 @@ function generateRelationshipDescription(path) {
         <span style="color: #1e3c72; font-weight: bold; font-size: 11px; background: #e9ecef; padding: 4px 8px; display: inline-block; border-radius: 4px; word-break: break-all; margin-top: 3px;">${detailPath}</span>
     `;
 }
+
         
     </script>
 </body>
