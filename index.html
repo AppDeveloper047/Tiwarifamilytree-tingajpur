@@ -1370,17 +1370,32 @@ function getMemberConnections(memberId) {
     return connections;
 }
 
-// पारिवारिक रिश्तों का एकदम डीप और स्पष्ट विवरण दिखाने वाला फाइनल फंक्शन
+// पारिवारिक रिश्तों का सटीक, जेंडर-सचेत और डीप विवरण दिखाने वाला फाइनल कोड
 function generateRelationshipDescription(path) {
     let members = path.map(id => allFamilyMembers.find(item => item.memberId === id));
     let names = members.map(m => m ? m.name : id);
 
     let nameA = names[0];
     let nameB = names[names.length - 1];
+    let mA = members[0];
+    let mB = members[members.length - 1];
     let detailPath = names.join(" ➔ ");
     let analysisHTML = "";
 
-    // अगर सदस्य 2 हैं (पिता-पुत्र या भाई-बहन)
+    if (!mA || !mB) {
+        return `<div style="font-size: 13px; color: #333;">सदस्य नहीं मिले।</div>`;
+    }
+
+    let genA = mA.generation ? parseInt(mA.generation) : 0;
+    let genB = mB.generation ? parseInt(mB.generation) : 0;
+    let genDiff = genB - genA;
+
+    // मेंबर का जेंडर पता करने के लिए (नाम या प्रोफाइल के आधार पर, या यदि अंत में 'Ji' आदि हो तो सामान्यतः पुरुष मानकर, या डेटा के मुताबिक)
+    // चूँकि अधिकांश सदस्य पुरुष हैं, हम नाम या विशिष्ट सूचियों से मेल करेंगे।
+    let isFemaleB = (nameB.includes("Bai") || nameB.includes("बा") || nameB.includes("बाइ") || nameB === "Sarita Tiwari" || nameB === "Bhumika Tiwari");
+    let isFemaleA = (nameA.includes("Bai") || nameA.includes("बा") || nameA.includes("बाइ") || nameA === "Sarita Tiwari" || nameA === "Bhumika Tiwari");
+
+    // 1. यदि सीधे 2 सदस्य हों (पिता-पुत्र या भाई-बहन)
     if (path.length === 2) {
         let m1 = members[0];
         let m2 = members[1];
@@ -1390,92 +1405,128 @@ function generateRelationshipDescription(path) {
         if (m2.fatherId === m1.memberId) {
             analysisHTML = `
                 <b>वंश वृक्ष (Family Tree) के अनुसार संबंध:</b><br>
-                • <b>${names[0]}</b>${g1} — पिता / मुख्य सदस्य।<br>
-                • <b>${names[1]}</b>${g2} — इनके पुत्र।<br><br>
+                • <b>${names[0]}</b>${g1} — पिता / पूर्वज。<br>
+                • <b>${names[1]}</b>${g2} — इनके पुत्र。<br><br>
                 <b>पारिवारिक संबंध:</b><br>
                 <b>${names[1]}</b>, <b>${names[0]}</b> के सगे <b>पुत्र</b> हैं।
             `;
         } else if (m1.fatherId === m2.memberId) {
             analysisHTML = `
                 <b>वंश वृक्ष (Family Tree) के अनुसार संबंध:</b><br>
-                • <b>${names[0]}</b>${g1} — संतान।<br>
-                • <b>${names[1]}</b>${g2} — इनके पिता।<br><br>
+                • <b>${names[0]}</b>${g1} — संतान。<br>
+                • <b>${names[1]}</b>${g2} — इनके पिता。<br><br>
                 <b>पारिवारिक संबंध:</b><br>
                 <b>${names[1]}</b>, <b>${names[0]}</b> के <b>पिता</b> हैं।
             `;
-        } else {
+        } else if (m1.fatherId && m1.fatherId === m2.fatherId) {
             analysisHTML = `
                 <b>पारिवारिक संबंध:</b><br>
-                <b>${names[0]}</b> और <b>${names[1]}</b> आपस में सगे <b>भाई-बहन</b> हैं।
+                <b>${names[0]}</b> और <b>${names[1]}</b> आपस में सगे <b>भाई-बहन / भाई</b> हैं।
             `;
+        } else {
+            analysisHTML = `<b>${names[0]}</b> और <b>${names[1]}</b> का पारिवारिक संबंध।`;
         }
     }
-    // अगर 3 सदस्य हैं (दादा-पोता या बुआ-भतीजा)
+    // 2. यदि 3 सदस्य हों (दादा-पोता, चाचा-भतीजा, या बुआ-भतीजा)
     else if (path.length === 3) {
         let m1 = members[0], m2 = members[1], m3 = members[2];
         let g1 = m1.generation ? ` (पीढ़ी ${m1.generation})` : '';
         let g2 = m2.generation ? ` (पीढ़ी ${m2.generation})` : '';
         let g3 = m3.generation ? ` (पीढ़ी ${m3.generation})` : '';
 
+        // दादा जी और पोता
         if (m2.fatherId === m1.memberId && m3.fatherId === m2.memberId) {
             analysisHTML = `
                 वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                • <b>${names[0]}</b>${g1} — दादा जी / मूल पूर्वज।<br>
+                • <b>${names[0]}</b>${g1} — दादा जी / मूल पूर्वज。<br>
                 • <b>${names[1]}</b>${g2} — इनके पुत्र (${names[0]} के बेटे)।<br>
                 • <b>${names[2]}</b>${g3} — इनके पोत्र (${names[1]} के बेटे)।<br><br>
                 <b>पारिवारिक संबंध:</b><br>
-                <b>${names[0]}</b>, <b>${names[2]}</b> के <b>दादा जी</b> हैं और <b>${names[2]}</b> इनके <b>पोते</b> हैं।
+                <b>${names[0]}</b>, <b>${names[2]}</b> के <b>दादा जी</b> हैं और <b>${names[2]}</b> इनके <b>पोते</b> हैं (पीढ़ी का अंतर: 2 स्तर नीचे)।
             `;
-        } else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m2.memberId) {
+        } 
+        // पोता और दादा जी
+        else if (m2.fatherId === m3.memberId && m1.fatherId === m2.memberId) {
             analysisHTML = `
                 वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                • <b>${names[0]}</b>${g1} — परिवार की सदस्य।<br>
-                • <b>${names[1]}</b>${g2} — इनके भाई (${names[0]} के सगे भाई)।<br>
-                • <b>${names[2]}</b>${g3} — इनके संतान (भतीजा/भतीजी)।<br><br>
+                • <b>${names[0]}</b>${g1} — पोता。<br>
+                • <b>${names[1]}</b>${g2} — इनके पिता。<br>
+                • <b>${names[2]}</b>${g3} — इनके दादा जी。<br><br>
                 <b>पारिवारिक संबंध:</b><br>
-                <b>${names[0]}</b>, <b>${names[2]}</b> की <b>बुआ</b> लगती हैं और <b>${nameB}</b> इनके <b>भतीजे/भतीजी</b> लगते हैं।
+                <b>${names[0]}</b>, <b>${names[2]}</b> के <b>पोते</b> हैं और <b>${names[2]}</b> इनके <b>दादा जी</b> हैं।
             `;
-        } else {
-            analysisHTML = `वंश वृक्ष के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> का पारिवारिक क्रम नीचे है।`;
+        }
+        // बुआ और भतीजा/भतीजी
+        else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m2.memberId) {
+            let relationName = isFemaleB ? "भतीजी" : "भतीजे";
+            analysisHTML = `
+                वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
+                • <b>${names[0]}</b>${g1} — परिवार की सदस्य (पुत्री)।<br>
+                • <b>${names[1]}</b>${g2} — इनके सगे भाई।<br>
+                • <b>${names[2]}</b>${g3} — भाई के संतान。<br><br>
+                <b>पारिवारिक संबंध:</b><br>
+                <b>${names[0]}</b>, <b>${names[2]}</b> की <b>बुआ</b> लगती हैं और <b>${names[2]}</b> इनके <b>${relationName}</b> लगते हैं।
+            `;
+        }
+        // चाचा/ताऊ और भतीजा (जैसे Kamal Kishore और Purushottam)
+        else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m1.memberId) {
+            let uncleTitle = isFemaleA ? "बुआ" : "चाचा / ताऊ (अंकल)";
+            analysisHTML = `
+                वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
+                • <b>${names[0]}</b>${g1} — परिवार के सदस्य。<br>
+                • <b>${names[1]}</b>${g2} — इनके भाई (पिता के भाई)।<br>
+                • <b>${names[2]}</b>${g3} — भाई के पुत्र (भतीजे)।<br><br>
+                <b>पारिवारिक संबंध:</b><br>
+                <b>${names[0]}</b>, <b>${names[2]}</b> के <b>${uncleTitle}</b> लगते हैं और <b>${names[2]}</b> इनके <b>भतीजे</b> लगते हैं (पीढ़ी का अंतर: 1 स्तर ऊपर)।
+            `;
+        }
+        else {
+            analysisHTML = `वंश वृक्ष के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> का पारिवारिक संबंध।`;
         }
     }
-    // अगर लंबी शाखाएं हैं (जैसे मुरलीधर तिवारी और पुरुषोत्तम तिवारी, या भूमिका और सरिता)
+    // 3. यदि लंबी शाखाएं या अधिक पीढ़ियों का अंतर हो (जैसे मुरलीधर-पुरुषोत्तम या रामेश्वर-पुरुषोत्तम)
     else {
         let listDetails = "";
         members.forEach(m => {
             let gText = m.generation ? ` (पीढ़ी ${m.generation})` : '';
-            let relationNote = "";
-            
-            // डेटा के आधार पर खास नोट्स जोड़ना
-            if(m.name === "Gattu Lal Ji") relationNote = "— यह गट्टू लाल जी हैं।";
-            else if(m.name === "Jamna Lal Tiwari") relationNote = "— यह जमना लाल तिवारी हैं।";
-            else if(m.name === "Jagdish Chandra Tiwari") relationNote = "— इनके पुत्र (पुरुषोत्तम के पिता)।";
-            else if(m.name === "Dharmendra Tiwari") relationNote = "— इनके पुत्र (भूमिका के पिता)।";
-            else gText += "";
-
-            listDetails += `• <b>${m.name}</b>${gText} ${relationNote}<br>`;
+            listDetails += `• <b>${m.name}</b>${gText}<br>`;
         });
 
-        // खास रिश्तों के लिए सटीक विवरण पैराग्राफ
         let specificRelationDesc = "";
+        
+        // मुरलीधर और पुरुषोत्तम का विशिष्ट केस
         if((nameA === "Murlidhar Tiwari" && nameB === "Purushottam Tiwari") || (nameA === "Purushottam Tiwari" && nameB === "Murlidhar Tiwari")) {
             specificRelationDesc = `
                 <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
-                • गट्टू लाल जी और जमना लाल तिवारी आपस में भाई हैं।<br>
-                • मुरलीधर तिवारी, पुरुषोत्तम तिवारी के पिता (जगदीश चंद्र तिवारी) के चचेरे भाई हैं।<br>
-                • इस नाते <b>मुरलीधर तिवारी</b>, पुरुषोत्तम तिवारी के <b>चाचा / ताऊ (चचेरे काका)</b> लगते हैं और <b>पुरुषोत्तम तिवारी</b> उनके <b>भतीजे</b> लगते हैं।
+                • गट्टू लाल जी (पीढ़ी 5) और जमना लाल तिवारी (पीढ़ी 5) आपस में भाई हैं।<br>
+                • मुरलीधर तिवारी (पीढ़ी 6), पुरुषोत्तम तिवारी के पिता (जगदीश चंद्र तिवारी, पीढ़ी 6) के चचेरे भाई हैं।<br>
+                • इस नाते <b>मुरलीधर तिवारी</b>, पुरुषोत्तम तिवारी के <b>चाचा / ताऊ (चचेरे काका / अंकल)</b> लगते हैं और <b>पुरुषोत्तम तिवारी</b> उनके <b>भतीजे</b> लगते हैं (पीढ़ी का अंतर: 1 स्तर)।
             `;
-        } else if((nameA === "Sarita Tiwari" && nameB === "Bhumika Tiwari") || (nameA === "Bhumika Tiwari" && nameB === "Sarita Tiwari")) {
+        } 
+        // रामेश्वर जी और पुरुषोत्तम तिवारी का केस
+        else if(nameA.includes("Rameshwar") && nameB === "Purushottam Tiwari") {
             specificRelationDesc = `
                 <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
-                • सरिता तिवारी और धर्मेंद्र तिवारी आपस में भाई-बहन हैं।<br>
-                • भूमिका तिवारी, धर्मेंद्र तिवारी की पुत्री हैं।<br>
-                • इस नाते <b>सरिता तिवारी</b>, भूमिका तिवारी की <b>बुआ</b> लगती हैं और <b>भूमिका तिवारी</b> इनकी <b>भतीजी</b> लगती हैं।
+                • रामेश्वर जी (पालीया बा) और जमना लाल तिवारी एक ही पूर्वज की शाखा से जुड़े हैं।<br>
+                • पुरुषोत्तम तिवारी, रामेश्वर जी से ${Math.abs(genDiff)} पीढ़ियों नीचे (पोत्र/वंशज की पीढ़ी में) आते हैं।<br>
+                • इस नाते <b>रामेश्वर जी</b>, पुरुषोत्तम तिवारी के <b>दादा / बड़े दादा (पूर्वज पीढ़ी)</b> लगते हैं और <b>पुरुषोत्तम तिवारी</b> उनकी पीढ़ी से ${Math.abs(genDiff)} पीढ़ी नीचे के वंशज हैं।
             `;
-        } else {
+        }
+        // पुरुषोत्तम और ओम्प्रकाश तिवारी का केस
+        else if((nameA === "Purushottam Tiwari" && nameB === "Omprakash Tiwari") || (nameA === "Omprakash Tiwari" && nameB === "Purushottam Tiwari")) {
             specificRelationDesc = `
-                <br><b>पारिवारिक संबंध:</b><br>
-                दिए गए वंश वृक्ष के अनुसार दोनों के बीच पूर्वज और वंशज की यह कड़ी जुड़ी हुई है।
+                <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
+                • ओम्प्रकाश तिवारी (पीढ़ी 6) और जगदीश चंद्र तिवारी (पुरुषोत्तम के पिता, पीढ़ी 6) चचेरे भाई हैं।<br>
+                • इनके बीच **1 पीढ़ी का अंतर** है (ओम्प्रकाश जी पिता की पीढ़ी में हैं)।<br>
+                • इस नाते **ओम्प्रकाश तिवारी**, पुरुषोत्तम तिवारी के **चाचा / ताऊ (काका)** लगते हैं और पुरुषोत्तम तिवारी उनके **भतीजे** लगते हैं।
+            `;
+        }
+        else {
+            let relationType = genDiff > 0 ? `वंशज (नीचे की पीढ़ी, अंतर: ${genDiff} स्तर)` : (genDiff < 0 ? `पूर्वज (ऊपर की पीढ़ी, अंतर: ${Math.abs(genDiff)} स्तर)` : `चचेरे भाई / संबंधी (समान पीढ़ी)`);
+            specificRelationDesc = `
+                <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
+                • दोनों के बीच पीढ़ियों का अंतर: <b>${Math.abs(genDiff)} पीढ़ी</b><br>
+                • संबंध प्रकार: <b>${relationType}</b>
             `;
         }
 
