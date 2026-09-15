@@ -1370,7 +1370,7 @@ function getMemberConnections(memberId) {
     return connections;
 }
 
-// पारिवारिक रिश्तों का सटीक, जेंडर-सचेत और डीप विवरण दिखाने वाला फाइनल और फिक्स किया हुआ कोड
+// पारिवारिक रिश्तों का सटीक, जेंडर-सचेत और डीप विवरण दिखाने वाला फाइनल कोड
 function generateRelationshipDescription(path) {
     try {
         if (!path || !Array.isArray(path) || path.length === 0) {
@@ -1401,10 +1401,18 @@ function generateRelationshipDescription(path) {
         let genB = (mB.generation !== undefined && mB.generation !== null && !isNaN(mB.generation)) ? parseInt(mB.generation) : NaN;
         let genDiff = (!isNaN(genA) && !isNaN(genB)) ? (genB - genA) : (path.length - 1);
 
-        let isFemaleA = (nameA.includes("Bai") || nameA.includes("बा") || nameA.includes("बाइ") || nameA === "Sarita Tiwari" || nameA === "Bhumika Tiwari");
-        let isFemaleB = (nameB.includes("Bai") || nameB.includes("बा") || nameB.includes("बाइ") || nameA === "Sarita Tiwari" || nameB === "Bhumika Tiwari");
+        // जेंडर पहचान के लिए सहायक फलन (महिला नाम या Bai आदि के आधार पर)
+        function checkIsFemale(name) {
+            if (!name) return false;
+            return name.includes("Bai") || name.includes("बा") || name.includes("बाइ") || 
+                   name.includes("Sarita") || name.includes("Bhumika") || name.includes("सुशीला") || 
+                   name.includes("कँवर") || name.includes("बाई");
+        }
 
-        // 1. यदि सीधे 2 सदस्य हों
+        let isFemaleA = checkIsFemale(nameA);
+        let isFemaleB = checkIsFemale(nameB);
+
+        // 1. यदि सीधे 2 सदस्य हों (पिता-पुत्र, भाई-भाई)
         if (path.length === 2) {
             let m1 = members[0];
             let m2 = members[1];
@@ -1412,80 +1420,44 @@ function generateRelationshipDescription(path) {
             let g2 = m2.generation ? ` (पीढ़ी ${m2.generation})` : '';
 
             if (m2.fatherId === m1.memberId) {
-                analysisHTML = `
-                    <b>वंश वृक्ष (Family Tree) के अनुसार संबंध:</b><br>
-                    • <b>${names[0]}</b>${g1} — पिता / पूर्वज。<br>
-                    • <b>${names[1]}</b>${g2} — इनके पुत्र。<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[1]}</b>, <b>${names[0]}</b> के सगे <b>पुत्र</b> हैं।
-                `;
+                analysisHTML = `<b>${names[1]}</b>, <b>${names[0]}</b>${g1} के सगे <b>पुत्र</b> हैं।`;
             } else if (m1.fatherId === m2.memberId) {
-                analysisHTML = `
-                    <b>वंश वृक्ष (Family Tree) के अनुसार संबंध:</b><br>
-                    • <b>${names[0]}</b>${g1} — संतान。<br>
-                    • <b>${names[1]}</b>${g2} — इनके पिता。<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[1]}</b>, <b>${names[0]}</b> के <b>पिता</b> हैं।
-                `;
+                analysisHTML = `<b>${names[1]}</b>, <b>${names[0]}</b>${g1} के <b>पिता</b> हैं।`;
             } else if (m1.fatherId && m1.fatherId === m2.fatherId) {
-                analysisHTML = `
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[0]}</b> और <b>${names[1]}</b> आपस में सगे <b>भाई-बहन / भाई</b> हैं।
-                `;
+                let relType = (isFemaleA || isFemaleB) ? "भाई-बहन" : "सगे भाई";
+                analysisHTML = `<b>${names[0]}</b> और <b>${names[1]}</b> आपस में <b>${relType}</b> हैं।`;
             } else {
                 analysisHTML = `<b>${names[0]}</b> और <b>${names[1]}</b> का पारिवारिक संबंध।`;
             }
         }
-        // 2. यदि 3 सदस्य हों (दादा-पोता, चाचा-भतीजा आदि)
+        // 2. यदि 3 सदस्य हों (दादा-पोता, चाचा-भतीजा, बुआ-भतीजा)
         else if (path.length === 3) {
             let m1 = members[0], m2 = members[1], m3 = members[2];
-            let g1 = m1.generation ? ` (पीढ़ी ${m1.generation})` : '';
-            let g2 = m2.generation ? ` (पीढ़ी ${m2.generation})` : '';
-            let g3 = m3.generation ? ` (पीढ़ी ${m3.generation})` : '';
-
-            if (m2.fatherId === m1.memberId && m3.fatherId === m2.memberId) {
-                analysisHTML = `
-                    वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                    • <b>${names[0]}</b>${g1} — दादा जी / मूल पूर्वज。<br>
-                    • <b>${names[1]}</b>${g2} — इनके पुत्र (${names[0]} के बेटे)।<br>
-                    • <b>${names[2]}</b>${g3} — इनके पोत्र (${names[1]} के बेटे)।<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[0]}</b>, <b>${names[2]}</b> के <b>दादा जी</b> हैं और <b>${names[2]}</b> इनके <b>पोते</b> हैं।
-                `;
-            } else if (m2.fatherId === m3.memberId && m1.fatherId === m2.memberId) {
-                analysisHTML = `
-                    वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                    • <b>${names[0]}</b>${g1} — पोता。<br>
-                    • <b>${names[1]}</b>${g2} — इनके पिता。<br>
-                    • <b>${names[2]}</b>${g3} — इनके दादा जी。<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[0]}</b>, <b>${names[2]}</b> के <b>पोते</b> हैं और <b>${names[2]}</b> इनके <b>दादा जी</b> हैं।
-                `;
-            } else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m2.memberId) {
+            
+            // दादा जी और पोता (मूल पूर्वज से नीचे दो स्तर)
+            if (m2 && m3 && m2.fatherId === m1.memberId && m3.fatherId === m2.memberId) {
+                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> के <b>दादा जी / पूर्वज</b> हैं और <b>${nameB}</b> इनके <b>पोते</b> हैं।`;
+            } 
+            // पोता और दादा जी (उल्टा क्रम)
+            else if (m2 && m3 && m2.fatherId === m3.memberId && m1.fatherId === m2.memberId) {
+                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> के <b>पोते</b> हैं और <b>${nameB}</b> इनके <b>दादा जी</b> हैं।`;
+            } 
+            // बुआ और भतीजा/भतीजी (मध्यांतर में पिता की बहन और भाई की संतान)
+            else if (m1 && m2 && m3 && m1.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m2.memberId) {
                 let relationName = isFemaleB ? "भतीजी" : "भतीजे";
-                analysisHTML = `
-                    वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                    • <b>${names[0]}</b>${g1} — परिवार की सदस्य (पुत्री)।<br>
-                    • <b>${names[1]}</b>${g2} — इनके सगे भाई。<br>
-                    • <b>${names[2]}</b>${g3} — भाई के संतान。<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[0]}</b>, <b>${names[2]}</b> की <b>बुआ</b> लगती हैं और <b>${names[2]}</b> इनके <b>${relationName}</b> लगते हैं।
-                `;
-            } else if (m1.fatherId && m2.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m1.memberId) {
+                let auntTitle = isFemaleA ? "बुआ" : "रिश्तेदार";
+                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> की <b>${auntTitle}</b> लगती हैं और <b>${nameB}</b> इनके <b>${relationName}</b> लगते हैं।`;
+            } 
+            // चाचा / ताऊ और भतीजा (पिता के भाई और उनके पुत्र)
+            else if (m1 && m2 && m3 && m1.fatherId && m1.fatherId === m2.fatherId && m3.fatherId === m1.memberId) {
                 let uncleTitle = isFemaleA ? "बुआ" : "चाचा / ताऊ (अंकल)";
-                analysisHTML = `
-                    वंश वृक्ष (Family Tree) के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> के बीच का संबंध:<br><br>
-                    • <b>${names[0]}</b>${g1} — परिवार के सदस्य。<br>
-                    • <b>${names[1]}</b>${g2} — इनके भाई (पिता के भाई)।<br>
-                    • <b>${names[2]}</b>${g3} — भाई के पुत्र (भतीजे)।<br><br>
-                    <b>पारिवारिक संबंध:</b><br>
-                    <b>${names[0]}</b>, <b>${names[2]}</b> के <b>${uncleTitle}</b> लगते हैं और <b>${names[2]}</b> इनके <b>भतीजे</b> लगते हैं।
-                `;
-            } else {
-                analysisHTML = `वंश वृक्ष के अनुसार <b>${names[0]}</b> और <b>${names[2]}</b> का पारिवारिक संबंध।`;
+                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> के <b>${uncleTitle}</b> लगते हैं और <b>${nameB}</b> इनके <b>भतीजे</b> लगते हैं।`;
+            } 
+            else {
+                analysisHTML = `वंश वृक्ष के अनुसार <b>${nameA}</b> और <b>${nameB}</b> का पारिवारिक संबंध।`;
             }
         }
-        // 3. यदि लंबी शाखाएं या अधिक पीढ़ियों का अंतर हो
+        // 3. लंबी शाखाएं या अधिक पीढ़ियों का अंतर (पूर्वज, चाचा-भतीजा का विस्तृत मार्ग)
         else {
             let listDetails = "";
             members.forEach((m, idx) => {
@@ -1497,23 +1469,36 @@ function generateRelationshipDescription(path) {
             let specificRelationDesc = "";
             let stepsDown = Math.abs(genDiff) > 0 ? Math.abs(genDiff) : (path.length - 1);
 
-            if (nameA.includes("बाला राम") || nameA.includes("Bala Ram") || stepsDown >= 3) {
+            // यदि पाथ में ऊपर जाकर नीचे आए हैं (शाखा वाला रिश्ता जैसे चाचा/ताऊ का विस्तृत पाथ)
+            if (path.length === 4 && members[0].fatherId && members[1].fatherId && members[0].fatherId === members[1].fatherId) {
+                let uncleDesignation = isFemaleA ? "बुआ" : "चाचा / ताऊ";
                 specificRelationDesc = `
                     <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
-                    • <b>${nameA}</b> परिवार के मूल पूर्वजों में से हैं।<br>
-                    • <b>${nameB}</b> इनसे ${stepsDown} पीढ़ी नीचे के वंशज हैं।<br>
-                    • इस नाते <b>${nameA}</b>, <b>${nameB}</b> के <b>परदादा / मूल पूर्वज</b> हैं।
+                    • <b>${nameA}</b> और <b>${members[1].name}</b> आपस में भाई-बहन हैं।<br>
+                    • <b>${nameB}</b>, <b>${members[1].name}</b> के वंशज (पुत्र/पुत्री) हैं।<br>
+                    • इस नाते <b>${nameA}</b>, <b>${nameB}</b> के <b>${uncleDesignation}</b> लगते हैं।
                 `;
-            } else if (nameA.includes("Murlidhar") || nameA.includes("मुरलीधर")) {
-                specificRelationDesc = `<br><b>पारिवारिक संबंध विश्लेषण:</b><br>• <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ (चचेरे काका)</b> लगते हैं।`;
-            } else if (nameA.includes("Rameshwar") || nameA.includes("रामेश्वर")) {
-                specificRelationDesc = `<br><b>पारिवारिक संबंध विश्लेषण:</b><br>• <b>${nameA}</b>, <b>${nameB}</b> के <b>दादा / बड़े दादा</b> लगते हैं।`;
+            } else if (genDiff > 1 || (path.length > 3 && !members[1].fatherId)) {
+                if (nameA.includes("बाला राम") || nameA.includes("Bala Ram") || stepsDown >= 3) {
+                    specificRelationDesc = `
+                        <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
+                        • <b>${nameA}</b> परिवार के मूल पूर्वजों में से हैं।<br>
+                        • <b>${nameB}</b> इनसे ${stepsDown} पीढ़ी नीचे के वंशज हैं।<br>
+                        • इस नाते <b>${nameA}</b>, <b>${nameB}</b> के <b>परदादा / मूल पूर्वज</b> हैं।
+                    `;
+                } else if (nameA.includes("Murlidhar") || nameA.includes("मुरलीधर")) {
+                    specificRelationDesc = `<br><b>पारिवारिक संबंध विश्लेषण:</b><br>• <b>${nameA}</b>, <b>${nameB}</b> के <b>चाचा / ताऊ (चचेरे काका)</b> लगते हैं।`;
+                } else if (nameA.includes("Rameshwar") || nameA.includes("रामेश्वर")) {
+                    specificRelationDesc = `<br><b>पारिवारिक संबंध विश्लेषण:</b><br>• <b>${nameA}</b>, <b>${nameB}</b> के <b>दादा / बड़े दादा</b> लगते हैं।`;
+                } else {
+                    specificRelationDesc = `
+                        <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
+                        • <b>${nameA}</b>, <b>${nameB}</b> के पूर्वज हैं (${stepsDown} पीढ़ी ऊपर)।<br>
+                        • <b>${nameB}</b>, <b>${nameA}</b> के वंशज हैं।
+                    `;
+                }
             } else {
-                specificRelationDesc = `
-                    <br><b>पारिवारिक संबंध विश्लेषण:</b><br>
-                    • <b>${nameA}</b>, <b>${nameB}</b> के पूर्वज हैं (${stepsDown} पीढ़ी ऊपर)।<br>
-                    • <b>${nameB}</b>, <b>${nameA}</b> के वंशज हैं।
-                `;
+                specificRelationDesc = `<br><b>पारिवारिक संबंध विश्लेषण:</b><br>• दोनों के बीच पीढ़ियों का अंतर: <b>${Math.abs(genDiff)} पीढ़ी</b>`;
             }
 
             analysisHTML = `
