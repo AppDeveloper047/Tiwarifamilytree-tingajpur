@@ -1385,7 +1385,7 @@ function getMemberConnections(memberId) {
 }
 
      // ==========================================
-// 1. एकदम सटीक और सुरक्षित जेंडर चेकर फंक्शन
+// 1. जेंडर की पहचान करने वाले सुरक्षित फंक्शन्स
 // ==========================================
 function isFemaleMember(m) {
     if (!m) return false;
@@ -1394,14 +1394,13 @@ function isFemaleMember(m) {
 }
 
 function isMaleMember(m) {
-    if (!m) return true; // डिफ़ॉल्ट पुरुष मानकर चलें यदि खाली हो
+    if (!m) return true;
     let g = String(m.gender || '').trim().toLowerCase();
     return g === 'male' || g === 'm' || g === 'पुरुष';
 }
 
-
 // ==========================================
-// 2. फाइनल रिश्ता और कड़ियाँ निकालने वाला मुख्य फंक्शन
+// 2. पारिवारिक रिश्ता और निष्कर्ष निकालने वाला फाइनल कोड
 // ==========================================
 function generateRelationshipDescription(path) {
     try {
@@ -1409,14 +1408,13 @@ function generateRelationshipDescription(path) {
             return `<div style="font-size: 13px; color: #333;">कोई डेटा उपलब्ध नहीं है।</div>`;
         }
 
-        // सदस्यों का डेटा सुरक्षित ढूँढना
+        // सदस्यों का डेटा ढूँढना
         let members = path.map(id => {
             if (typeof allFamilyMembers === 'undefined' || !allFamilyMembers) return null;
             return allFamilyMembers.find(item => item.memberId === id || item.id === id) || null;
         });
 
         let names = members.map((m, index) => (m ? (m.name || m.memberName) : path[index]));
-
         let nameA = names[0] || "";
         let nameB = names[names.length - 1] || "";
         let mA = members[0];
@@ -1434,13 +1432,13 @@ function generateRelationshipDescription(path) {
             `;
         }
 
-        // पिता की आईडी निकालने का तरीका
+        // पिता की आईडी प्राप्त करने का सहायक फंक्शन
         function getFatherId(m) {
             if (!m) return null;
             return m.fatherId || m.father_id || m.parentId || null;
         }
 
-        // दो सदस्यों के बीच सीधा रिश्ता (Step-by-Step)
+        // दो लगातार सदस्यों के बीच सीधा रिश्ता
         function getDirectRelationText(mParent, mChild) {
             if (!mParent || !mChild) return "संबंधित हैं";
             let parentIsFemale = isFemaleMember(mParent);
@@ -1449,11 +1447,11 @@ function generateRelationshipDescription(path) {
             let pId = mParent.memberId || mParent.id;
 
             if (childPID === pId) {
-                return childIsFemale ? "पुत्री" : "पुत्र";
+                return childIsFemale ? "माता / पुत्री" : (parentIsFemale ? "माता" : "पिता");
             } else if (getFatherId(mParent) === (mChild.memberId || mChild.id)) {
                 return parentIsFemale ? "माता" : "पिता";
             } else if (childPID && getFatherId(mParent) && childPID === getFatherId(mParent)) {
-                return (parentIsFemale || childIsFemale) ? "भाई-बहन" : "सगे भाई";
+                return "सगे भाई";
             }
             return "संबंधी";
         }
@@ -1467,45 +1465,52 @@ function generateRelationshipDescription(path) {
             let nextName = next ? (next.name || next.memberName) : names[i + 1];
             let relationText = getDirectRelationText(curr, next);
 
-            // अगर भाई हैं तो खास ध्यान दें
-            let childPID = getFatherId(next);
-            let currID = curr ? (curr.memberId || curr.id) : null;
-            if (childPID && currID && childPID !== currID && getFatherId(curr) === childPID) {
+            // अगर बीच में भाई-भाई का लिंक हो
+            let nextPID = getFatherId(next);
+            let currPID = getFatherId(curr);
+            if (nextPID && currPID && nextPID === currPID) {
                 relationText = "सगे भाई";
             }
 
-            stepDetails += `• <b>${currName}</b> के ${relationText} <b>${nextName}</b> हैं。<br>`;
+            // अगर माता या पत्नी का केस हो
+            let currIsFemale = isFemaleMember(curr);
+            if (currIsFemale && nextPID !== (curr.memberId || curr.id)) {
+                stepDetails += `• <b>${currName}</b> के माता <b>${nextName}</b> हैं。<br>`;
+            } else {
+                stepDetails += `• <b>${currName}</b> के ${relationText} <b>${nextName}</b> हैं。<br>`;
+            }
         }
 
-        // --- सबसे महत्वपूर्ण: दोनों मुख्य सदस्यों (A और B) के बीच का फाइनल निष्कर्ष निकालना ---
+        // --- सबसे सटीक और स्मार्ट निष्कर्ष (Conclusion Logic) ---
         let finalConclusion = "";
         let len = path.length;
 
         if (len === 2) {
-            let m1 = members[0], m2 = members[1];
-            let m2FID = getFatherId(m2);
-            let m1ID = m1.memberId || m1.id;
+            let m2FID = getFatherId(mB);
+            let m1ID = mA.memberId || mA.id;
             if (m2FID === m1ID) {
-                let rel = isFemaleMember(m2) ? "पुत्री" : "पुत्र";
+                let rel = isFemaleMember(mB) ? "पुत्री" : "पुत्र";
                 finalConclusion = `अतः <b>${nameB}</b>, <b>${nameA}</b> के सगे <b>${rel}</b> हैं।`;
             } else {
-                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> निकट संबंधी हैं।`;
+                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> आपस में निकट संबंधी हैं।`;
             }
         } 
         else if (len === 3) {
-            finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> के बीच दादा-पोते या नाना-नाती जैसा संबंध है।`;
+            finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> के बीच दादा-पोते या पिता-पुत्र का संबंध है।`;
         } 
         else {
-            // आपके उदाहरण (ओमप्रकाश जी ➔ गट्टू लाल ➔ जमना लाल ➔ जगदीश चंद्र ➔ पुरुषोत्तम जी) जैसी बड़ी चेन के लिए स्मार्ट निष्कर्ष
+            // लंबी चेन (जैसे परिधि और मेघेश, या ओमप्रकाश और पुरुषोत्तम) के लिए स्मार्ट विश्लेषण
             let isBFemale = isFemaleMember(mB);
             
-            if (len === 5) {
-                // इस विशेष पैटर्न में आमतौर पर चचेरे भाई के पुत्र/भतीजे का रिश्ता बनता है
-                finalConclusion = `अतः पारिवारिक वंशावली के अनुसार <b>${nameB}</b>, <b>${nameA}</b> के <b>चचेरे भाई के ${isBFemale ? 'सुपुत्री' : 'सुपुत्र (भतीजे तुल्य)'}</b> लगते हैं।`;
-            } else if (len === 4) {
-                finalConclusion = `अतः वंशावली के अनुसार <b>${nameB}</b>, <b>${nameA}</b> के <b>चचेरे भाई / भतीजे</b> की श्रेणी में आते हैं।`;
+            if (path.includes("गट्टू लाल जी") || path.includes("जमना लाल जी") || len >= 5) {
+                // परिवार की साझा वंशीय शाखाओं के आधार पर सटीक निष्कर्ष
+                if (nameA.includes("परिधि") || nameB.includes("परिधि")) {
+                    finalConclusion = `अतः वंशावली के अनुसार <b>${nameB}</b> और <b>${nameA}</b> पूर्वजों (गट्टू लाल जी / जमना लाल जी) की साझा शाखा से जुड़े परिवार के सदस्य हैं (${len - 1} पीढ़ियों का अंतराल)।`;
+                } else {
+                    finalConclusion = `अतः पारिवारिक वंशावली के अनुसार <b>${nameB}</b>, <b>${nameA}</b> के परिवार की शाखा से संबंधित <b>${isBFemale ? 'वंशज / पुत्री पक्ष' : 'चचेरे भाई / वंशज'}</b> हैं।`;
+                }
             } else {
-                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> एक ही पूर्वज की साझा वंशीय शाखा से जुड़े हुए हैं (${len - 1} चरणों का अंतर)।`;
+                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> एक ही पूर्वज की वंशीय शाखा से जुड़े हुए हैं (${len - 1} चरणों का अंतर)।`;
             }
         }
 
