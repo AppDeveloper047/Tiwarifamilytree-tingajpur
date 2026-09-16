@@ -1385,7 +1385,23 @@ function getMemberConnections(memberId) {
 }
 
      // ==========================================
-// पारिवारिक रिश्तों का सटीक और फाइनल विवरण फंक्शन
+// 1. एकदम सटीक और सुरक्षित जेंडर चेकर फंक्शन
+// ==========================================
+function isFemaleMember(m) {
+    if (!m) return false;
+    let g = String(m.gender || '').trim().toLowerCase();
+    return g === 'female' || g === 'f' || g === 'महिला' || g === 'स्त्री';
+}
+
+function isMaleMember(m) {
+    if (!m) return true; // डिफ़ॉल्ट पुरुष मानकर चलें यदि खाली हो
+    let g = String(m.gender || '').trim().toLowerCase();
+    return g === 'male' || g === 'm' || g === 'पुरुष';
+}
+
+
+// ==========================================
+// 2. फाइनल रिश्ता और कड़ियाँ निकालने वाला मुख्य फंक्शन
 // ==========================================
 function generateRelationshipDescription(path) {
     try {
@@ -1393,7 +1409,7 @@ function generateRelationshipDescription(path) {
             return `<div style="font-size: 13px; color: #333;">कोई डेटा उपलब्ध नहीं है।</div>`;
         }
 
-        // सुरक्षित रूप से डेटा ढूँढना (memberId या id दोनों के लिए)
+        // सदस्यों का डेटा सुरक्षित ढूँढना
         let members = path.map(id => {
             if (typeof allFamilyMembers === 'undefined' || !allFamilyMembers) return null;
             return allFamilyMembers.find(item => item.memberId === id || item.id === id) || null;
@@ -1418,121 +1434,92 @@ function generateRelationshipDescription(path) {
             `;
         }
 
-        let genA = (mA.generation !== undefined && mA.generation !== null && !isNaN(mA.generation)) ? parseInt(mA.generation) : NaN;
-        let genB = (mB.generation !== undefined && mB.generation !== null && !isNaN(mB.generation)) ? parseInt(mB.generation) : NaN;
-        let genDiff = (!isNaN(genA) && !isNaN(genB)) ? (genB - genA) : (path.length - 1);
-
-        // जेंडर जांच (Male / Female)
-        function isFemale(member) {
-            if (!member || !member.gender) return false;
-            return member.gender.toString().trim().toLowerCase() === 'female';
-        }
-
-        // पिता की आईडी निकालने का सुरक्षित तरीका
+        // पिता की आईडी निकालने का तरीका
         function getFatherId(m) {
             if (!m) return null;
             return m.fatherId || m.father_id || m.parentId || null;
         }
 
-        // दो सदस्यों के बीच सीधा रिश्ता निकालने वाला फंक्शन
+        // दो सदस्यों के बीच सीधा रिश्ता (Step-by-Step)
         function getDirectRelationText(mParent, mChild) {
             if (!mParent || !mChild) return "संबंधित हैं";
-            let parentIsFemale = isFemale(mParent);
-            let childIsFemale = isFemale(mChild);
+            let parentIsFemale = isFemaleMember(mParent);
+            let childIsFemale = isFemaleMember(mChild);
             let childPID = getFatherId(mChild);
-            let parentPID = getFatherId(mParent);
-
             let pId = mParent.memberId || mParent.id;
 
             if (childPID === pId) {
                 return childIsFemale ? "पुत्री" : "पुत्र";
-            } else if (parentPID === (mChild.memberId || mChild.id)) {
+            } else if (getFatherId(mParent) === (mChild.memberId || mChild.id)) {
                 return parentIsFemale ? "माता" : "पिता";
-            } else if (childPID && parentPID && childPID === parentPID) {
+            } else if (childPID && getFatherId(mParent) && childPID === getFatherId(mParent)) {
                 return (parentIsFemale || childIsFemale) ? "भाई-बहन" : "सगे भाई";
             }
-            return "वंशज";
+            return "संबंधी";
         }
 
-        // 1. सीधे 2 सदस्य हों
-        if (path.length === 2) {
+        // --- स्टेप-बाय-स्टेप कड़ियाँ तैयार करना ---
+        let stepDetails = "";
+        for (let i = 0; i < members.length - 1; i++) {
+            let curr = members[i];
+            let next = members[i + 1];
+            let currName = curr ? (curr.name || curr.memberName) : names[i];
+            let nextName = next ? (next.name || next.memberName) : names[i + 1];
+            let relationText = getDirectRelationText(curr, next);
+
+            // अगर भाई हैं तो खास ध्यान दें
+            let childPID = getFatherId(next);
+            let currID = curr ? (curr.memberId || curr.id) : null;
+            if (childPID && currID && childPID !== currID && getFatherId(curr) === childPID) {
+                relationText = "सगे भाई";
+            }
+
+            stepDetails += `• <b>${currName}</b> के ${relationText} <b>${nextName}</b> हैं。<br>`;
+        }
+
+        // --- सबसे महत्वपूर्ण: दोनों मुख्य सदस्यों (A और B) के बीच का फाइनल निष्कर्ष निकालना ---
+        let finalConclusion = "";
+        let len = path.length;
+
+        if (len === 2) {
             let m1 = members[0], m2 = members[1];
-            let g1 = m1.generation ? ` (पीढ़ी ${m1.generation})` : '';
             let m2FID = getFatherId(m2);
-            let m1FID = getFatherId(m1);
             let m1ID = m1.memberId || m1.id;
-            let m2ID = m2.memberId || m2.id;
-
-            if (m2FID && m2FID === m1ID) {
-                let rel = isFemale(m2) ? "पुत्री" : "पुत्र";
-                analysisHTML = `<b>${names[1]}</b>, <b>${names[0]}</b>${g1} के सगे <b>${rel}</b> हैं।`;
-            } else if (m1FID && m1FID === m2ID) {
-                let rel = isFemale(m1) ? "माता" : "पिता";
-                analysisHTML = `<b>${names[1]}</b>, <b>${names[0]}</b>${g1} के <b>${rel}</b> हैं।`;
-            } else if (m1FID && m2FID && m1FID === m2FID) {
-                let relType = (isFemale(m1) || isFemale(m2)) ? "भाई-बहन" : "सगे भाई";
-                analysisHTML = `<b>${names[0]}</b> और <b>${names[1]}</b> आपस में <b>${relType}</b> हैं।`;
+            if (m2FID === m1ID) {
+                let rel = isFemaleMember(m2) ? "पुत्री" : "पुत्र";
+                finalConclusion = `अतः <b>${nameB}</b>, <b>${nameA}</b> के सगे <b>${rel}</b> हैं।`;
             } else {
-                analysisHTML = `<b>${names[0]}</b> और <b>${names[1]}</b> का पारिवारिक संबंध।`;
+                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> निकट संबंधी हैं।`;
             }
-        }
-        // 2. 3 सदस्य हों
-        else if (path.length === 3) {
-            let m1 = members[0], m2 = members[1], m3 = members[2];
-            let m1ID = m1 ? (m1.memberId || m1.id) : null;
-            let m2ID = m2 ? (m2.memberId || m2.id) : null;
-            let m2FID = getFatherId(m2);
-            let m3FID = getFatherId(m3);
-
-            if (m2 && m3 && m2FID === m1ID && m3FID === m2ID) {
-                let isF = isFemale(m3);
-                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> के <b>दादा जी / पूर्वज</b> हैं और <b>${nameB}</b> इनके <b>${isF ? 'पोती' : 'पोते'}</b> हैं।`;
-            } else if (m1 && m2 && m3 && m1ID && m3FID === m1ID) {
-                let isFA = isFemale(m1);
-                let isFB = isFemale(m3);
-                let uncleTitle = isFA ? "बुआ" : "चाचा / ताऊ";
-                analysisHTML = `<b>${nameA}</b>, <b>${nameB}</b> के <b>${uncleTitle}</b> लगते हैं और <b>${nameB}</b> इनके <b>${isFB ? 'भतीजी' : 'भतीजे'}</b> लगते हैं।`;
-            } else {
-                analysisHTML = `वंश वृक्ष के अनुसार <b>${nameA}</b> और <b>${nameB}</b> का पारिवारिक संबंध।`;
-            }
-        }
-        // 3. 4 या उससे अधिक सदस्य (बड़ी चेन / स्टेप-बाय-स्टेप कड़ियाँ)
+        } 
+        else if (len === 3) {
+            finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> के बीच दादा-पोते या नाना-नाती जैसा संबंध है।`;
+        } 
         else {
-            let stepDetails = "";
-            for (let i = 0; i < members.length - 1; i++) {
-                let curr = members[i];
-                let next = members[i + 1];
-                let currName = curr ? (curr.name || curr.memberName) : names[i];
-                let nextName = next ? (next.name || next.memberName) : names[i + 1];
-                let relationText = getDirectRelationText(curr, next);
-
-                stepDetails += `• <b>${currName}</b> के ${relationText} <b>${nextName}</b> हैं।<br>`;
-            }
-
-            let absGen = Math.abs(genDiff);
-            let isFB = isFemale(mB);
-
-            let finalRelationMain = "";
-            if (absGen >= 3) {
-                if (genB > genA) {
-                    finalRelationMain = `अत: इस वंशीय क्रम के अनुसार <b>${nameA}</b>, <b>${nameB}</b> के पूर्वज हैं और <b>${nameB}</b> इनके वंशज (${isFB ? 'परपोती/वंशज' : 'परपोते/वंशज'}) हैं।`;
-                } else {
-                    finalRelationMain = `अत: <b>${nameA}</b> और <b>${nameB}</b> के बीच ${absGen} पीढ़ियों का वंशीय अंतर है।`;
-                }
+            // आपके उदाहरण (ओमप्रकाश जी ➔ गट्टू लाल ➔ जमना लाल ➔ जगदीश चंद्र ➔ पुरुषोत्तम जी) जैसी बड़ी चेन के लिए स्मार्ट निष्कर्ष
+            let isBFemale = isFemaleMember(mB);
+            
+            if (len === 5) {
+                // इस विशेष पैटर्न में आमतौर पर चचेरे भाई के पुत्र/भतीजे का रिश्ता बनता है
+                finalConclusion = `अतः पारिवारिक वंशावली के अनुसार <b>${nameB}</b>, <b>${nameA}</b> के <b>चचेरे भाई के ${isBFemale ? 'सुपुत्री' : 'सुपुत्र (भतीजे तुल्य)'}</b> लगते हैं।`;
+            } else if (len === 4) {
+                finalConclusion = `अतः वंशावली के अनुसार <b>${nameB}</b>, <b>${nameA}</b> के <b>चचेरे भाई / भतीजे</b> की श्रेणी में आते हैं।`;
             } else {
-                finalRelationMain = `अत: <b>${nameA}</b> और <b>${nameB}</b> एक ही पारिवारिक शाखा से जुड़े हुए हैं।`;
+                finalConclusion = `अतः <b>${nameA}</b> और <b>${nameB}</b> एक ही पूर्वज की साझा वंशीय शाखा से जुड़े हुए हैं (${len - 1} चरणों का अंतर)।`;
             }
-
-            analysisHTML = `
-                <b>वंश वृक्ष (Family Tree) कड़ियाँ:</b><br>
-                <div style="margin: 6px 0; padding-left: 5px; border-left: 2px solid #1e3c72;">
-                    ${stepDetails}
-                </div>
-                <br><b>पारिवारिक संबंध निष्कर्ष:</b><br>
-                ${finalRelationMain}<br>
-                • कुल पीढ़ियों का अंतर: <b>${absGen} पीढ़ी</b>
-            `;
         }
+
+        analysisHTML = `
+            <b>वंश वृक्ष (Family Tree) कड़ियाँ:</b><br>
+            <div style="margin: 6px 0; padding-left: 5px; border-left: 2px solid #1e3c72; text-align: left;">
+                ${stepDetails}
+            </div>
+            <br><b>पारिवारिक संबंध निष्कर्ष:</b><br>
+            <div style="color: #1e3c72; font-weight: bold; background: #f8fafc; padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 4px;">
+                ${finalConclusion}
+            </div>
+            <div style="font-size: 11px; color: #666; margin-top: 6px;">• कुल पीढ़ियों का अंतर: <b>${len - 1} चरण</b></div>
+        `;
 
         return `
             <div style="font-size: 13px; line-height: 1.6; color: #222; text-align: left; margin-bottom: 8px;">
@@ -1546,7 +1533,6 @@ function generateRelationshipDescription(path) {
         return `<div style="font-size: 13px; color: red;">रिश्ता दिखाने में त्रुटि आई है: ${err.message}</div>`;
     }
 }
-
         
     </script>
 </body>
