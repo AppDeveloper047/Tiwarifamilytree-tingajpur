@@ -949,8 +949,8 @@ function cleanDate(dateString) {
     }
     return datePart;
 }
-
-// अपडेटेड openMemberModal फंक्शन (यहाँ cleanDate लगा दिया गया है)
+        
+// अपडेटेड openMemberModal फंक्शन (कम्प्लीट और एरर फ्री)
 function openMemberModal(memberId) {
     let m = allFamilyMembers.find(item => item.memberId === memberId);
     if(!m) return;
@@ -968,7 +968,7 @@ function openMemberModal(memberId) {
                 <p style="margin:4px 0;"><strong>नाम:</strong> ${m.spouseName || 'N/A'}</p>
                 <p style="margin:4px 0;"><strong>जन्मदिन (DOB):</strong> ${cleanDate(m.spouseDob)}</p>
                 <p style="margin:4px 0;"><strong>स्थिति:</strong> ${m.spouseAliveDeath || 'Alive'}</p>
-                ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${cleanDate(m.spouseDeathAnniv)} (${m.spouseDeathDay || ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
+                ${m.spouseAliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>पुण्यतिथि:</strong> ${cleanDate(m.spouseDeathAnniv)} (${m.spouseDeathDay \vert{}\vert{} ''})<br><strong>तिथि:</strong> ${m.spouseDeathTithi || 'N/A'}</p>` : ''}
             </div>
         `;
     }
@@ -982,7 +982,7 @@ function openMemberModal(memberId) {
             <p style="margin:4px 0;"><strong>Gender:</strong> ${m.gender}</p>
             <p style="margin:4px 0;"><strong>D.O.B:</strong> ${cleanDate(m.dob)}</p>
             <p style="margin:4px 0;"><strong>Status:</strong> ${m.aliveDeath}</p>
-            ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${cleanDate(m.deathAnniversary)} (${m.deathDay || ''})<br><strong>Death Tithi:</strong> ${m.deathTithi || 'N/A'}</p>` : ''}
+            ${m.aliveDeath === 'Death' ? `<p style="margin:4px 0;"><strong>Death Date:</strong> ${cleanDate(m.deathAnniversary)} (${m.deathDay \vert{}\vert{} ''})<br><strong>Death Tithi:</strong>${m.deathTithi || 'N/A'}</p>` : ''}
             <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
             <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
             <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
