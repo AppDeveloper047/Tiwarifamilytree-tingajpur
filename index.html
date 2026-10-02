@@ -435,6 +435,11 @@
                 </div>
 
                 <div class="form-group">
+                <label id="lblOtherDetails">अन्य विवरण (Other Details):</label>
+                <textarea id="otherDetails" rows="3" placeholder="सदस्य के बारे में अन्य विशेष जानकारी यहाँ लिखें..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; font-family: inherit;"></textarea>
+                </div>
+
+                <div class="form-group">
                     <label id="lblMaritalStatus">Marital Status:</label>
                     <select id="maritalStatus" onchange="toggleSpouseFields()">
                         <option value="Unmarried" id="optUnmarried">Unmarried</option>
@@ -721,7 +726,7 @@
                     <div style="font-weight:bold; font-size:13px; line-height:1.2; width:100%; word-break: break-word; margin-bottom:4px;">${member.name}</div>
                     <div style="font-size:10px; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:10px; margin-bottom:6px; font-weight:600;">पीढ़ी ${generationNum}</div>
                     ${member.spouseName ? `<div style="font-size:10px; opacity:0.9; width:100%; border-top:1px solid rgba(255,255,255,0.2); padding-top:4px; margin-top:auto;">w/o ${member.spouseName}</div>` : ''}
-                </div>
+                </div>r
             `;
 
             if(children.length > 0) {
@@ -981,6 +986,7 @@ function openMemberModal(memberId) {
             <p style="margin:4px 0;"><strong>Marital Status:</strong> ${m.maritalStatus}</p>
             <p style="margin:4px 0;"><strong>Mobile:</strong> ${m.mobile || 'N/A'}</p>
             <p style="margin:4px 0;"><strong>Child Number (क्रम):</strong> ${m.childNumber || 'N/A'}</p>
+            <p style="margin:4px 0;"><strong>अन्य विवरण (Other Details):</strong> ${m.otherDetails || 'N/A'}</p>
         </div>
         ${spouseSection}
         <button class="edit-profile-btn" style="width:100%; margin-top:15px; padding:10px;" onclick="openProfileCropModal('${m.memberId}')">📷 फोटो बदलें / Crop करें</button>
@@ -1167,6 +1173,7 @@ function openMemberModal(memberId) {
                 mobile: document.getElementById('mobile').value,
                 childNumber: document.getElementById('childNumber').value,
                 photo: base64Photo
+                otherDetails: document.getElementById('otherDetails').value // <-- Yeh naya field joda gaya hai
             };
 
             let submitBtn = document.getElementById('submitBtnText');
